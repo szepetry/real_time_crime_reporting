@@ -1,6 +1,6 @@
-# sih_app
+# Mini Project
 
-A new Flutter project.
+Our college's mini project
 
 ## Getting Started
 
