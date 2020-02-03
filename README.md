@@ -1,6 +1,12 @@
 # Mini Project
 
-Our college's mini project
+Our college mini project - Renegades
+
+Team members:
+  - Ayesha siddiqua
+  - Aryan Jalali
+  - Arjun Manoj Kumar P.
+  - Amulya .N
 
 ## Getting Started
 
