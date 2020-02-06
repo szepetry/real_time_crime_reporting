@@ -10,7 +10,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="sih_app"
+        android:label="Instant Reporter"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyB5Kjw8AoUHsV67eEedg5FmmmpSgD0MQcM"/>
 
