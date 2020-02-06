@@ -1,6 +1,12 @@
-# sih_app
+# Mini Project
 
-A new Flutter project.
+Our college mini project - Renegades
+
+Team members:
+  - Ayesha siddiqua
+  - Aryan Jalali
+  - Arjun Manoj Kumar P.
+  - Amulya .N
 
 ## Getting Started
 
