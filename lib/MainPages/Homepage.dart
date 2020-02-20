@@ -6,7 +6,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
 // import 'package:sih_app/pages/FireMap.dart';
 import 'package:sih_app/MainPages/MainBodyStack.dart';
-import 'package:sih_app/MainPages/BottomPanwlView.dart';
+import 'package:sih_app/MainPages/BottomPanelView.dart';
 
 // import 'package:flutter/services.dart';
 
