@@ -31,7 +31,12 @@ class _HomepageState extends State<Homepage> {
                 topLeft: Radius.circular(10.0),
                 topRight: Radius.circular(10.0)),
             panel: BottomPanelView(),
-            body: MainBodyStack()));
+            body: MainBodyStack(),
+            collapsed: Container(
+              child: Divider(thickness: 4.0,
+              endIndent: MediaQuery.of(context).size.width-200,
+              indent: MediaQuery.of(context).size.width-300,),
+            ),),);
   }
 }
 

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1004155442128",
+    "firebase_url": "https://instant-crime-reporting.firebaseio.com",
+    "project_id": "instant-crime-reporting",
+    "storage_bucket": "instant-crime-reporting.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004155442128:android:71679e9bb11c2da12e1fd5",
+        "android_client_info": {
+          "package_name": "com.renegades.miniproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004155442128-2m59e07239ocv4i92mv7gi7ls5r40ln8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqve21EiEOxHmqUya7Bv-SSNMLGjQHDxo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004155442128-2m59e07239ocv4i92mv7gi7ls5r40ln8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

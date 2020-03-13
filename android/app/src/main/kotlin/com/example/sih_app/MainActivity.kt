@@ -1,4 +1,4 @@
-package com.example.sih_app
+package com.renegades.miniproject
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
