@@ -144,19 +144,19 @@ class _AddReportFormState extends State<AddReportForm> {
         sleep(Duration(seconds: 2));
 
         InfoObject infoObject = InfoObject(
-            this._fName,
-            this._lName,
-            this._phone,
-            this._email,
-            this._description,
-            _currentPosition.toString(),
-            this._urlAttachmentPhoto,
-            this._urlAttachmentVideo,
-            this._address);
+            fName:this._fName,
+            lName:this._lName,
+            phone:this._phone,
+            email:this._email,
+            description: this._description,
+            location:_currentPosition.toString(),
+            urlAttachmentPhoto:this._urlAttachmentPhoto,
+            urlAttachmentVideo:this._urlAttachmentVideo,
+            address:this._address);
 
         infoObjs.add(infoObject.toJson());
-        _multiInfoObject = MultiInfoObject(infoObjs, count);
-        await _databaseReference.child("$id").set(_multiInfoObject.toJson());
+        // _multiInfoObject = MultiInfoObject(infoObjs, count);
+        // await _databaseReference.child("$id").set(_multiInfoObject.toJson());
           print("The object sent: $infoObjs");
 
         // infoObjs.clear();

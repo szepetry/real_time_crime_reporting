@@ -48,6 +48,10 @@ dependencies:
   url_launcher: ^5.4.1
   # for loading images in circles
   cached_network_image: ^2.0.0
+  # firestore
+  cloud_firestore: ^0.13.4+1
+  # spinkit for animated loads
+  flutter_spinkit: "^4.1.2"
 
 dev_dependencies:
   flutter_test:
