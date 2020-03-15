@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 // import 'package:transparent_image/transparent_image.dart';
-import 'package:sih_app/MainPages/FireMap.dart';
+import 'package:instant_reporter/MainPages/FireMap.dart';
 
 Marker marker;
 
