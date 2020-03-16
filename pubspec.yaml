@@ -33,7 +33,9 @@ dependencies:
   location: ^2.3.5
   # Connecting flutter maps with firebase
   # geoflutterfire: ^2.0.3+8
-  
+
+  #provider
+  provider: ^4.0.4  
   #transparent image import
   transparent_image: ^1.0.0
   # datebase

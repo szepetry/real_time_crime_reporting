@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sih_app/Database/user_obj_notifier.dart';
 import 'package:sih_app/Forms/ReportForm.dart';
 import 'package:sih_app/model/userObject.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -12,13 +14,13 @@ import '../model/infoObject.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../model/userObject.dart';
+import '../model/multiInfoObject.dart';
+import '../Database/user_obj_notifier.dart';
+
 
 //TODO: Make it ask for permissions properly
 class BottomPanelView extends StatefulWidget {
-  const BottomPanelView({
-    Key key,
-  }) : super(key: key);
-
   @override
   _BottomPanelViewState createState() => _BottomPanelViewState();
 }
@@ -26,6 +28,14 @@ class BottomPanelView extends StatefulWidget {
 class _BottomPanelViewState extends State<BottomPanelView> {
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
   String id = "1234";
+
+
+  @override
+  void initState() {
+    UserObjNotifier userObjNotifier = Provider.of<UserObjNotifier>(context);
+    super.initState();
+  }
+
   //Takes the app to report form
   navigateToReportForm(id) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -34,42 +44,47 @@ class _BottomPanelViewState extends State<BottomPanelView> {
     }));
   }
 
-  Stream<UserObject> getUserObject(){
-    return Firestore.instance
-          .collection("normalUsers")
-          .document(id)
-          .get()
-          .then((snapshot) {
-            try{
+  // Stream<UserObject> getUserObject(){
+  //   return Firestore.instance
+  //         .collection("normalUsers")
+  //         .document(id)
+  //         .get()
+  //         .then((snapshot) {
+  //           try{
+  //             return UserObject.fromMap(snapshot.data);
+  //           }
+  //           catch (e){
+  //             print("exception here: $e");
+  //             return null;
+  //           }
+  //         }).asStream();
+  // }
 
-              return UserObject.fromSnapshot(snapshot);
-            }
-            catch (e){
-              print("exception here: $e");
-              return null;
-            }
-          }).asStream();
+  getUserObject(UserObjNotifier userObjNotifier) async{
+    QuerySnapshot snapshot = await Firestore.instance.collection('normalUsers/$id').getDocuments();
+
+    List<MultiInfoObject> _multiInfoList = [];
+
+    snapshot.documents.forEach((document) {
+      MultiInfoObject multiInfoObject = MultiInfoObject.fromMap(document.data);
+      _multiInfoList.add(multiInfoObject);
+    });
+    userObjNotifier.multiInfoList = _multiInfoList;
   }
 
   @override
   Widget build(BuildContext context) {
+    UserObjNotifier userObjNotifier = Provider.of<UserObjNotifier>(context);
     return Center(
-      child: Container(
-          padding: EdgeInsets.all(10.0),
-          child: StreamBuilder<UserObject>(
-              stream: getUserObject(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<UserObject> snapshot) {
-                if (snapshot.hasError) return Text("Error: ${snapshot.error}");
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return CircularProgressIndicator();
-                  default:
-                    {
-                      UserObject userObj = snapshot.data;
-                      return Text("${userObj.multiMap}");}
-                }
-              })),
+      child: ListView.separated(itemBuilder: (BuildContext context,int index){
+        return ListTile(
+          title: Text("${userObjNotifier.multiInfoList}"),
+        );
+      }, separatorBuilder: (BuildContext context,int index){
+        return Divider(
+          color: Colors.black,
+        );
+      }, itemCount: userObjNotifier.multiInfoList.length)
     );
   }
 }

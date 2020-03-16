@@ -3,18 +3,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sih_app/model/multiInfoObject.dart';
+import 'package:sih_app/model/multiInfoObject.dart';
 import 'infoObject.dart';
 
 class UserObject {
   // String _id;
 
-  List<dynamic> multiMap = List<dynamic>();
+  List<MultiInfoObject> multiMap = List<MultiInfoObject>();
   // List<InfoObject> infoObjs = List<InfoObject>();
   
   // MultiInfoObject _multiInfoObject;
   // int _count;
   // String id;
-  UserObject({this.multiMap});
+  // UserObject({this.multiMap});
   // UserObject.withId(this._id, this.userMap);
 
   // UserObject.fromSnapshot(DataSnapshot snapshot) {
@@ -22,8 +23,9 @@ class UserObject {
   //   this._count = snapshot.value['count'];
   // }
 
-  UserObject.fromSnapshot(DocumentSnapshot snapshot)
-    : multiMap = snapshot["multiInfoObject"];
+  UserObject.fromMap( Map<String,dynamic> data){
+    multiMap = data['multiInfoObject'];
+  }
 
   // Map<String, dynamic> toJson() {
   //   return {
@@ -33,14 +35,14 @@ class UserObject {
 
   // Getters
   // String get id => this._id;
-  List<dynamic> get multiMapFunc => this.multiMap;
+  // List<dynamic> get multiMapFunc => this.multiMap;
   // int get count => this._count;
 
   //Setters
-  set multiMapFunc(List<dynamic> infoObject) {
-    this.multiMap = infoObject;
-  }
-  // set count(int count){
+  // set multiMapFunc(List<dynamic> infoObject) {
+  //   this.multiMap = infoObject;
+  // }
+  // // set count(int count){
   //   this._count=count;
   // }
 }
