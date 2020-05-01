@@ -1,0 +1,748 @@
+
+class _LoginState extends State<Login> {
+  bool _userAuth=false;
+  bool _policeAuth=false;
+  String phoneNo;
+  String smsCode;
+  String verificationId;
+  int count=0;
+  final TextEditingController _phNoController = TextEditingController();
+   String _latestHardwareButtonEvent;
+
+  StreamSubscription<HardwareButtons.VolumeButtonEvent> _volumeButtonSubscription;
+  StreamSubscription<HardwareButtons.HomeButtonEvent> _homeButtonSubscription;
+  StreamSubscription<HardwareButtons.LockButtonEvent> _lockButtonSubscription;
+  
+   void initState() {
+    super.initState();
+    _volumeButtonSubscription = HardwareButtons.volumeButtonEvents.listen((event) {
+      if(event.toString().contains("VOLUME_DOWN")){
+        setState(() {
+        count++;
+      });
+      if(count==5){
+        Navigator.push(context,MaterialPageRoute(builder: (context) => Test(),),);
+        count=count%5;
+      }
+      }
+      
+    });
+    }
+    =============================================
+    Login
+    =============================================
+    import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:simapp/app/sign_in/Test.dart';
+import 'package:simapp/app/sign_in/Test2.dart';
+import 'package:simapp/app/sign_in/email_sign_in_form.dart';
+import 'package:simapp/common_widgets/form_submit_button.dart';
+import 'package:hardware_buttons/hardware_buttons.dart' as HardwareButtons;
+import 'dart:async';
+
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  bool _userAuth=false;
+  bool _policeAuth=false;
+  String phoneNo;
+  String smsCode;
+  String verificationId;
+  int count=0;
+  final TextEditingController _phNoController = TextEditingController();
+   
+  
+    
+  Future<void> verifyPhone() async {
+    final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
+      this.verificationId = verId;
+    };
+
+    final PhoneCodeSent smsCodeSent = (String verId, [int forceCodeResend]) {
+      this.verificationId = verId;
+      smsCodeDialog(context).then((value) {
+        print('Signed in');
+      });
+    };
+
+    final PhoneVerificationCompleted verifiedSuccess =(AuthCredential user) {
+      print('verified');
+    };
+
+    final PhoneVerificationFailed veriFailed = (AuthException exception) {
+      print('${exception.message}');
+    };
+
+    await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: _phNoController.text,
+        codeAutoRetrievalTimeout: autoRetrieve,
+        codeSent: smsCodeSent,
+        timeout: const Duration(seconds: 5),
+        verificationCompleted: verifiedSuccess,
+        verificationFailed: veriFailed
+        );
+  }
+
+  Future<bool> smsCodeDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            title: Text('Enter OTP'),
+            content: TextField(
+              onChanged: (value) {
+                this.smsCode = value;
+              },
+            ),
+            contentPadding: EdgeInsets.all(10.0),
+            actions: <Widget>[
+              new FlatButton(
+                child: Text('Done'),
+                onPressed: () {
+                  FirebaseAuth.instance.currentUser().then((user) {
+                    print(user.uid);
+                    if (user != null) {
+                      Navigator.of(context).pop();
+                      if(_userAuth==true){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => Test(),),);
+                            }
+                      else if(_policeAuth==true){
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => Test2(),),);
+                        }
+                    } else {
+                      Navigator.of(context).pop();
+                      signIn();
+                    }
+                  });
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  signIn() {
+    final AuthCredential credential = PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: smsCode);
+    FirebaseAuth.instance.signInWithCredential(credential).then((user){
+      if(_userAuth==true){
+        Navigator.push(context,MaterialPageRoute(builder: (context) => Test(),),);
+      }
+      else if(_policeAuth==true){
+         Navigator.push(context,MaterialPageRoute(builder: (context) => Test2(),),);
+      }
+      
+
+    }).catchError((e){
+      print('Auth Credential Error:$e');
+    });
+  }
+
+
+  Future checkIfUserOrPolice() async{
+    SearchUser("Users");
+    await verifyPhone();
+  }
+
+  void SearchUser (String userType) async{
+      
+      var User_details = new List();
+      await Firestore.instance.collection(userType)
+      .getDocuments()
+      .then((QuerySnapshot snapshot)
+      {
+    snapshot.documents.forEach((User) =>User_details.add(User.data));
+     }); 
+     print(User_details.elementAt(0));
+     var list=[];
+     var phNo;
+     var enteredphNo=_phNoController.text.toString();
+     for( int j =0 ; j <User_details.length ;j++){
+    
+     User_details.elementAt(j).forEach((k, v) => list.add(AadharUsers(v)));
+
+     for( var i =0 ; i <list.length ;i++) 
+     {
+      phNo=list[i].toString();
+        
+      if(phNo.contains(enteredphNo) && userType=="Users"){
+        setState(() {
+          _userAuth=true;
+          _policeAuth=false;
+        });
+        print(phNo);
+      }
+      else if(phNo.contains(enteredphNo) && userType=="PoliceUsers")
+      {
+        setState(() {
+          _policeAuth=true;
+          _userAuth=false;
+        });
+      }
+      else{
+        print('Not found');
+      };
+      phNo='';enteredphNo='';
+    } 
+    list=[];
+     }
+    }
+
+  @override
+  Widget build(BuildContext context) {
+    return 
+      Scaffold(
+        appBar: AppBar(
+          title:Text(
+            'Login',
+           textAlign: TextAlign.center,
+           ),
+        ),
+              body: Container(
+                margin: EdgeInsets.all(8.0),
+                              child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                                child: Card(
+                    child: Column(
+                      //crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        SizedBox(height: 8.0),
+                          TextField(
+                          controller: _phNoController,
+            decoration: InputDecoration(
+                      labelText: '  Enter 10 digit phone number',
+                      hintText: '  +91 ',
+            ),
+          ),
+           SizedBox(height: 8.0),
+        FormSubmitButton(
+          text: 'Login',
+          onPressed: (){
+            checkIfUserOrPolice();
+            //check collection in database if phNo entered above is there
+            //If user,set bool or if police set bool
+            //send bool back to email_sign_in_form and perform auth based on bool
+          },
+        ),
+        SizedBox(height: 16.0),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+      );
+  }
+}
+======================================
+form 
+===================================
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:simapp/app/sign_in/Test2.dart';
+import 'package:simapp/app/sign_in/UpdateUser.dart';
+import 'package:simapp/app/sign_in/Test.dart';
+import 'package:simapp/common_widgets/form_submit_button.dart';
+import 'package:simapp/app/sign_in/login.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+enum EmailSignInFormType { signIn, register }
+
+class EmailSignInForm extends StatefulWidget {
+
+  @override
+  _EmailSignInFormState createState() => _EmailSignInFormState();
+}
+
+class _EmailSignInFormState extends State<EmailSignInForm>  {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  bool _userAuth;
+  bool _policeAuth;
+  EmailSignInFormType _formType = EmailSignInFormType.signIn;
+   String phoneNo;
+  String smsCode;
+  String verificationId;
+
+  void _toggleFormType() {
+    setState(() {
+      _formType = _formType == EmailSignInFormType.register ?
+          EmailSignInFormType.register : EmailSignInFormType.register;
+    });
+    _emailController.clear();
+    _passwordController.clear();
+  }
+  
+  Future<void> verifyPhone() async {
+    final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
+      this.verificationId = verId;
+    };
+
+    final PhoneCodeSent smsCodeSent = (String verId, [int forceCodeResend]) {
+      this.verificationId = verId;
+      smsCodeDialog(context).then((value) {
+        print('Signed in');
+      });
+    };
+
+    final PhoneVerificationCompleted verifiedSuccess =(AuthCredential user) {
+      print('verified');
+    };
+
+    final PhoneVerificationFailed veriFailed = (AuthException exception) {
+      print('${exception.message}');
+    };
+
+    await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: this.phoneNo,
+        codeAutoRetrievalTimeout: autoRetrieve,
+        codeSent: smsCodeSent,
+        timeout: const Duration(seconds: 5),
+        verificationCompleted: verifiedSuccess,
+        verificationFailed: veriFailed
+        );
+  }
+
+  Future<bool> smsCodeDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            title: Text('Enter OTP'),
+            content: TextField(
+              onChanged: (value) {
+                this.smsCode = value;
+              },
+            ),
+            contentPadding: EdgeInsets.all(10.0),
+            actions: <Widget>[
+              new FlatButton(
+                child: Text('Done'),
+                onPressed: () {
+                  FirebaseAuth.instance.currentUser().then((user) {
+                    print(user.uid);
+                    if (user != null) {
+                      UpdateUser(user.uid,_emailController.text,_nameController.text,_userAuth,_policeAuth,phoneNo).updateUserData();
+                      Navigator.of(context).pop();
+                      if(_userAuth==true){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => Test(),),);
+                            }
+                      else if(_policeAuth==true){
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => Test2(),),);
+                        }
+                    } else {
+                      Navigator.of(context).pop();
+                      signIn();
+                    }
+                  });
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  signIn() {
+    final AuthCredential credential = PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: smsCode);
+    FirebaseAuth.instance.signInWithCredential(credential).then((user){
+      UpdateUser(user.user.uid,_emailController.text,_nameController.text,_userAuth,_policeAuth,phoneNo).updateUserData();
+      if(_userAuth==true){
+        Navigator.push(context,MaterialPageRoute(builder: (context) => Test(),),);
+      }
+      else if(_policeAuth==true){
+         Navigator.push(context,MaterialPageRoute(builder: (context) => Test2(),),);
+      }
+      
+
+    }).catchError((e){
+      print('Auth Credential Error:$e');
+    });
+  }
+
+  List<Widget> _buildChildren() {
+    final primaryText = _formType == EmailSignInFormType.signIn
+        ? 'Sign in'
+        : 'Create an account';
+    final secondaryText = _formType == EmailSignInFormType.signIn
+        ? 'Need an account? Register'
+        : 'Have an account? Sign in';
+
+    return [
+      SizedBox(height: 8.0),
+      TextField(
+        controller: _nameController,
+        decoration: InputDecoration(
+          labelText: 'Enter Name',
+        ),
+      ),
+      TextField(
+        controller: _emailController,
+        decoration: InputDecoration(
+          labelText: 'Enter 12 digit aadhar number',
+          hintText: 'XXXXXXXXXXXX',
+        ),
+      ),
+      SizedBox(height: 8.0),
+      TextField(
+        controller: _passwordController,
+        onChanged: (value){
+          this.phoneNo=value;
+        },
+        decoration: InputDecoration(
+          labelText: 'Enter 10 digit Phone Number',
+          hintText: '+91 ',
+        ),
+        obscureText: false,
+      ),
+      SizedBox(height: 8.0),
+      FormSubmitButton(
+        text: primaryText,
+        onPressed: _submit,
+      ),
+      SizedBox(height: 8.0),
+      FlatButton(
+        child: Text(secondaryText),
+        onPressed:(){ Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Login()),
+  );
+  },
+      ),
+    ];
+  }
+
+  void _submit() async{
+    
+String adhusers="adhusers";
+    String adhpolice="adhpolice";
+  SearchUser(adhusers);
+  SearchUser(adhpolice);
+  await verifyPhone();
+
+  print('email: ${_emailController.text}, password: ${_passwordController.text}');
+  }
+
+  
+    void SearchUser (String Adhuser) async{
+      
+      var Aadhar;
+      await Firestore.instance.collection(Adhuser)
+      .getDocuments()
+      .then((QuerySnapshot snapshot)
+      {
+    snapshot.documents.forEach((U_Aadhar) =>Aadhar=U_Aadhar.data);
+     }); 
+    var list=[];
+     var AdhNum;
+     var EnteredAdhNum;
+     Aadhar.forEach((k, v) => list.add(AadharUsers(v)));
+
+     for( var i =0 ; i <list.length ;i++) 
+     {
+      AdhNum=list[i].toString();
+      EnteredAdhNum=_emailController.text.toString();
+        
+      if(AdhNum.contains(EnteredAdhNum) && Adhuser=="adhusers"){
+        setState(() {
+          _userAuth=true;
+          _policeAuth=false;
+        });
+      }
+      else if(AdhNum.contains(EnteredAdhNum) && Adhuser=="adhpolice")
+      {
+        setState(() {
+          _policeAuth=true;
+          _userAuth=false;
+        });
+      }
+      else{
+        print('Not found');
+      };
+      AdhNum='';EnteredAdhNum='';
+    } 
+ 
+    }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: _buildChildren(),
+      ),
+    );
+  }
+}
+
+class AadharUsers {
+  
+  String v;
+  AadharUsers(this.v);
+  @override
+  String toString() {
+    return '{ ${this.v}}';
+  }
+}
+
+//
+use cases for auth
+1.invalid aadhar length
+2.invalid phone No
+3.Invalid credentials
+4.Invalid OTP
+5.For login, invalid phone no text length and phone number
+6.Invalid OTP
+//
+//login
+
+     for( var i =0 ; i <list.length ;i++) 
+     {
+      phNo=list[i].toString();
+        
+      if(phNo.contains(enteredphNo) && userType=="Users"){
+        setState(() {
+          _userAuth=true;
+          _policeAuth=false;
+        });
+        print(phNo);
+      }
+      else if(phNo.contains(enteredphNo) && userType=="PoliceUsers")
+      {
+        setState(() {
+          _policeAuth=true;
+          _userAuth=false;
+        });
+      }
+      else{
+        print('Not found');
+      };
+      phNo='';enteredphNo='';
+    } 
+      for( int j =0 ; j <User_details.length ;j++){
+    
+     User_details.elementAt(j).forEach((k, v) => list.add(AadharUsers(v)));
+
+    list=[];
+     }
+//
+//EmailSignInForm
+/*
+    print(list1[0]['name']);
+    var list=[];
+     
+     for(int k=0;k<list1.length;k++)
+     list1[k].forEach((k, v) => list.add(AadharUsers(v)));
+     for(int k=0;k<list.length;k++) print(list[k]);
+      print(list1[0]['name']);
+      for( var i =0 ; i <list.length ;i++) 
+     {
+      AdhNum=list[i].toString();
+      EnteredAdhNum=_aadharController.text.toString();
+        //print(AdhNum);print(EnteredAdhNum);
+      if(AdhNum.contains(EnteredAdhNum) && Adhuser==("adhusers")){
+        setState(() {
+          widget._userAuth=true;
+          widget._policeAuth=false;
+        });
+      }
+      else if(AdhNum.contains(EnteredAdhNum) && Adhuser==("adhpolice"))
+      {
+        setState(() {
+          widget._policeAuth=true;
+          widget._userAuth=false;
+        });
+      }
+      else{
+        print('Not found');
+      };
+      AdhNum='';EnteredAdhNum='';
+    } 
+      print("=====================================================================");
+      print(widget._userAuth);
+      print(widget._policeAuth); */
+//
+keytool -list -v -keystore C:\Users\USER\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android
+Alias name: androiddebugkey
+Creation date: Jan 17, 2020
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: C=US, O=Android, CN=Android Debug
+Issuer: C=US, O=Android, CN=Android Debug
+Serial number: 1
+Valid from: Fri Jan 17 14:55:01 IST 2020 until: Sun Jan 09 14:55:01 IST 2050
+Certificate fingerprints:
+         MD5:  63:94:9A:35:21:87:F8:7A:5C:6A:D0:FF:9C:16:2E:5B
+         SHA1: CE:45:74:8C:30:58:C9:7D:9B:78:B4:F6:E0:91:D3:97:FF:40:13:09
+         SHA256: 08:89:D4:24:0A:B1:73:2E:D7:81:ED:30:25:C9:74:10:00:25:FE:4A:4E:D6:6A:DB:B7:18:7F:86:EE:F7:52:26
+Signature algorithm name: SHA1withRSA
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 1
+
+Warning:
+The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore C:\Users\USER\.android\debug.keystore -destkeystore C:\Users\USER\.android\debug.keystore -deststoretype pkcs12".
+///
+AUTHENTICATE OLD
+///
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:instant_reporter/MainPages/Homepage.dart';
+import 'package:instant_reporter/app/sign_in/Test.dart';
+import 'package:instant_reporter/app/sign_in/Test2.dart';
+import 'package:instant_reporter/app/sign_in/UpdateUser.dart';
+import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
+import 'dart:async';
+
+class PhoneAuth extends StatefulWidget {
+    bool _userAuth;
+  bool _policeAuth;
+  bool _mode;
+  String _name;
+  String _phone;
+  PhoneAuth(this._userAuth,this._policeAuth,this._mode,this._phone,[this._name]);
+  @override
+  _PhoneAuthState createState() => _PhoneAuthState();
+}
+
+class _PhoneAuthState extends State<PhoneAuth> {
+String phoneNo;
+  String smsCode;
+  String verificationId;
+    Future<void> verifyPhone() async {
+    final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
+      this.verificationId = verId;
+    };
+
+    final PhoneCodeSent smsCodeSent = (String verId, [int forceCodeResend]) {
+      this.verificationId = verId;
+      smsCodeDialog(context).then((value) {
+        print('Signed in');
+      });
+    };
+
+    final PhoneVerificationCompleted verifiedSuccess =(AuthCredential user) {
+      print('verified');
+    };
+
+    final PhoneVerificationFailed veriFailed = (AuthException exception) {
+      print('${exception.message}');
+    };
+
+    await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: widget._phone,
+        codeAutoRetrievalTimeout: autoRetrieve,
+        codeSent: smsCodeSent,
+        timeout: const Duration(seconds: 15),
+        verificationCompleted: verifiedSuccess,
+        verificationFailed: veriFailed
+        );
+  }
+  Future<bool> smsCodeDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            title: Text('Enter OTP'),
+            content: TextField(
+              onChanged: (value) {
+                this.smsCode = value;
+              },
+            ),
+            contentPadding: EdgeInsets.all(10.0),
+            actions: <Widget>[
+              new FlatButton(
+                child: Text('Done'),
+                onPressed: () {
+                  FirebaseAuth.instance.currentUser().then((user) {
+                    if (user != null) {
+                      print(user);
+                    if(widget._mode==true) 
+                    UpdateUser(widget._name,widget._userAuth,widget._policeAuth,widget._phone).updateUserData();
+                      Navigator.of(context).pop();
+                      if(widget._userAuth==true){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => Test(),),);
+                            }
+                      else if(widget._policeAuth==true){
+                          Navigator.push(context,MaterialPageRoute(builder: (context) => Test2(),),);
+                        }
+                    } else {
+                      Navigator.of(context).pop();
+                      signIn();
+                    }
+                  });
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  void initState(){
+    super.initState();
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            await verifyPhone();
+          });
+    
+  }
+  
+  signIn() {
+    final AuthCredential credential = PhoneAuthProvider.getCredential(verificationId: verificationId, smsCode: smsCode);
+    FirebaseAuth.instance.signInWithCredential(credential).then((user){
+      if(widget._mode==true) 
+      UpdateUser(widget._name,widget._userAuth,widget._policeAuth,widget._phone).updateUserData();
+      if(widget._userAuth==true){
+        Navigator.push(context,MaterialPageRoute(builder: (context) =>Homepage()));
+      }
+      else if(widget._policeAuth==true){
+         Navigator.push(context,MaterialPageRoute(builder: (context) => Test2(),),);
+      }
+    }).catchError((e){
+      showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('ERROR'),
+            content: Text('Enter valid OTP'),
+            actions: <Widget>[
+              FlatButton(onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) =>EmailSignInPage()
+                  )
+                  ), child: Text('OK'),)
+            ],
+          );
+        }
+      );
+      //print('Auth Credential Error:$e');
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+        child: Text('Incoming OTP..',
+        style: Theme.of(context)
+        .textTheme
+        .display1
+        .copyWith(color: Colors.white)),
+      color: Colors.amber[600],
+    );
+  }
+}
+
+
+///

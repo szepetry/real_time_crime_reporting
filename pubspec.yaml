@@ -48,6 +48,9 @@ dependencies:
   url_launcher: ^5.4.1
   # for loading images in circles
   cached_network_image: ^2.0.0
+  firebase_auth: ^0.15.4
+
+  cloud_firestore: ^0.13.2+3
 
 dev_dependencies:
   flutter_test:

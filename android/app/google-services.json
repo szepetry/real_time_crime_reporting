@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "1004155442128",
-    "firebase_url": "https://instant-crime-reporting.firebaseio.com",
-    "project_id": "instant-crime-reporting",
-    "storage_bucket": "instant-crime-reporting.appspot.com"
+    "project_number": "754634287009",
+    "firebase_url": "https://crimereportingnew.firebaseio.com",
+    "project_id": "crimereportingnew",
+    "storage_bucket": "crimereportingnew.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1004155442128:android:71679e9bb11c2da12e1fd5",
+        "mobilesdk_app_id": "1:754634287009:android:aba2afc6d759f526bb4de0",
         "android_client_info": {
           "package_name": "com.renegades.miniproject"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1004155442128-2m59e07239ocv4i92mv7gi7ls5r40ln8.apps.googleusercontent.com",
+          "client_id": "754634287009-oaa1um11i8il6str711pq77lo2k4l0hi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.renegades.miniproject",
+            "certificate_hash": "ce45748c3058c97d9b78b4f6e091d397ff401309"
+          }
+        },
+        {
+          "client_id": "754634287009-bourggjnih6921folq3qim7jbcb7govp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCqve21EiEOxHmqUya7Bv-SSNMLGjQHDxo"
+          "current_key": "AIzaSyC00Pbq9sdZD6bZuRBDNCk-MQyvH-htvs0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1004155442128-2m59e07239ocv4i92mv7gi7ls5r40ln8.apps.googleusercontent.com",
+              "client_id": "754634287009-bourggjnih6921folq3qim7jbcb7govp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
