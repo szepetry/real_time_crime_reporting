@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "754634287009-2f95teka0smcf6rqls14k3isbsaahauk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.renegades.miniproject",
+            "certificate_hash": "8df8ef189ca95df3b510dd0f11e06c5b12ad8461"
+          }
+        },
+        {
           "client_id": "754634287009-oaa1um11i8il6str711pq77lo2k4l0hi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

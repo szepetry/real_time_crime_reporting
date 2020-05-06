@@ -2,20 +2,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
 
-class AuthService{
-  signOut() {
-    FirebaseAuth.instance.signOut();
-  }
+class LogOutService{
 
-  //SignIn
-  signIn(AuthCredential authCreds) async {
-    await FirebaseAuth.instance.signInWithCredential(authCreds);
-    
+  invokeAuthStream() {
+    return StreamBuilder(
+        stream: FirebaseAuth.instance.onAuthStateChanged,
+        builder: (BuildContext context, snapshot) {
+          if (!snapshot.hasData) {
+            Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EmailSignInPage()));
+          }
+        });
   }
-
-  signInWithOTP(smsCode, verId) async {
-    AuthCredential authCreds = PhoneAuthProvider.getCredential(
-        verificationId: verId, smsCode: smsCode);
-    await signIn(authCreds);
-  }
+  
 }
+

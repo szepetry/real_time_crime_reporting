@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/email_sign_in_form.dart';
 
@@ -20,7 +21,7 @@ class EmailSignInPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
-          child: EmailSignInForm(_userAuth,_policeAuth,_name),
+          child: EmailSignInForm(_userAuth,_policeAuth,_name)
         ),
       ),
       backgroundColor: Colors.grey[200],

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instant_reporter/app/sign_in/AuthService.dart';
 import 'package:instant_reporter/app/sign_in/Police.dart';
 import 'package:instant_reporter/app/sign_in/UpdateUser.dart';
 import 'package:instant_reporter/app/sign_in/User.dart';
@@ -11,13 +12,13 @@ class Authenticate extends StatefulWidget {
   bool _mode;
   String _name;
   String _phone;
-   Authenticate(this._userAuth,this._policeAuth,this._mode,this._phone,[this._name]);
+  String _password;
+   Authenticate(this._userAuth,this._policeAuth,this._mode,this._phone,this._password,[this._name]);
   @override
   _AuthenticateState createState() => _AuthenticateState();
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  final formKey = new GlobalKey<FormState>();
 
   String verificationId, smsCode;
   bool Reg=false;
@@ -83,9 +84,10 @@ Future<bool> smsCodeDialog(BuildContext context) {
   }
 
  signIn(AuthCredential authCreds) async {
+   
     await FirebaseAuth.instance.signInWithCredential(authCreds).then((user){
     if(widget._mode==true) 
-      UpdateUser(widget._name,widget._userAuth,widget._policeAuth,widget._phone).updateUserData();
+      UpdateUser(widget._name,widget._userAuth,widget._policeAuth,widget._phone,widget._password).updateUserData();
       if(widget._userAuth==true){
         Navigator.push(context,MaterialPageRoute(builder: (context) =>User(),),);
       }
@@ -116,17 +118,13 @@ Future<bool> smsCodeDialog(BuildContext context) {
     });
     
   }
-
-  signInWithOTP(smsCode, verId) async {
+ 
+  Future<void> signInWithOTP(smsCode, verId) async {
     AuthCredential authCreds = PhoneAuthProvider.getCredential(
         verificationId: verId, smsCode: smsCode);
     await signIn(authCreds);
   }
 
-  void Navigate(){
-    
-  }
-  
   @override
   Widget build(BuildContext context) {
         return Container(
