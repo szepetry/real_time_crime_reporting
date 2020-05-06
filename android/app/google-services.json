@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "754634287009-2f95teka0smcf6rqls14k3isbsaahauk.apps.googleusercontent.com",
+          "client_id": "754634287009-c2om1fv87i05g7v68d9fkrc72mqsccbi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.renegades.miniproject",
-            "certificate_hash": "8df8ef189ca95df3b510dd0f11e06c5b12ad8461"
+            "certificate_hash": "b89f385c79e015a17d8d127a4b483dab1c45fd74"
           }
         },
         {
