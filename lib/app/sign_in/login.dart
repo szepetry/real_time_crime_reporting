@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/AuthNew.dart';
+import 'package:instant_reporter/app/sign_in/PasswordHandle.dart';
 import 'package:instant_reporter/common_widgets/form_submit_button.dart';
 
 class Login extends StatefulWidget {
@@ -16,20 +17,17 @@ class _LoginState extends State<Login> {
   String verificationId;
   int count = 0;
   String name;
-  String _passwordDb;
-  String enteredPass;
+  String enteredPassword;
   final TextEditingController _phNoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> checkIfUserOrPolice() async {
-    enteredphoneNo = _phNoController.text.toString();
     Future<bool> validPass;
     await SearchUser("registered_user");
     await SearchUser("registered_police");
     if (_phNoController.text.toString().length == 10) {
       if (checkIfValidPhone()) {
-        await getPassword();
-        if (_passwordDb == enteredPass) {
+        if (await PasswordHandle(enteredPassword,'+91'+enteredphoneNo).checkIfPasswordExists()) {
           navigateToAuthenticate();
         } 
         else
@@ -85,19 +83,6 @@ class _LoginState extends State<Login> {
     return true;
   }
 
-  Future<void> getPassword() async {
-    var passwords;
-    String checkPassPhone = '+91' + enteredphoneNo;
-    await Firestore.instance
-        .collection('passwords')
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents
-          .forEach((PasswordList) => passwords = PasswordList.data);
-    });
-    enteredPass = _passwordController.text.toString();
-    _passwordDb = passwords['password$checkPassPhone'].toString();
-  }
 
   void showErrorMsg(BuildContext context, String msg, bool pop) {
     showDialog(
@@ -144,15 +129,20 @@ class _LoginState extends State<Login> {
                     labelText: '  Enter 10 digit phone number',
                     hintText: '  +91 ',
                   ),
+                  onChanged: (value){
+                    this.enteredphoneNo=value;
+                  },
                 ),
                 SizedBox(height: 8.0),
                 TextField(
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: ' Enter Password',
-                    hintText: '  +91 ',
                   ),
                   obscureText: true,
+                  onChanged: (value){
+                    this.enteredPassword=value;
+                  },
                 ),
                 SizedBox(height: 8.0),
                 FormSubmitButton(

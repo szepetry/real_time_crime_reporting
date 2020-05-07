@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/AuthNew.dart';
+import 'package:instant_reporter/app/sign_in/PasswordHandle.dart';
 import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
 import 'package:instant_reporter/common_widgets/form_submit_button.dart';
 import 'package:instant_reporter/app/sign_in/login.dart';
@@ -26,7 +27,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String phoneNo;
   String smsCode;
   String verificationId;
-
+  String _enteredPassword;
   void _toggleFormType() {
     _aadharController.clear();
     _phoneController.clear();
@@ -42,6 +43,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           hintText: 'XXXXXXXXXXXX',
           errorText: null,
         ),
+        maxLength: 12,
       ),
       SizedBox(height: 8.0),
       TextField(
@@ -55,6 +57,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           errorText: null,
         ),
         obscureText: false,
+        maxLength: 10,
       ),
       SizedBox(height: 8.0),
       TextField(
@@ -64,6 +67,9 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           errorText: null,
         ),
         obscureText: true,
+        onChanged: (value){
+          this._enteredPassword=value;
+        },
       ),
       SizedBox(height: 8.0),
       TextField(
@@ -103,18 +109,23 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   Future<void> _submit() async {
     await SearchUser("user_aadhar");
     await SearchUser("police_aadhar");
-    if (checkIfValid()) {
+    
+    if (checkIfAadharExists()) {
       if (validatePasswords()) {
+        if(!await PasswordHandle(_enteredPassword,'+91'+phoneNo).checkIfPasswordExists()){
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => Authenticate(
                     widget._userAuth,
                     widget._policeAuth,
-                    true,
+                    true,//meaning registeration of new user not login
                     '+91' + this.phoneNo,
                     _passwordController.text.toString(),
                     widget._name)));
+        }
+        else
+         showErrorMsg(context, 'Passwords Already Taken..Enter new Password', false);
       } else
         showErrorMsg(context, 'Passwords do not match', false);
     } else
@@ -178,7 +189,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     }
   }
 
-  bool checkIfValid() {
+  bool checkIfAadharExists() {
     if (widget._userAuth == false && widget._policeAuth == false) {
       return false;
     }
@@ -199,10 +210,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
   bool validatePasswords() {
     bool enabled = false;
-    int passwordLength = _passwordController.text.toString().length;
-    int rePasswordLength = _rePasswordController.text.toString().length;
+    String password = _passwordController.text.toString();
+    String rePassword = _rePasswordController.text.toString();
     setState(() {
-      (passwordLength == rePasswordLength) ? enabled = true : enabled = false;
+      (password == rePassword) ? enabled = true : enabled = false;
     });
     return enabled;
   }

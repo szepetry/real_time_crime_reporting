@@ -9,7 +9,7 @@ import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
 class Authenticate extends StatefulWidget {
       bool _userAuth;
   bool _policeAuth;
-  bool _mode;
+  bool _mode;//true:register//false:login
   String _name;
   String _phone;
   String _password;
@@ -86,16 +86,16 @@ Future<bool> smsCodeDialog(BuildContext context) {
  signIn(AuthCredential authCreds) async {
    
     await FirebaseAuth.instance.signInWithCredential(authCreds).then((user){
+      String uid= user.user.uid;
     if(widget._mode==true) 
-      UpdateUser(widget._name,widget._userAuth,widget._policeAuth,widget._phone,widget._password).updateUserData();
+      UpdateUser(uid,widget._name,widget._userAuth,widget._policeAuth,widget._phone,widget._password).updateUserData();
       if(widget._userAuth==true){
-        Navigator.push(context,MaterialPageRoute(builder: (context) =>User(),),);
+        Navigator.push(context,MaterialPageRoute(builder: (context) =>User(uid),),);
       }
       else if(widget._policeAuth==true){
-         Navigator.push(context,MaterialPageRoute(builder: (context) => Police(),),);
+         Navigator.push(context,MaterialPageRoute(builder: (context) => Police(uid),),);
       }
     }).catchError((e){
-      print('booooooooooooom');
       print(e);
       showDialog(
         context: context,
