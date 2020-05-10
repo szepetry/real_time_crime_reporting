@@ -24,11 +24,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   # For the bottom slider
-  sliding_up_panel: ^1.0.0
+  sliding_up_panel: ^1.0.2
   # For google maps integration
-  google_maps_flutter: ^0.5.21+17  
+  google_maps_flutter: ^0.5.27+1
   # Geolocation
-  geolocator: ^5.2.0
+  geolocator: ^5.3.1
 
   location: ^2.3.5
   # Connecting flutter maps with firebase
@@ -37,9 +37,9 @@ dependencies:
   #transparent image import
   transparent_image: ^1.0.0
   # datebase
-  firebase_database: ^3.1.1
+  firebase_database: ^3.1.5
   #firebase core
-  firebase_core: ^0.4.4
+  firebase_core: ^0.4.4+3
   #firebase cloud
   firebase_storage: ^3.1.1
   #image/video picker
@@ -48,9 +48,9 @@ dependencies:
   url_launcher: ^5.4.1
   # for loading images in circles
   cached_network_image: ^2.0.0
-  firebase_auth: ^0.15.4
+  firebase_auth: ^0.16.0
 
-  cloud_firestore: ^0.13.2+3
+  cloud_firestore: ^0.13.5
 
 dev_dependencies:
   flutter_test:

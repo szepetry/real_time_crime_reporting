@@ -11,12 +11,12 @@ import 'package:instant_reporter/MainPages/BottomPanelView.dart';
 // import 'package:flutter/services.dart';
 
 
-class Homepage extends StatefulWidget {
+class HomepageUser extends StatefulWidget {
   @override
-  _HomepageState createState() => _HomepageState();
+  _HomepageUserState createState() => _HomepageUserState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _HomepageUserState extends State<HomepageUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

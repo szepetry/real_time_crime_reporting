@@ -20,16 +20,18 @@ class ReportForm extends StatefulWidget {
   ReportForm(this.id);
 
   @override
-  _ReportFormState createState() => _ReportFormState();
+  _ReportFormState createState() => _ReportFormState(id);
 }
 
 class _ReportFormState extends State<ReportForm> {
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
   bool loadState = false;
+  String id;
+  _ReportFormState(this.id);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-          child: Material(
+      child: Material(
         type: MaterialType.transparency,
         child: Container(
           //Change the form color here.
@@ -96,12 +98,13 @@ class _ReportFormState extends State<ReportForm> {
                               return Center(
                                 child: Stack(
                                   children: <Widget>[
-                                    AddReportForm(result),
+                                    AddReportForm(result, id),
                                   ],
                                 ),
                               );
                             }),
                           );
+                          print("Result from report Form: ${result.toString()}");
                         },
                         backgroundColor: Colors.deepOrange,
                         label: Text("Add to the report"),

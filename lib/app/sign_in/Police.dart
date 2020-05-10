@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/AuthNew.dart';
 import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
+import '../../MainPages/MainBodyStack.dart';
 
 class Police extends StatefulWidget {
   String uid;
   Police(this.uid); //use this uid here
-
   @override
   _PoliceState createState() => _PoliceState();
 }
@@ -22,7 +22,9 @@ class _PoliceState extends State<Police> {
         //il delete useless files later 
   }
 
+  @override
   void initState() {
+    super.initState();
     print(widget.uid);
   }
 

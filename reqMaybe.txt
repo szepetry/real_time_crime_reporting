@@ -1,3 +1,138 @@
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:flutter/material.dart';
+import 'package:instant_reporter/Forms/AddReportForm.dart';
+import 'package:instant_reporter/Forms/ReportForm.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:instant_reporter/MainPages/FireMap.dart';
+import 'package:instant_reporter/MainPages/MainBodyStack.dart';
+import '../model/infoObject.dart';
+import 'dart:core';
+import 'package:firebase_database/firebase_database.dart';
+
+bool result = false;
+
+class ReportForm extends StatefulWidget {
+  final String id;
+  ReportForm(this.id);
+
+  @override
+  _ReportFormState createState() => _ReportFormState(id);
+}
+
+class _ReportFormState extends State<ReportForm> {
+  DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
+  bool loadState = false;
+  String id;
+  _ReportFormState(this.id);
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+          child: Material(
+        type: MaterialType.transparency,
+        child: Container(
+          //Change the form color here.
+          color: Colors.white,
+          child: Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Align(
+                      child: Container(
+                          child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Text(
+                                "Report page",
+                                style: TextStyle(fontSize: 40.0),
+                              ))),
+                      alignment: Alignment.topCenter),
+                  Padding(padding: EdgeInsets.all(1.0)),
+                  // Divider(),
+                  Expanded(
+                    child: Container(
+                      child: FirebaseAnimatedList(
+                          query: _databaseReference,
+                          itemBuilder: (BuildContext context,
+                              DataSnapshot snapshot,
+                              Animation<double> animation,
+                              int index1) {
+                            // Map<dynamic,dynamic> tempMap = snapshot.value['infoObject'];
+                            return Column(
+                              children: <Widget>[
+                                Card(
+                                  // color: Colors.white30,
+                                  elevation: 2.0,
+                                  child: Container(
+                                    // margin: EdgeInsets.all(10.0),
+                                    child: Column(
+                                      children: <Widget>[
+                                        for (int index2 = 0;
+                                            index2 <
+                                                snapshot
+                                                    .value['infoObject'].length;
+                                            index2++)
+                                          eachObject(snapshot, index2),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            );
+                          }),
+                    ),
+                  )
+                ],
+              ),
+              Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: FloatingActionButton.extended(
+                        onPressed: () async {
+                          result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return Center(
+                                child: Stack(
+                                  children: <Widget>[
+                                    AddReportForm(result,id),
+                                  ],
+                                ),
+                              );
+                            }),
+                          );
+                        },
+                        backgroundColor: Colors.deepOrange,
+                        label: Text("Add to the report"),
+                      ))),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Column eachObject(DataSnapshot snapshot, int index2) {
+    return Column(
+      children: <Widget>[
+        Text("Location: ${snapshot.value['infoObject'][index2]['location']}}"),
+        Text(
+            "Description: ${snapshot.value['infoObject'][index2]['description']}"),
+        Text(
+            "Image: ${snapshot.value['infoObject'][index2]['urlAttachmentPhoto']}"),
+        Text(
+            "Video: ${snapshot.value['infoObject'][index2]['urlAttachmentVideo']}"),
+        Divider(),
+      ],
+    );
+  }
+}
+
+-----------------
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -8,7 +143,6 @@ import 'package:path/path.dart';
 import 'package:instant_reporter/model/infoObject.dart';
 import 'package:instant_reporter/model/multiInfoObject.dart';
 import '../MainPages/FireMap.dart';
-import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,20 +157,19 @@ MultiInfoObject _multiInfoObject;
 class AddReportForm extends StatefulWidget {
   bool firstLoad;
   final String id;
-  AddReportForm(this.firstLoad, this.id);
+  AddReportForm(this.firstLoad,this.id);
 
   @override
   _AddReportFormState createState() {
-    print("hello first load: " + firstLoad.toString());
-    return _AddReportFormState(firstLoad, id);
+    print("hello" + firstLoad.toString());
+    return _AddReportFormState(firstLoad,id);
   }
 }
 
 class _AddReportFormState extends State<AddReportForm> {
-  Timer _timer;
   bool firstLoad;
   String id;
-  _AddReportFormState(this.firstLoad, this.id);
+  _AddReportFormState(this.firstLoad,this.id);
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
   String _fName = '';
@@ -50,26 +183,33 @@ class _AddReportFormState extends State<AddReportForm> {
   String loc;
   String _description = '';
 
+
   @override
   void initState() {
     super.initState();
     // infoObjs.clear();
-    print("hello first load init state: " + firstLoad.toString());
+    print("hello" + firstLoad.toString());
     _getLocation();
     _databaseReference.child(id).onValue.listen((event) {
       count = event.snapshot.value['count'];
-      print("Count value init: " + count.toString());
+      print("Count value: " + count.toString());
     });
     // if(count!=0){
     //   firstLoad=true;
     // }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    // _timer.cancel();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   int len = infoObjs.length;
+
+  //   // for (int index3 = 0; index3 < len; index3++)
+  //     infoObjs.clear();
+
+  //   print("Disposed" + infoObjs.toString());
+  //   len = 0;
+  // }
 
   Future<void> _getLocation() async {
     Position position = await Geolocator()
@@ -84,8 +224,8 @@ class _AddReportFormState extends State<AddReportForm> {
     try {
       _databaseReference.child(id).once().then((DataSnapshot snapshot) {
         // count = 0;
-        print("Firstload in getReport: " + this.firstLoad.toString());
-        print("count value getReport: " + count.toString());
+        print(this.firstLoad);
+        print("count value: " + count.toString());
         if (count >= 0) {
           // count = event.snapshot.value['count'];
           for (int index = 0; index < snapshot.value['count']; index++) {
@@ -101,7 +241,6 @@ class _AddReportFormState extends State<AddReportForm> {
 
   saveReport(BuildContext context) async {
     try {
-      // if(count)
       bool loadStat = this.firstLoad;
       print("save report state check: $loadStat");
       if (_fName.isNotEmpty ||
@@ -116,8 +255,10 @@ class _AddReportFormState extends State<AddReportForm> {
         // infoObjs.clear();
         print("1st $count");
 
+        navigateToLastScreen(context);
+
         if (loadStat == false) {
-          print("1st load count: $count");
+          print("1st $count");
 
           //TODO: make 0 -> 1 here
           // if (count >= 1) {
@@ -134,7 +275,9 @@ class _AddReportFormState extends State<AddReportForm> {
         print(_urlAttachmentPhoto);
         print(_urlAttachmentVideo);
 
-        navigateToLastScreen(context, loadStat);
+        //Sleep statement
+        print("sleeping for 2 now\n");
+        sleep(Duration(seconds: 2));
 
         InfoObject infoObject = InfoObject(
             this._fName,
@@ -149,16 +292,8 @@ class _AddReportFormState extends State<AddReportForm> {
 
         infoObjs.add(infoObject.toJson());
         _multiInfoObject = MultiInfoObject(infoObjs, count);
-        // //Sleep statement
-        // print("sleeping for 2 now\n");
-        // sleep(Duration(seconds: 2));
-        _timer = Timer(Duration(seconds: 2),() async {
-          await _databaseReference.child("$id").set(_multiInfoObject.toJson());
+        await _databaseReference.child("$id").set(_multiInfoObject.toJson());
           print("The object sent: $infoObjs");
-        }); 
-
-        // await _databaseReference.child("$id").set(_multiInfoObject.toJson());
-        // print("The object sent: $infoObjs");
 
         // infoObjs.clear();
       }
@@ -362,7 +497,7 @@ class _AddReportFormState extends State<AddReportForm> {
 
   void uploadImage(String fileName, File file) {
     StorageReference _storageReference =
-        FirebaseStorage.instance.ref().child("{$id}/images/{$fileName}");
+        FirebaseStorage.instance.ref().child(fileName);
     _storageReference.putFile(file).onComplete.then((firebaseFile) async {
       var downloadUrl = await firebaseFile.ref.getDownloadURL();
       setState(() {
@@ -373,7 +508,7 @@ class _AddReportFormState extends State<AddReportForm> {
 
   void uploadVideo(String fileName, File file) {
     StorageReference _storageReference =
-        FirebaseStorage.instance.ref().child("{$id}/videos/{$fileName}");
+        FirebaseStorage.instance.ref().child(fileName);
     _storageReference.putFile(file).onComplete.then((firebaseFile) async {
       var downloadUrl = await firebaseFile.ref.getDownloadURL();
       setState(() {
@@ -382,7 +517,7 @@ class _AddReportFormState extends State<AddReportForm> {
     });
   }
 
-  navigateToLastScreen(BuildContext context, bool loadStat) {
-    Navigator.pop(context, loadStat);
+  navigateToLastScreen(BuildContext context) {
+    Navigator.pop(context, true);
   }
 }
