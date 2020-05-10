@@ -13,6 +13,8 @@ Position _currentPosition;
 
 //TODO:Main body of the application
 class MainBodyStack extends StatefulWidget {
+  final String uid;
+  MainBodyStack(this.uid);
   @override
   _MainBodyStackState createState() => _MainBodyStackState();
 }

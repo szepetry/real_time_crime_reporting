@@ -13,9 +13,8 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 
 //TODO: Make it ask for permissions properly
 class BottomPanelView extends StatefulWidget {
-  const BottomPanelView({
-    Key key,
-  }) : super(key: key);
+  final String uid;
+  BottomPanelView(this.uid);
 
   @override
   _BottomPanelViewState createState() => _BottomPanelViewState();
@@ -27,7 +26,6 @@ class _BottomPanelViewState extends State<BottomPanelView> {
   //Takes the app to report form
   navigateToReportForm(id) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      //TODO: Add id
       return ReportForm(id);
     }));
   }
@@ -35,49 +33,51 @@ class _BottomPanelViewState extends State<BottomPanelView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+        margin: EdgeInsets.only(top: 20.0),
         child: FirebaseAnimatedList(
             query: _databaseReference,
             itemBuilder: (BuildContext context, DataSnapshot snapshot,
                 Animation<double> animation, int index) {
-              return GestureDetector(
-                onTap:(){
-                  navigateToReportForm("123456");
-                },
-                child: Card(
-                  color: Colors.grey,
-                  elevation: 2.0,
-                  child: Container(
-                      margin: EdgeInsets.all(10.0),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            width: 50.0,
-                            height: 50.0,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              // image: DecorationImage(
-                              //   fit: BoxFit.cover,
-                              //   image: snapshot.value['photoUrl'] == "empty"
-                              //       ? AssetImage("assets/logo.png")
-                              //       : NetworkImage(snapshot.value['photoUrl']),
+              if (snapshot.key == widget.uid) //TODO: Janky way still
+                return GestureDetector(
+                  onTap: () {
+                    navigateToReportForm(widget.uid);
+                  },
+                  child: Card(
+                    color: Colors.grey,
+                    elevation: 2.0,
+                    child: Container(
+                        margin: EdgeInsets.all(10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // image: DecorationImage(
+                                //   fit: BoxFit.cover,
+                                //   image: snapshot.value['photoUrl'] == "empty"
+                                //       ? AssetImage("assets/logo.png")
+                                //       : NetworkImage(snapshot.value['photoUrl']),
+                              ),
                             ),
-                          ),
-                          // ),
-                          Container(
-                            margin: EdgeInsets.all(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                    "${snapshot.key}")
-                              ],
-                            ),
-                          )
-                        ],
-                      )),
-                ),
-              );
+                            // ),
+                            Container(
+                              margin: EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text("${snapshot.key}"),
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                );
+                else
+                  return Container();
             }));
   }
 }

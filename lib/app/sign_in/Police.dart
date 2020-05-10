@@ -16,10 +16,10 @@ class _PoliceState extends State<Police> {
     await FirebaseAuth.instance.signOut();
     /*  Navigator.push(
         context, MaterialPageRoute(builder: (context) => EmailSignInPage())); */
-        //just uncomment the above if u wnt signout to work 
-        //copy same code in user.dart if u want signout there
-        //need to make more changes for sign out..uid u can use for now
-        //il delete useless files later 
+    //just uncomment the above if u wnt signout to work
+    //copy same code in user.dart if u want signout there
+    //need to make more changes for sign out..uid u can use for now
+    //il delete useless files later
   }
 
   @override

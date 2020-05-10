@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/AuthService.dart';
 import 'package:instant_reporter/app/sign_in/Police.dart';
+import '../../MainPages/HomepageUser.dart';
+import '../../MainPages/HomepagePolice.dart';
 import 'package:instant_reporter/app/sign_in/UpdateUser.dart';
 import 'package:instant_reporter/app/sign_in/User.dart';
 import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
@@ -90,10 +92,10 @@ Future<bool> smsCodeDialog(BuildContext context) {
     if(widget._mode==true) 
       UpdateUser(uid,widget._name,widget._userAuth,widget._policeAuth,widget._phone,widget._password).updateUserData();
       if(widget._userAuth==true){
-        Navigator.push(context,MaterialPageRoute(builder: (context) =>User(uid),),);
+        Navigator.push(context,MaterialPageRoute(builder: (context) =>HomepageUser(uid),),);
       }
       else if(widget._policeAuth==true){
-         Navigator.push(context,MaterialPageRoute(builder: (context) => Police(uid),),);
+         Navigator.push(context,MaterialPageRoute(builder: (context) => HomepagePolice(uid),),);
       }
     }).catchError((e){
       print(e);

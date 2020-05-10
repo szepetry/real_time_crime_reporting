@@ -10,14 +10,10 @@ class User extends StatefulWidget {
 }
 
 class _UserState extends State<User> {
-  @override
-  void initState() {
-    super.initState();
-    print(widget.uid);
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Container(child: HomepageUser())); //user code goes here
+    return Container(
+        child: Container(child: HomepageUser(widget.uid))); //user code goes here
   }
 }
