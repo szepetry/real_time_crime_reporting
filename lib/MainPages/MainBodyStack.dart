@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/MainPages/FireMap.dart';
+import 'Buttons/ProfileMenu.dart';
 
 Marker marker;
 
@@ -36,6 +37,15 @@ class _MainBodyStackState extends State<MainBodyStack> {
     });
   }
 
+  void choiceAction(String choice){
+    if(choice == ProfileMenu.signout){
+      print("Sign out");
+    }
+    // else if(){
+    // Add more functions like so.
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -43,10 +53,18 @@ class _MainBodyStackState extends State<MainBodyStack> {
         FireMap(),
         Align(
           alignment: Alignment.topRight,
-          child: IconButton(
+          child: PopupMenuButton<String>(
             tooltip: "Profile",
+            onSelected: choiceAction,
             icon: Icon(Icons.person),
-            onPressed: () {},
+            itemBuilder: (BuildContext context) {
+              return ProfileMenu.choices.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            }
           ),
         ),
         Positioned(
