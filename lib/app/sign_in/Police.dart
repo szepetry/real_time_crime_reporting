@@ -1,43 +1,28 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:instant_reporter/app/sign_in/AuthNew.dart';
-import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
+import 'package:instant_reporter/MainPages/HomepagePolice.dart';
+import 'package:instant_reporter/app/sign_in/UserDetails.dart';
+import 'package:move_to_background/move_to_background.dart';
+import 'package:provider/provider.dart';
 
-class Police extends StatefulWidget {
+class Police extends StatelessWidget {
   String uid;
-  Police(this.uid); //use this uid here
-
-  @override
-  _PoliceState createState() => _PoliceState();
-}
-
-class _PoliceState extends State<Police> {
-  Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
-    /*  Navigator.push(
-        context, MaterialPageRoute(builder: (context) => EmailSignInPage())); */
-        //just uncomment the above if u wnt signout to work 
-        //copy same code in user.dart if u want signout there
-        //need to make more changes for sign out..uid u can use for now
-        //il delete useless files later 
-  }
-
-  void initState() {
-    print(widget.uid);
-  }
+  bool _isPolice;
+  Police(this.uid, this._isPolice);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Hey I yum police')),
-      body: Container(
-        child: RaisedButton(
-          onPressed: () {
-            signOut();
-          },
-          child: Text('Sign Out', style: TextStyle(fontSize: 10)),
+    return SafeArea(
+      child: WillPopScope(
+        onWillPop: () async {
+          MoveToBackground.moveTaskToBack();
+          return false;
+        },
+        child: Scaffold(
+          body: Provider<UserDetails>(
+            create: (context) => UserDetails(uid: uid, isPolice: _isPolice),
+            child: HomepagePolice(),
+          ),
         ),
-        //police code goes here
       ),
     );
   }

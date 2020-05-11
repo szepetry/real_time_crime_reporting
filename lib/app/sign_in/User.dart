@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:instant_reporter/MainPages/Homepage.dart';
+import 'package:instant_reporter/MainPages/HomepageUser.dart';
+import 'package:instant_reporter/app/sign_in/UserDetails.dart';
+import 'package:move_to_background/move_to_background.dart';
+import 'package:provider/provider.dart';
 
 class User extends StatefulWidget {
   String uid;
-  User(this.uid);//use this uid here
-
+  bool _isPolice;
+  User(this.uid,this._isPolice);
   @override
   _UserState createState() => _UserState();
 }
+
 class _UserState extends State<User> {
-  void initState(){
-  print(widget.uid);
-}
+  
   @override
   Widget build(BuildContext context) {
-    return Container(child: Container(child: Homepage()));//user code goes here
+    return SafeArea(
+          child: WillPopScope(
+                       onWillPop: () async {
+        MoveToBackground.moveTaskToBack();
+        return false;
+                       },
+                      child: Scaffold(
+                      body:Provider<UserDetails>(
+                        create:(context)=>UserDetails(uid:widget.uid,isPolice:widget._isPolice),
+                        child: HomepageUser(),),),
+          ),
+                  );
+    
   }
 }

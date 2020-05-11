@@ -20,16 +20,18 @@ class ReportForm extends StatefulWidget {
   ReportForm(this.id);
 
   @override
-  _ReportFormState createState() => _ReportFormState();
+  _ReportFormState createState() => _ReportFormState(id);
 }
 
 class _ReportFormState extends State<ReportForm> {
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
   bool loadState = false;
+  String id;
+  _ReportFormState(this.id);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-          child: Material(
+      child: Material(
         type: MaterialType.transparency,
         child: Container(
           //Change the form color here.
@@ -52,7 +54,7 @@ class _ReportFormState extends State<ReportForm> {
                   Expanded(
                     child: Container(
                       child: FirebaseAnimatedList(
-                          query: _databaseReference,
+                          query: _databaseReference.child(id+"/infoObject"),
                           itemBuilder: (BuildContext context,
                               DataSnapshot snapshot,
                               Animation<double> animation,
@@ -67,12 +69,7 @@ class _ReportFormState extends State<ReportForm> {
                                     // margin: EdgeInsets.all(10.0),
                                     child: Column(
                                       children: <Widget>[
-                                        for (int index2 = 0;
-                                            index2 <
-                                                snapshot
-                                                    .value['infoObject'].length;
-                                            index2++)
-                                          eachObject(snapshot, index2),
+                                          eachObject(snapshot),
                                       ],
                                     ),
                                   ),
@@ -96,12 +93,13 @@ class _ReportFormState extends State<ReportForm> {
                               return Center(
                                 child: Stack(
                                   children: <Widget>[
-                                    AddReportForm(result),
+                                    AddReportForm(result, id),
                                   ],
                                 ),
                               );
                             }),
                           );
+                          print("Result from report Form: ${result.toString()}");
                         },
                         backgroundColor: Colors.deepOrange,
                         label: Text("Add to the report"),
@@ -113,16 +111,16 @@ class _ReportFormState extends State<ReportForm> {
     );
   }
 
-  Column eachObject(DataSnapshot snapshot, int index2) {
+  Column eachObject(DataSnapshot snapshot) {
     return Column(
       children: <Widget>[
-        Text("Location: ${snapshot.value['infoObject'][index2]['location']}}"),
+        Text("Location: ${snapshot.value['location']}}"),
         Text(
-            "Description: ${snapshot.value['infoObject'][index2]['description']}"),
+            "Description: ${snapshot.value['description']}"),
         Text(
-            "Image: ${snapshot.value['infoObject'][index2]['urlAttachmentPhoto']}"),
+            "Image: ${snapshot.value['urlAttachmentPhoto']}"),
         Text(
-            "Video: ${snapshot.value['infoObject'][index2]['urlAttachmentVideo']}"),
+            "Video: ${snapshot.value['urlAttachmentVideo']}"),
         Divider(),
       ],
     );

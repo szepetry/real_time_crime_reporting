@@ -8,6 +8,7 @@ import 'package:path/path.dart';
 import 'package:instant_reporter/model/infoObject.dart';
 import 'package:instant_reporter/model/multiInfoObject.dart';
 import '../MainPages/FireMap.dart';
+import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -21,18 +22,21 @@ MultiInfoObject _multiInfoObject;
 
 class AddReportForm extends StatefulWidget {
   bool firstLoad;
-  AddReportForm(this.firstLoad);
+  final String id;
+  AddReportForm(this.firstLoad, this.id);
 
   @override
   _AddReportFormState createState() {
-    print("hello" + firstLoad.toString());
-    return _AddReportFormState(firstLoad);
+    print("hello first load: " + firstLoad.toString());
+    return _AddReportFormState(firstLoad, id);
   }
 }
 
 class _AddReportFormState extends State<AddReportForm> {
+  Timer _timer;
   bool firstLoad;
-  _AddReportFormState(this.firstLoad);
+  String id;
+  _AddReportFormState(this.firstLoad, this.id);
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
   String _fName = '';
@@ -46,34 +50,26 @@ class _AddReportFormState extends State<AddReportForm> {
   String loc;
   String _description = '';
 
-  String id = "1234";
-
   @override
   void initState() {
     super.initState();
     // infoObjs.clear();
-    print("hello" + firstLoad.toString());
+    print("hello first load init state: " + firstLoad.toString());
     _getLocation();
     _databaseReference.child(id).onValue.listen((event) {
       count = event.snapshot.value['count'];
-      print("Count value: " + count.toString());
+      print("Count value init: " + count.toString());
     });
     // if(count!=0){
     //   firstLoad=true;
     // }
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   int len = infoObjs.length;
-
-  //   // for (int index3 = 0; index3 < len; index3++)
-  //     infoObjs.clear();
-
-  //   print("Disposed" + infoObjs.toString());
-  //   len = 0;
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+    // _timer.cancel();
+  }
 
   Future<void> _getLocation() async {
     Position position = await Geolocator()
@@ -88,8 +84,8 @@ class _AddReportFormState extends State<AddReportForm> {
     try {
       _databaseReference.child(id).once().then((DataSnapshot snapshot) {
         // count = 0;
-        print(this.firstLoad);
-        print("count value: " + count.toString());
+        print("Firstload in getReport: " + this.firstLoad.toString());
+        print("count value getReport: " + count.toString());
         if (count >= 0) {
           // count = event.snapshot.value['count'];
           for (int index = 0; index < snapshot.value['count']; index++) {
@@ -105,6 +101,7 @@ class _AddReportFormState extends State<AddReportForm> {
 
   saveReport(BuildContext context) async {
     try {
+      // if(count)
       bool loadStat = this.firstLoad;
       print("save report state check: $loadStat");
       if (_fName.isNotEmpty ||
@@ -119,10 +116,8 @@ class _AddReportFormState extends State<AddReportForm> {
         // infoObjs.clear();
         print("1st $count");
 
-        navigateToLastScreen(context);
-
         if (loadStat == false) {
-          print("1st $count");
+          print("1st load count: $count");
 
           //TODO: make 0 -> 1 here
           // if (count >= 1) {
@@ -139,9 +134,7 @@ class _AddReportFormState extends State<AddReportForm> {
         print(_urlAttachmentPhoto);
         print(_urlAttachmentVideo);
 
-        //Sleep statement
-        print("sleeping for 2 now\n");
-        sleep(Duration(seconds: 2));
+        navigateToLastScreen(context, loadStat);
 
         InfoObject infoObject = InfoObject(
             this._fName,
@@ -156,8 +149,16 @@ class _AddReportFormState extends State<AddReportForm> {
 
         infoObjs.add(infoObject.toJson());
         _multiInfoObject = MultiInfoObject(infoObjs, count);
-        await _databaseReference.child("$id").set(_multiInfoObject.toJson());
+        // //Sleep statement
+        // print("sleeping for 2 now\n");
+        // sleep(Duration(seconds: 2));
+        _timer = Timer(Duration(seconds: 2),() async {
+          await _databaseReference.child("$id").set(_multiInfoObject.toJson());
           print("The object sent: $infoObjs");
+        }); 
+
+        // await _databaseReference.child("$id").set(_multiInfoObject.toJson());
+        // print("The object sent: $infoObjs");
 
         // infoObjs.clear();
       }
@@ -361,7 +362,7 @@ class _AddReportFormState extends State<AddReportForm> {
 
   void uploadImage(String fileName, File file) {
     StorageReference _storageReference =
-        FirebaseStorage.instance.ref().child(fileName);
+        FirebaseStorage.instance.ref().child("{$id}/images/{$fileName}");
     _storageReference.putFile(file).onComplete.then((firebaseFile) async {
       var downloadUrl = await firebaseFile.ref.getDownloadURL();
       setState(() {
@@ -372,7 +373,7 @@ class _AddReportFormState extends State<AddReportForm> {
 
   void uploadVideo(String fileName, File file) {
     StorageReference _storageReference =
-        FirebaseStorage.instance.ref().child(fileName);
+        FirebaseStorage.instance.ref().child("{$id}/videos/{$fileName}");
     _storageReference.putFile(file).onComplete.then((firebaseFile) async {
       var downloadUrl = await firebaseFile.ref.getDownloadURL();
       setState(() {
@@ -381,7 +382,7 @@ class _AddReportFormState extends State<AddReportForm> {
     });
   }
 
-  navigateToLastScreen(BuildContext context) {
-    Navigator.pop(context, true);
+  navigateToLastScreen(BuildContext context, bool loadStat) {
+    Navigator.pop(context, loadStat);
   }
 }

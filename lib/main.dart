@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:instant_reporter/app/sign_in/email_sign_in_page.dart';
-import 'MainPages/Homepage.dart';
-import 'Forms/ReportForm.dart';
+import 'package:instant_reporter/app/sign_in/RegisterPage.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.amber
       ),
       home: SafeArea(
-        child: EmailSignInPage(),
+        child: RegisterPage(),
         // child: ReportForm(),
           ),
         );

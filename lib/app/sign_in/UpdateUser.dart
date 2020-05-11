@@ -8,7 +8,8 @@ class UpdateUser{
   final String phoneNo;
   final String _password;
   final String uid;
-  UpdateUser(this.uid,this.name,this._userAuth,this._policeAuth,this.phoneNo,this._password);
+  final String aadhar;
+  UpdateUser(this.uid,this.name,this._userAuth,this._policeAuth,this.phoneNo,this._password,this.aadhar);
   final CollectionReference users=Firestore.instance.collection('registered_user');
   final CollectionReference policeusers=Firestore.instance.collection('registered_police');
   final CollectionReference passwords=Firestore.instance.collection('passwords');
@@ -22,14 +23,16 @@ class UpdateUser{
         return await users.document(uid).setData({
       'name':name,
       'phone':phoneNo,
-      passwordEntry:_password
+      passwordEntry:_password,
+      'aadhar':aadhar
     });
     }
     else if(_policeAuth==true){
       return await policeusers.document(uid).setData({
       'name':name,
       'phone':phoneNo,
-      passwordEntry:_password
+      passwordEntry:_password,
+      'aadhar':aadhar
     }); }
   }
 }

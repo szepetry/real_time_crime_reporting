@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+/* import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/AuthNew.dart';
@@ -218,3 +218,41 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
     return enabled;
   }
 }
+ return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.active){
+        if(snapshot.hasData){
+          _loggedIn=true;
+         /*  if(widget._userAuth)
+        return User(_uid);
+        if(widget._policeAuth)
+        return Police(_uid); */
+        }
+        else if(_loggedIn==true && !snapshot.hasData)
+        return EmailSignInPage();
+        }
+        return Container(
+          alignment: Alignment.center,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(),
+                SizedBox(height: 5.0),
+                Text(
+                  'Authenticating..',
+                  style: Theme.of(context)
+                      .textTheme
+                      .display1
+                      .copyWith(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+ */
+ 

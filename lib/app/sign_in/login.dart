@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instant_reporter/Forms/AddReportForm.dart';
 import 'package:instant_reporter/app/sign_in/AuthNew.dart';
 import 'package:instant_reporter/app/sign_in/PasswordHandle.dart';
 import 'package:instant_reporter/common_widgets/form_submit_button.dart';
@@ -18,17 +19,21 @@ class _LoginState extends State<Login> {
   int count = 0;
   String name;
   String enteredPassword;
+  bool _submitted=true;
   final TextEditingController _phNoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> checkIfUserOrPolice() async {
     Future<bool> validPass;
-    await SearchUser("registered_user");
-    await SearchUser("registered_police");
+    await searchUser("registered_user");
+    await searchUser("registered_police");
     if (_phNoController.text.toString().length == 10) {
       if (checkIfValidPhone()) {
-        if (await PasswordHandle(enteredPassword,'+91'+enteredphoneNo).checkIfPasswordExists()) {
+        if (await PasswordHandle(enteredPassword,'+91'+enteredphoneNo,false).checkIfPasswordExists()) {
           navigateToAuthenticate();
+          setState(() {
+            _submitted=true;
+          });
         } 
         else
           showErrorMsg(context, 'Password Invalid', true);
@@ -46,7 +51,7 @@ class _LoginState extends State<Login> {
                 '+91' + enteredphoneNo, _passwordController.text.toString())));
   }
 
-  Future<void> SearchUser(String userType) async {
+  Future<void> searchUser(String userType) async {
     var User_details = new List();
     await Firestore.instance
         .collection(userType)
@@ -93,10 +98,12 @@ class _LoginState extends State<Login> {
             content: Text(msg),
             actions: <Widget>[
               FlatButton(
-                onPressed: () => pop
-                    ? Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Login()))
-                    : Navigator.of(context).pop(),
+                onPressed: (){
+                  setState(() {
+                    _submitted=true;
+                  });
+                   Navigator.of(context).pop();
+                },
                 child: Text('OK'),
               )
             ],
@@ -126,6 +133,7 @@ class _LoginState extends State<Login> {
                 TextField(
                   controller: _phNoController,
                   decoration: InputDecoration(
+                    enabled: !_submitted?false:true,
                     labelText: '  Enter 10 digit phone number',
                     hintText: '  +91 ',
                   ),
@@ -137,6 +145,7 @@ class _LoginState extends State<Login> {
                 TextField(
                   controller: _passwordController,
                   decoration: InputDecoration(
+                    enabled: !_submitted?false:true,
                     labelText: ' Enter Password',
                   ),
                   obscureText: true,
@@ -147,9 +156,12 @@ class _LoginState extends State<Login> {
                 SizedBox(height: 8.0),
                 FormSubmitButton(
                   text: 'Login',
-                  onPressed: () async {
+                  onPressed: _submitted?() async {
+                    setState(() {
+                      _submitted=false;
+                    });
                     await checkIfUserOrPolice();
-                  },
+                  }:null,
                 ),
                 SizedBox(height: 16.0),
               ],
