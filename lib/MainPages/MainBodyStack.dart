@@ -6,6 +6,10 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/MainPages/FireMap.dart';
+import 'Buttons/ProfileMenu.dart';
+import 'package:instant_reporter/app/sign_in/UserDetails.dart';
+import 'package:provider/provider.dart';
+import 'package:instant_reporter/app/sign_in/drawers.dart';
 
 Marker marker;
 
@@ -13,6 +17,8 @@ Position _currentPosition;
 
 //TODO:Main body of the application
 class MainBodyStack extends StatefulWidget {
+  final String uid;
+  MainBodyStack(this.uid);
   @override
   _MainBodyStackState createState() => _MainBodyStackState();
 }
@@ -34,6 +40,15 @@ class _MainBodyStackState extends State<MainBodyStack> {
     });
   }
 
+  void choiceAction(String choice){
+    if(choice == ProfileMenu.signout){
+      print("Sign out");
+    }
+    // else if(){
+    // Add more functions like so.
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -41,11 +56,30 @@ class _MainBodyStackState extends State<MainBodyStack> {
         FireMap(),
         Align(
           alignment: Alignment.topRight,
-          child: IconButton(
+          child:IconButton(
             tooltip: "Profile",
             icon: Icon(Icons.person),
-            onPressed: () {},
-          ),
+            onPressed: () {
+              //using inherited widget - provider for UserDetails class
+              UserDetails u =Provider.of<UserDetails>(context, listen: false);
+                 print(u);
+                Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Drawers(u),
+            ),); 
+            },
+          ), /* PopupMenuButton<String>(
+            tooltip: "Profile",
+            onSelected: choiceAction,
+            icon: Icon(Icons.person),
+            itemBuilder: (BuildContext context) {
+              return ProfileMenu.choices.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            }
+          ), */
         ),
         Positioned(
           bottom: 150,
