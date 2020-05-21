@@ -8,10 +8,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:geolocator/geolocator.dart';
 // import 'package:transparent_image/transparent_image.dart';
 // import 'package:instant_reporter/pages/FireMap.dart';
+import '../Forms/LocationReport.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
 
 // import 'package:flutter/services.dart';
+
+PanelController _panelController = PanelController();
 
 class HomepageUser extends StatefulWidget {
   
@@ -38,13 +41,14 @@ class _HomepageUserState extends State<HomepageUser> {
     //il delete useless files later
   }
 
+
   @override
   Widget build(BuildContext context) {
     UserDetails u =Provider.of<UserDetails>(context, listen: false);
     //inherited widget using provider to access uid to all child widgets
     uid=u.uid;
     return Scaffold(
-      floatingActionButton: FloatingActionButtonWidget(),
+      floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SlidingUpPanel(
         maxHeight: 600,
@@ -67,4 +71,21 @@ class _HomepageUserState extends State<HomepageUser> {
   }
 }
 
-//TODO: Make bottom panel
+class FloatingActionButtonWidget extends StatelessWidget {
+  final String id;
+  FloatingActionButtonWidget(this.id);
+    // PanelController _panelController = PanelController();
+  // onPressed: () => _panelController.open(),
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: Colors.red,
+      onPressed: () {
+        LocationReport(id).saveReport(context);
+        _panelController.open();
+      },
+      child: Icon(Icons.offline_bolt),
+    );
+  }
+}

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/MainPages/FireMap.dart';
 import 'Buttons/ProfileMenu.dart';
 import 'package:instant_reporter/app/sign_in/UserDetails.dart';
 import 'package:provider/provider.dart';
 import 'package:instant_reporter/app/sign_in/drawers.dart';
+import '../Forms/LocationReport.dart';
 
 Marker marker;
 
@@ -40,8 +42,8 @@ class _MainBodyStackState extends State<MainBodyStack> {
     });
   }
 
-  void choiceAction(String choice){
-    if(choice == ProfileMenu.signout){
+  void choiceAction(String choice) {
+    if (choice == ProfileMenu.signout) {
       print("Sign out");
     }
     // else if(){
@@ -56,16 +58,18 @@ class _MainBodyStackState extends State<MainBodyStack> {
         FireMap(),
         Align(
           alignment: Alignment.topRight,
-          child:IconButton(
+          child: IconButton(
             tooltip: "Profile",
             icon: Icon(Icons.person),
             onPressed: () {
               //using inherited widget - provider for UserDetails class
-              UserDetails u =Provider.of<UserDetails>(context, listen: false);
-                 print(u);
-                Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Drawers(u),
-            ),); 
+              UserDetails u = Provider.of<UserDetails>(context, listen: false);
+              print(u);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Drawers(u),
+                ),
+              );
             },
           ), /* PopupMenuButton<String>(
             tooltip: "Profile",
@@ -107,17 +111,4 @@ class _MainBodyStackState extends State<MainBodyStack> {
   }
 }
 
-class FloatingActionButtonWidget extends StatelessWidget {
-  const FloatingActionButtonWidget({
-    Key key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      backgroundColor: Colors.red,
-      onPressed: () {},
-      child: Icon(Icons.offline_bolt),
-    );
-  }
-}

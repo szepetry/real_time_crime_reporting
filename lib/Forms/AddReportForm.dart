@@ -47,7 +47,7 @@ class _AddReportFormState extends State<AddReportForm> {
   String _urlAttachmentPhoto = '';
   String _urlAttachmentVideo = '';
   LatLng _location;
-  String loc;
+  // String loc;
   String _description = '';
 
   @override
