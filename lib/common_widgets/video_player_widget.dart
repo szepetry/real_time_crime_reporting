@@ -44,6 +44,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             VideoPlayer(_controller),
             _PlayPauseOverlay(
               controller: _controller,
+              url: _url,
             ),
             VideoProgressIndicator(
               _controller,
@@ -57,9 +58,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 }
 
 class _PlayPauseOverlay extends StatelessWidget {
-  const _PlayPauseOverlay({Key key, this.controller}) : super(key: key);
+  const _PlayPauseOverlay({Key key, @required this.controller, @required this.url}) : super(key: key);
 
   final VideoPlayerController controller;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +70,14 @@ class _PlayPauseOverlay extends StatelessWidget {
         AnimatedSwitcher(
           duration: Duration(milliseconds: 50),
           reverseDuration: Duration(milliseconds: 200),
-          child: controller.value.isPlaying
+          child: controller.value.isPlaying && url != ""
               ? SizedBox.shrink()
               : Container(
+                // This is when video isn't playable or string is empty.
                   color: Colors.black26,
                   child: Center(
                     child: Icon(
-                      Icons.play_arrow,
+                      Icons.videocam_off,
                       color: Colors.white,
                       size: 100.0,
                     ),
@@ -83,7 +86,7 @@ class _PlayPauseOverlay extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            controller.value.isPlaying ? controller.pause() : controller.play();
+            controller.value.isPlaying  && url != "" ? controller.pause() : controller.play();
           },
         ),
       ],
