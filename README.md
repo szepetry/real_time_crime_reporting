@@ -22,8 +22,8 @@ Team members:
   
     
   Amulya:
-    1.
-    2.
+    1.Notifications
+    2.Overall theme
     
   Ayesha:
     1.
