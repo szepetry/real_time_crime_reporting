@@ -1,0 +1,72 @@
+{
+  "project_info": {
+    "project_number": "754634287009",
+    "firebase_url": "https://crimereportingnew.firebaseio.com",
+    "project_id": "crimereportingnew",
+    "storage_bucket": "crimereportingnew.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754634287009:android:aba2afc6d759f526bb4de0",
+        "android_client_info": {
+          "package_name": "com.renegades.miniproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "754634287009-ele9o78e5gdvdp8h8n6j6j8s835pi4n3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.renegades.miniproject",
+            "certificate_hash": "ae1fc1c1b103d25fccca6175a36019f0326139b4"
+          }
+        },
+        {
+          "client_id": "754634287009-ald4jt12njjrri17r413539o9bo08nb0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.renegades.miniproject",
+            "certificate_hash": "05490d799258b7858a8e3555f862ed4a25287a5a"
+          }
+        },
+        {
+          "client_id": "754634287009-c2om1fv87i05g7v68d9fkrc72mqsccbi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.renegades.miniproject",
+            "certificate_hash": "b89f385c79e015a17d8d127a4b483dab1c45fd74"
+          }
+        },
+        {
+          "client_id": "754634287009-oaa1um11i8il6str711pq77lo2k4l0hi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.renegades.miniproject",
+            "certificate_hash": "ce45748c3058c97d9b78b4f6e091d397ff401309"
+          }
+        },
+        {
+          "client_id": "754634287009-bourggjnih6921folq3qim7jbcb7govp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC00Pbq9sdZD6bZuRBDNCk-MQyvH-htvs0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754634287009-bourggjnih6921folq3qim7jbcb7govp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
