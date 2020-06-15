@@ -12,6 +12,8 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:instant_reporter/common_widgets/notifications.dart';
+
 
 List<dynamic> infoObjs = List<dynamic>();
 Position _currentPosition;
@@ -332,7 +334,11 @@ class _AddReportFormState extends State<AddReportForm> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   onPressed: () {
+                             Noti obj = Noti();
+                    obj.showNotification('Your report has been submitted successfully','Report');
                     saveReport(context);
+                    print('clicked!');
+           
                   },
                   child: Text(
                     "Submit",

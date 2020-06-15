@@ -11,11 +11,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "Instant reporter",
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: "Josefin_Sans", primarySwatch: Colors.amber),
-      home: SafeArea(
-        // child: EmailSignInPage(),
-        child: RegisterPage(),
+      theme: ThemeData(
+        fontFamily: "Josefin_Sans",
+        primarySwatch: Colors.amber,
       ),
+      home: RegisterPage(),
     );
   }
 }
