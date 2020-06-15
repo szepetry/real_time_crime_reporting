@@ -15,6 +15,7 @@ import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import '../common_widgets/video_player_widget.dart';
 
 bool result = false;
 
@@ -32,23 +33,6 @@ class _ReportFormState extends State<ReportForm> {
   String id;
   _ReportFormState(this.id);
   VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-        'https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +93,7 @@ class _ReportFormState extends State<ReportForm> {
                   child: Padding(
                       padding: EdgeInsets.all(20.0),
                       child: FloatingActionButton.extended(
+                        heroTag: "btn1",
                         onPressed: () async {
                           result = await Navigator.push(
                             context,
@@ -178,28 +163,44 @@ class _ReportFormState extends State<ReportForm> {
           "Video:",
           style: kTextStyleOfHeadings,
         ),
-        // Scaffold(
-        //   body: Center(
-        //     child: _controller.value.initialized
-        //         ? AspectRatio(
-        //             aspectRatio: _controller.value.aspectRatio,
-        //             child: VideoPlayer(_controller),
-        //           )
-        //         : Container(),
-        //   ),
-        //   floatingActionButton: FloatingActionButton(
-        //     onPressed: () {
-        //       setState(() {
-        //         _controller.value.isPlaying
-        //             ? _controller.pause()
-        //             : _controller.play();
-        //       });
-        //     },
-        //     child: Icon(
-        //       _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        //     ),
+
+        VideoPlayerWidget(
+          url: snapshot.value['urlAttachmentVideo'],
+        ),
+        // Center(
+        //   child: _controller.value.initialized
+        //       ? AspectRatio(
+        //           aspectRatio: _controller.value.aspectRatio,
+        //           child: VideoPlayer(_controller),
+        //         )
+        //       : Container(),
+        // ),
+        // FloatingActionButton(
+        //   heroTag: "btn3",
+        //   onPressed: () {
+        //     setState(() {
+        //       _controller.value.isPlaying
+        //           ? _controller.pause()
+        //           : _controller.play();
+        //     });
+        //   },
+        //   child: Icon(
+        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
         //   ),
         // ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     setState(() {
+        //       _controller.value.isPlaying
+        //           ? _controller.pause()
+        //           : _controller.play();
+        //     });
+        //   },
+        //   child: Icon(
+        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        //   ),
+        // ),
+
         // Text(
         //   snapshot.value['urlAttachmentVideo'],
         //   style: kTextStyleForUrl,
@@ -208,5 +209,15 @@ class _ReportFormState extends State<ReportForm> {
         Divider(),
       ],
     );
+  }
+
+  void videoPlayer(String url) {
+    _controller = VideoPlayerController.network(url);
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.setLooping(true);
+    _controller.initialize().then((_) => setState(() {}));
+    _controller.play();
   }
 }
