@@ -53,6 +53,8 @@ dependencies:
   cloud_firestore: ^0.13.5
   provider: ^4.1.1
   move_to_background: ^1.0.1
+  
+  workmanager: ^0.2.2
 
 dev_dependencies:
   flutter_test:
