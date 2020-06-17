@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:instant_reporter/app/sign_in/MyAccount.dart';
-import 'package:instant_reporter/app/sign_in/SignOut.dart';
-import 'package:provider/provider.dart';
-import 'package:instant_reporter/app/sign_in/UserDetails.dart';
+import 'package:instant_reporter/AuthenticationHandle/Bailout.dart';
 
 class Drawers extends StatelessWidget {
-  UserDetails userDetails;
-  Drawers(this.userDetails);
-
-
 
   @override
   Widget build(BuildContext context) {
+    Bailout b = new Bailout();
     return SafeArea(
           child: Drawer(
           child: ListView(
@@ -26,30 +20,23 @@ class Drawers extends StatelessWidget {
                 ),
               ),
               ListTile(
-                title: Text('My Account'),
-                onTap: () {
-                  print(userDetails);
-                   Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => MyAccount(userDetails),
-            ),);
-                },
-              ),
-              ListTile(
-                title: Text('Helpline Numbers'),
-                onTap: () {
-
+                title: Text('Delete account'),
+                onTap: () async {
+                  await  b.confirmBailOutRequest(context,'Are you sure you want to delete your account');
+                  Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 title: Text('Logout'),
                 onTap: () async {
-                  SignOut().confirmSignout(context,'Are you sure you want to Log Out?');
+                 await  b.confirmBailOutRequest(context,'Are you sure you want to Log Out?');
+                 Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 title: Text('Close App'),
                 onTap: () async {
-                  SignOut().confirmSignout(context,'Close the app?');
+                await b.confirmBailOutRequest(context,'Close the app?');
                 },
               ),
             ],

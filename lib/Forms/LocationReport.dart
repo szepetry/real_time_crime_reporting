@@ -13,7 +13,6 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:instant_reporter/app/sign_in/UserDetails.dart';
 import 'package:provider/provider.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
