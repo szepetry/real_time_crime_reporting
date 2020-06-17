@@ -34,6 +34,8 @@ class _ReportFormState extends State<ReportForm> {
   _ReportFormState(this.id);
   VideoPlayerController _controller;
 
+   
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -69,7 +71,7 @@ class _ReportFormState extends State<ReportForm> {
                             return Column(
                               children: <Widget>[
                                 Card(
-                                  // color: Colors.white30,
+                                 color: Color(0xFFE3F2FD),
                                   elevation: 2.0,
                                   child: Container(
                                     padding: EdgeInsets.all(15),
@@ -124,88 +126,98 @@ class _ReportFormState extends State<ReportForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          "Location:",
-          style: kTextStyleOfHeadings,
+        Row(
+          children: <Widget>[
+            Expanded(
+                 child: ReusableCard(
+                   colour: Color(colourHeading),
+                  cardChild: Text(
+                'Location:',
+                style: kTextStyleOfHeadings,
+              ),
+                 ),
+            ),
+          ],
         ),
-        Text(
-          snapshot.value['location'],
-          style: kTextStyleForData,
+        Row(
+          children: <Widget>[
+            Expanded(
+                  child:ReusableCard(
+                    colour: Color(colourbelow),
+                cardChild: Text(
+           snapshot.value['location'],
+            style: kTextStyleForData,
+          ),
+                  ),
+            ),
+          ],
         ),
-        Text(
-          "Description:",
-          style: kTextStyleOfHeadings,
+        Row(
+          children: <Widget>[
+            Expanded(
+                 child: ReusableCard(
+                   colour: Color(colourHeading),
+                  cardChild: Text(
+                "Description:",
+                style: kTextStyleOfHeadings,
+              ),
+                 ),
+            ),
+          ],
         ),
-        Text(
-          snapshot.value['description'],
-          style: kTextStyleForData,
+         Row(
+          children: <Widget>[
+            Expanded(
+                  child:ReusableCard(
+                    colour: Color(colourbelow),
+                cardChild: Text(
+           snapshot.value['description'],
+            style: kTextStyleForData,
+          ),
+                  ),
+            ),
+          ],
         ),
-        Text(
-          "Image:",
-          style: kTextStyleOfHeadings,
+          
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: ReusableCard(
+                colour: Color(colourHeading),
+                              cardChild: Text(
+                  "Image:",
+                  style: kTextStyleOfHeadings,
+                ),
+              ),
+            ),
+            Expanded(
+              child:ReusableCard(
+                colour:Color(colourHeading), 
+               cardChild: Text(
+                "Video:",
+                style: kTextStyleOfHeadings,
+              ),
+              ),
+            ),
+          ],
         ),
-        // Text(
-        //   snapshot.value['urlAttachmentPhoto'],
-        //   style: kTextStyleForUrl,
-        // ),
-        FadeInImage.memoryNetwork(
-          placeholder: kTransparentImage,
-          image: snapshot.value['urlAttachmentPhoto'],
-          height: 80.0,
-          width: 80.0,
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: snapshot.value['urlAttachmentPhoto'],
+                // height: 80.0,
+                // width: 80.0,
+              ),
+            ),
+            Expanded(
+              child: VideoPlayerWidget(
+                url: snapshot.value['urlAttachmentVideo'],
+              ),
+            ),
+          ],
         ),
-        // Image.network(
-        //   snapshot.value['urlAttachmentPhoto'],
-        //   height: 80.0,
-        //   width: 80.0,
-        // ),
-        Text(
-          "Video:",
-          style: kTextStyleOfHeadings,
-        ),
-
-        VideoPlayerWidget(
-          url: snapshot.value['urlAttachmentVideo'],
-        ),
-        // Center(
-        //   child: _controller.value.initialized
-        //       ? AspectRatio(
-        //           aspectRatio: _controller.value.aspectRatio,
-        //           child: VideoPlayer(_controller),
-        //         )
-        //       : Container(),
-        // ),
-        // FloatingActionButton(
-        //   heroTag: "btn3",
-        //   onPressed: () {
-        //     setState(() {
-        //       _controller.value.isPlaying
-        //           ? _controller.pause()
-        //           : _controller.play();
-        //     });
-        //   },
-        //   child: Icon(
-        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        //   ),
-        // ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     setState(() {
-        //       _controller.value.isPlaying
-        //           ? _controller.pause()
-        //           : _controller.play();
-        //     });
-        //   },
-        //   child: Icon(
-        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        //   ),
-        // ),
-
-        // Text(
-        //   snapshot.value['urlAttachmentVideo'],
-        //   style: kTextStyleForUrl,
-        // ),
-
         Divider(),
       ],
     );
@@ -221,3 +233,4 @@ class _ReportFormState extends State<ReportForm> {
     _controller.play();
   }
 }
+ 

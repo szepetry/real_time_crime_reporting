@@ -49,6 +49,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             VideoProgressIndicator(
               _controller,
               allowScrubbing: true,
+              
             ),
           ],
         ),

@@ -11,13 +11,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../Forms/LocationReport.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
+import 'package:instant_reporter/common_widgets/notifications.dart';
 
 // import 'package:flutter/services.dart';
 
 PanelController _panelController = PanelController();
 
 class HomepageUser extends StatefulWidget {
-  
   HomepageUser(); //use this uid here
   @override
   _HomepageUserState createState() => _HomepageUserState();
@@ -41,12 +41,11 @@ class _HomepageUserState extends State<HomepageUser> {
     //il delete useless files later
   }
 
-
   @override
   Widget build(BuildContext context) {
-    UserDetails u =Provider.of<UserDetails>(context, listen: false);
+    UserDetails u = Provider.of<UserDetails>(context, listen: false);
     //inherited widget using provider to access uid to all child widgets
-    uid=u.uid;
+    uid = u.uid;
     return Scaffold(
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -74,15 +73,20 @@ class _HomepageUserState extends State<HomepageUser> {
 class FloatingActionButtonWidget extends StatelessWidget {
   final String id;
   FloatingActionButtonWidget(this.id);
-    // PanelController _panelController = PanelController();
+  // PanelController _panelController = PanelController();
   // onPressed: () => _panelController.open(),
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Colors.red,
-      onPressed: () {
+      onPressed: () {  
         LocationReport(id).saveReport(context);
+         Noti obj = Noti();
+        obj.showNotification(
+          sentence: 'Your report is getting generated.',
+          heading: 'Generating...',
+        );
         _panelController.open();
       },
       child: Icon(Icons.offline_bolt),
