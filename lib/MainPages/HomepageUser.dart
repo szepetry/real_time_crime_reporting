@@ -55,17 +55,17 @@ class _HomepageUserState extends State<HomepageUser> {
     subscription = _stream.listen(actionTaken);
     // print("$subscription");
     subscription.onData((data) {
-      // Workmanager.registerOneOffTask("2", "Background instant report",
-      //     inputData: {
-      //       "uid": uid,
-      //     });
-      Workmanager.registerPeriodicTask(
-        "3",
-        "Background instant report",
-        inputData: {
-          "uid": uid,
-        },
-      );
+      Workmanager.registerOneOffTask("2", "Background instant report",
+          inputData: {
+            "uid": uid,
+          });
+      // Workmanager.registerPeriodicTask(
+      //   "3",
+      //   "Background instant report",
+      //   inputData: {
+      //     "uid": uid,
+      //   },
+      // );
       print("$data");
     });
 
