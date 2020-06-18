@@ -28,6 +28,7 @@ class _UserState extends State<User> {
           body: Provider<UserDetails>(
             create: (context) =>
                 UserDetails(uid: widget.uid, isPolice: widget._isPolice),
+            // child: HomepageUser(),
             child: HomepageUser(),
           ),
         ),
