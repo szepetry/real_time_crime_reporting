@@ -1,19 +1,14 @@
+=\=\=\=\=\=\=
+<<<<<<<=HEAD
+>>>>>>>=92d4d0655eba8fb414ea122fc6cff36d105a3763
 arguments=
 auto.sync=false
 build.scans.enabled=false
 connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
-connection.project.dir=app
+connection.project.dir=
 eclipse.preferences.version=1
 gradle.user.home=
-<<<<<<< HEAD
-java.home=C\:/Program Files/Java/jdk1.8.0_191
-=======
-<<<<<<< HEAD
-java.home=C\:/Program Files/Java/jdk1.8.0_241
-=======
 java.home=C\:/Program Files/Java/jdk1.8.0_181
->>>>>>> 6e1d5ebcaa760537e3412cddbe8a6d20e4b072d1
->>>>>>> 92d4d0655eba8fb414ea122fc6cff36d105a3763
 jvm.arguments=
 offline.mode=false
 override.workspace.settings=true

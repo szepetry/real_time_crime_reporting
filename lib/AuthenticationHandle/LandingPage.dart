@@ -46,6 +46,7 @@ class LandingPage extends StatelessWidget {
           else
             return RegisterPage(registerHandle, auth);
         } else {
+          auth.isLoadingController.add(false);
           return handleNavigation(authSnapshot);
         }
       },
