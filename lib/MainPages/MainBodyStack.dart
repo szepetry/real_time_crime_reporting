@@ -8,9 +8,8 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/MainPages/FireMap.dart';
 import 'Buttons/ProfileMenu.dart';
-import 'package:instant_reporter/app/sign_in/UserDetails.dart';
 import 'package:provider/provider.dart';
-import 'package:instant_reporter/app/sign_in/drawers.dart';
+import 'package:instant_reporter/MainPages/Drawers.dart';
 import '../Forms/LocationReport.dart';
 
 Marker marker;
@@ -62,12 +61,9 @@ class _MainBodyStackState extends State<MainBodyStack> {
             tooltip: "Profile",
             icon: Icon(Icons.person),
             onPressed: () {
-              //using inherited widget - provider for UserDetails class
-              UserDetails u = Provider.of<UserDetails>(context, listen: false);
-              print(u);
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => Drawers(u),
+                  builder: (context) => Drawers(),
                 ),
               );
             },

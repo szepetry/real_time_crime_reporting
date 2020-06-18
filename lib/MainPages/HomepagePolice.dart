@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:instant_reporter/app/sign_in/UserDetails.dart';
+import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
 
 class HomepagePolice extends StatefulWidget {
@@ -29,9 +29,12 @@ class _HomepagePoliceState extends State<HomepagePolice> {
 
   @override
   Widget build(BuildContext context) {
-    UserDetails u =Provider.of<UserDetails>(context, listen: false);
-    //inherited widget using provider to access uid to all child widgets
-    uid=u.uid;
-    return Container();
+    UserDetails u = Provider.of<UserDetails>(context, listen: false);
+    uid = u.uid;
+    return Container(
+      child: Center(
+        child: FlatButton(onPressed: signOut, child: Text('\tPolice\Touch to Log Out'),color: Colors.indigo[200],),
+      ),
+    );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instant_reporter/app/sign_in/UserDetails.dart';
+import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:firebase_auth/firebase_auth.dart';

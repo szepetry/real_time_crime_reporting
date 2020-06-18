@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instant_reporter/app/sign_in/RegisterPage.dart';
-import 'MainPages/HomepageUser.dart';
-import 'Forms/ReportForm.dart';
+import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,14 +7,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Instant reporter",
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: "Josefin_Sans",
-        primarySwatch: Colors.amber,
+      theme: ThemeData(fontFamily: "Josefin_Sans", primarySwatch: Colors.amber),
+      home: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: LandingPage.create(context),
+          backgroundColor: Colors.grey[200],
+        ),
       ),
-      home: RegisterPage(),
-      // home: HomepageUser("1234"),
     );
   }
 }
