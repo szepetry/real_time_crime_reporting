@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instant_reporter/app/sign_in/RegisterPage.dart';
 import 'MainPages/HomepageUser.dart';
 import 'Forms/ReportForm.dart';
+import 'MainPages/HomepageUser.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: "Josefin_Sans", primarySwatch: Colors.amber),
       home: SafeArea(
-        // child: EmailSignInPage(),
+         //child: HomepageUser(),
         child: RegisterPage(),
       ),
     );
