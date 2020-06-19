@@ -1,2 +1,16 @@
+=\=\=\=\=\=\=
+<<<<<<<=HEAD
+>>>>>>>=92d4d0655eba8fb414ea122fc6cff36d105a3763
+arguments=
+auto.sync=false
+build.scans.enabled=false
+connection.gradle.distribution=GRADLE_DISTRIBUTION(VERSION(6.3))
 connection.project.dir=..
 eclipse.preferences.version=1
+gradle.user.home=
+java.home=C\:/Program Files/Java/jdk1.8.0_191
+jvm.arguments=
+offline.mode=false
+override.workspace.settings=true
+show.console.view=true
+show.executions.view=true

@@ -11,7 +11,11 @@ import 'package:instant_reporter/MainPages/FireMap.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import '../model/infoObject.dart';
 import 'dart:core';
+import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+import '../common_widgets/video_player_widget.dart';
 
 bool result = false;
 
@@ -28,6 +32,8 @@ class _ReportFormState extends State<ReportForm> {
   bool loadState = false;
   String id;
   _ReportFormState(this.id);
+  VideoPlayerController _controller;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,7 +51,7 @@ class _ReportFormState extends State<ReportForm> {
                           child: Padding(
                               padding: EdgeInsets.all(20.0),
                               child: Text(
-                                "Report page",
+                                "Your Reports",
                                 style: TextStyle(fontSize: 40.0),
                               ))),
                       alignment: Alignment.topCenter),
@@ -54,7 +60,7 @@ class _ReportFormState extends State<ReportForm> {
                   Expanded(
                     child: Container(
                       child: FirebaseAnimatedList(
-                          query: _databaseReference.child(id+"/infoObject"),
+                          query: _databaseReference.child(id + "/infoObject"),
                           itemBuilder: (BuildContext context,
                               DataSnapshot snapshot,
                               Animation<double> animation,
@@ -66,10 +72,11 @@ class _ReportFormState extends State<ReportForm> {
                                   // color: Colors.white30,
                                   elevation: 2.0,
                                   child: Container(
+                                    padding: EdgeInsets.all(15),
                                     // margin: EdgeInsets.all(10.0),
                                     child: Column(
                                       children: <Widget>[
-                                          eachObject(snapshot),
+                                        eachObject(snapshot),
                                       ],
                                     ),
                                   ),
@@ -86,6 +93,7 @@ class _ReportFormState extends State<ReportForm> {
                   child: Padding(
                       padding: EdgeInsets.all(20.0),
                       child: FloatingActionButton.extended(
+                        heroTag: "btn1",
                         onPressed: () async {
                           result = await Navigator.push(
                             context,
@@ -99,7 +107,8 @@ class _ReportFormState extends State<ReportForm> {
                               );
                             }),
                           );
-                          print("Result from report Form: ${result.toString()}");
+                          print(
+                              "Result from report Form: ${result.toString()}");
                         },
                         backgroundColor: Colors.deepOrange,
                         label: Text("Add to the report"),
@@ -113,16 +122,102 @@ class _ReportFormState extends State<ReportForm> {
 
   Column eachObject(DataSnapshot snapshot) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text("Location: ${snapshot.value['location']}}"),
         Text(
-            "Description: ${snapshot.value['description']}"),
+          "Location:",
+          style: kTextStyleOfHeadings,
+        ),
         Text(
-            "Image: ${snapshot.value['urlAttachmentPhoto']}"),
+          snapshot.value['location'],
+          style: kTextStyleForData,
+        ),
         Text(
-            "Video: ${snapshot.value['urlAttachmentVideo']}"),
+          "Description:",
+          style: kTextStyleOfHeadings,
+        ),
+        Text(
+          snapshot.value['description'],
+          style: kTextStyleForData,
+        ),
+        Text(
+          "Image:",
+          style: kTextStyleOfHeadings,
+        ),
+        // Text(
+        //   snapshot.value['urlAttachmentPhoto'],
+        //   style: kTextStyleForUrl,
+        // ),
+        FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: snapshot.value['urlAttachmentPhoto'],
+          height: 80.0,
+          width: 80.0,
+        ),
+        // Image.network(
+        //   snapshot.value['urlAttachmentPhoto'],
+        //   height: 80.0,
+        //   width: 80.0,
+        // ),
+        Text(
+          "Video:",
+          style: kTextStyleOfHeadings,
+        ),
+
+        VideoPlayerWidget(
+          url: snapshot.value['urlAttachmentVideo'],
+        ),
+        // Center(
+        //   child: _controller.value.initialized
+        //       ? AspectRatio(
+        //           aspectRatio: _controller.value.aspectRatio,
+        //           child: VideoPlayer(_controller),
+        //         )
+        //       : Container(),
+        // ),
+        // FloatingActionButton(
+        //   heroTag: "btn3",
+        //   onPressed: () {
+        //     setState(() {
+        //       _controller.value.isPlaying
+        //           ? _controller.pause()
+        //           : _controller.play();
+        //     });
+        //   },
+        //   child: Icon(
+        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        //   ),
+        // ),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     setState(() {
+        //       _controller.value.isPlaying
+        //           ? _controller.pause()
+        //           : _controller.play();
+        //     });
+        //   },
+        //   child: Icon(
+        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+        //   ),
+        // ),
+
+        // Text(
+        //   snapshot.value['urlAttachmentVideo'],
+        //   style: kTextStyleForUrl,
+        // ),
+
         Divider(),
       ],
     );
+  }
+
+  void videoPlayer(String url) {
+    _controller = VideoPlayerController.network(url);
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.setLooping(true);
+    _controller.initialize().then((_) => setState(() {}));
+    _controller.play();
   }
 }

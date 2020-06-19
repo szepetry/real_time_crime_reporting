@@ -49,10 +49,18 @@ dependencies:
   # for loading images in circles
   cached_network_image: ^2.0.0
   firebase_auth: ^0.16.0
+  #for the notifications
+  flutter_local_notifications: ^1.4.4+1
+
 
   cloud_firestore: ^0.13.5
   provider: ^4.1.1
   move_to_background: ^1.0.1
+  
+  workmanager: ^0.2.2
+
+  # video player library
+  video_player: ^0.10.11+1
 
 dev_dependencies:
   flutter_test:
