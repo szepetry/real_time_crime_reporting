@@ -43,9 +43,9 @@ class _HomepageUserState extends State<HomepageUser> {
 
   @override
   Widget build(BuildContext context) {
-    UserDetails u = Provider.of<UserDetails>(context, listen: false);
+   UserDetails u = Provider.of<UserDetails>(context, listen: false);
     //inherited widget using provider to access uid to all child widgets
-    uid = u.uid;
+   uid = u.uid;
     return Scaffold(
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
