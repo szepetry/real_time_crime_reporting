@@ -14,7 +14,6 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 
-
 List<dynamic> infoObjs = List<dynamic>();
 Position _currentPosition;
 //TODO: change count to 1
@@ -89,6 +88,7 @@ class _AddReportFormState extends State<AddReportForm> {
         print("Firstload in getReport: " + this.firstLoad.toString());
         print("count value getReport: " + count.toString());
         if (count >= 0) {
+          
           // count = event.snapshot.value['count'];
           for (int index = 0; index < snapshot.value['count']; index++) {
             // print(infoObjs);
@@ -126,6 +126,11 @@ class _AddReportFormState extends State<AddReportForm> {
           getReport(id, context);
           setState(() {
             loadStat = true;
+            Noti obj = Noti();
+          obj.showNotification(
+            sentence: 'Your report has been submitted successfully',
+            heading: 'Report',
+          );
             // isLoading = false;
           });
           // }
@@ -154,10 +159,10 @@ class _AddReportFormState extends State<AddReportForm> {
         // //Sleep statement
         // print("sleeping for 2 now\n");
         // sleep(Duration(seconds: 2));
-        _timer = Timer(Duration(seconds: 2),() async {
+        _timer = Timer(Duration(seconds: 2), () async {
           await _databaseReference.child("$id").set(_multiInfoObject.toJson());
           print("The object sent: $infoObjs");
-        }); 
+        });
 
         // await _databaseReference.child("$id").set(_multiInfoObject.toJson());
         // print("The object sent: $infoObjs");
@@ -202,8 +207,8 @@ class _AddReportFormState extends State<AddReportForm> {
       // color: Colors.grey,
       elevation: 6.0,
       child: Container(
-        height: MediaQuery.of(context).size.height - 400,
-        width: MediaQuery.of(context).size.width - 100,
+        height: MediaQuery.of(context).size.height * 0.5,
+        width: MediaQuery.of(context).size.width *0.8,
         child: Center(
           child: ListView(
             children: <Widget>[
@@ -334,11 +339,8 @@ class _AddReportFormState extends State<AddReportForm> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   onPressed: () {
-                             Noti obj = Noti();
-                    obj.showNotification('Your report has been submitted successfully','Report');
                     saveReport(context);
-                    print('clicked!');
-           
+                    // print('clicked!');
                   },
                   child: Text(
                     "Submit",

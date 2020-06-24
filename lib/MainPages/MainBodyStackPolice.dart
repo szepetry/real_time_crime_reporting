@@ -17,14 +17,14 @@ Marker marker;
 Position _currentPosition;
 
 //TODO:Main body of the application
-class MainBodyStack extends StatefulWidget {
+class MainBodyStackPolice extends StatefulWidget {
   final String uid;
-  MainBodyStack(this.uid);
+  MainBodyStackPolice(this.uid);
   @override
-  _MainBodyStackState createState() => _MainBodyStackState();
+  _MainBodyStackPoliceState createState() => _MainBodyStackPoliceState();
 }
 
-class _MainBodyStackState extends State<MainBodyStack> {
+class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
   void initState() {
     super.initState();
     _getCurrentLocation();
@@ -54,6 +54,7 @@ class _MainBodyStackState extends State<MainBodyStack> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
+        // HomepagePolice(),
         FireMap(),
         Align(
           alignment: Alignment.topRight,
@@ -83,7 +84,7 @@ class _MainBodyStackState extends State<MainBodyStack> {
         ),
         Positioned(
           bottom: 150,
-          left: MediaQuery.of(context).size.width *0.78,
+          left: MediaQuery.of(context).size.width - 80,
           child: RawMaterialButton(
             onPressed: () {
               _getCurrentLocation();

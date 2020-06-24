@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/Authenticate.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/FirestoreService.dart';
@@ -20,7 +21,7 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
   bool validPhone = true;
   bool validLoginPassword = true;
   bool loginMode = false;
-  bool isPolice=false;
+  
   set setLoginMode(bool value) {
     this.loginMode = value;
     notifyListeners();
@@ -53,7 +54,6 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
       aadhar = aadharController.text;
       await crossCheck('aadhar', aadhar, false);
       aadharDB == aadhar ? validAadhar = true : validAadhar = false;
-      occupation == 'police' ? isPolice = true : isPolice = false;
     } else
       validAadhar = true;
     notifyListeners();
@@ -127,7 +127,7 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
   }
 
   void newUserUpdate(String uid) =>
-      updateNewUser(UserData(aadharNo, phoneNo, getOccupation, password), uid);
+      updateNewUser(UserData(nameDB,aadharNo, phoneNo, getOccupation, password), uid);
 
   Future<void> crossCheckLoginData(
       String key, String enteredString, bool isLogin) async {
@@ -141,24 +141,27 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
         enteredString == passwordDB
             ? validLoginPassword = true
             : validLoginPassword = false;
-      occupation == 'police' ? isPolice = true : isPolice = false;
     }
   }
 }
 
 class UserData {
+  String _name;
   String _aadhar;
   String _phoneNo;
   String _password;
   String _occupation;
-  UserData(this._aadhar, this._phoneNo, this._occupation, this._password);
+  GeoPoint _point;
+  UserData(this._name,this._aadhar, this._phoneNo, this._occupation, this._password);
 
-  Map<String, String> toMap() {
-    Map<String, String> userData = {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> userData = {
+      'name':_name,
       'aadhar': _aadhar,
       'phoneNo': _phoneNo,
       'password': _password,
-      'occupation': _occupation
+      'occupation': _occupation,
+      'location':_point
     };
     return userData;
   }

@@ -32,7 +32,6 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<FirebaseUser>(
@@ -45,9 +44,11 @@ class LandingPage extends StatelessWidget {
             return LoginPage(registerHandle, auth);
           else
             return RegisterPage(registerHandle, auth);
-        } else {
+           } else if(authSnapshot.data!=null) {
+          auth.isLoadingController.add(false);
           return handleNavigation(authSnapshot);
-        }
+        } else
+          return Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -72,19 +73,15 @@ class LandingPage extends StatelessWidget {
         if (firestoreSnapshot.hasData) {
           if (firestoreSnapshot.data['occupation'] != 'Police')
             return Provider<UserDetails>(
-              create: (context) => UserDetails(uid),
-              child: HomepageUser()
-              );
+            child: HomepageUser()      );
           else
             return Provider<UserDetails>(
-              create: (context) => UserDetails(uid),
-              child: HomepagePolice()
-              );
+   );
         }
         return Center(child: CircularProgressIndicator());
       },
     );
-  }
+    }
 }
 
 class UserDetails{
