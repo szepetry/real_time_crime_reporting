@@ -115,7 +115,7 @@ class LocationReport {
   // }
 
   void saveReport(BuildContext context) async {
-    await _databaseReference.remove();
+    await _databaseReference.child(id).remove();
     _getCurrentLocation();
     _location = LatLng(_currentPosition.latitude,_currentPosition.longitude);
     print("Location from Location report: "+_currentPosition.toString());
@@ -182,6 +182,42 @@ class LocationReport {
                 ],
               );
             });
+      }
+    } catch (e) {
+      print("Caught exceptions: $e");
+    }
+  }
+
+    void saveInstantReport() async {
+    await _databaseReference.child(id).remove();
+    _getCurrentLocation();
+    _location = LatLng(_currentPosition.latitude,_currentPosition.longitude);
+    print("Location from Location report: "+_currentPosition.toString());
+    try {
+      if (_location != null) {
+        print("1st $count");
+
+        print(_location);
+
+        // navigateToReport(context);
+
+        InfoObject infoObject = InfoObject(
+            this._fName,
+            this._lName,
+            this._phone,
+            this._email,
+            this._description,
+            _currentPosition.toString(),
+            this._urlAttachmentPhoto,
+            this._urlAttachmentVideo,
+            this._address);
+        infoObjs.clear();
+        infoObjs.add(infoObject.toJson());
+        _multiInfoObject = MultiInfoObject(infoObjs, count);
+        await _databaseReference.child("$id").set(_multiInfoObject.toJson());
+        print("The object sent: $infoObjs");
+      } else {
+        print("save instant report function did not work.");
       }
     } catch (e) {
       print("Caught exceptions: $e");

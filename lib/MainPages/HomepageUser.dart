@@ -11,24 +11,71 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../Forms/LocationReport.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
+import 'package:workmanager/workmanager.dart';
+import 'dart:async';
+import '../common_widgets/background_services.dart';
+import 'dart:io';
+import 'package:flutter/services.dart';
 
 // import 'package:flutter/services.dart';
 
 PanelController _panelController = PanelController();
+const platform = const EventChannel("events");
 
 class HomepageUser extends StatefulWidget {
-  
+  // String uid;
   HomepageUser(); //use this uid here
+  // HomepageUser(this.uid);
   @override
   _HomepageUserState createState() => _HomepageUserState();
 }
 
+String actionTaken(dynamic data) {
+  // print("Data: $data");
+  return data;
+}
+
+Stream _stream = platform.receiveBroadcastStream();
+StreamSubscription subscription;
+
 class _HomepageUserState extends State<HomepageUser> {
   String uid;
+  String temp;
 
   @override
   void initState() {
+    // uid = widget.uid;
+    Workmanager.initialize(instantReportExecuter, isInDebugMode: true);
+
+    // Workmanager.registerOneOffTask("1", "Background instant report",
+    //     inputData: {
+    //       "uid": uid,
+    //     });
+    // print();
+    subscription = _stream.listen(actionTaken);
+    // print("$subscription");
+    subscription.onData((data) {
+      Workmanager.registerOneOffTask("2", "Background instant report",
+          inputData: {
+            "uid": uid,
+          });
+      // Workmanager.registerPeriodicTask(
+      //   "3",
+      //   "Background instant report",
+      //   inputData: {
+      //     "uid": uid,
+      //   },
+      // );
+      print("$data");
+    });
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
   }
 
   Future<void> signOut() async {
@@ -40,7 +87,6 @@ class _HomepageUserState extends State<HomepageUser> {
     //need to make more changes for sign out..uid u can use for now
     //il delete useless files later
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +120,7 @@ class _HomepageUserState extends State<HomepageUser> {
 class FloatingActionButtonWidget extends StatelessWidget {
   final String id;
   FloatingActionButtonWidget(this.id);
-    // PanelController _panelController = PanelController();
+  // PanelController _panelController = PanelController();
   // onPressed: () => _panelController.open(),
 
   @override
