@@ -83,7 +83,7 @@ class _MainBodyStackState extends State<MainBodyStack> {
         ),
         Positioned(
           bottom: 150,
-          left: MediaQuery.of(context).size.width *0.78,
+          left: MediaQuery.of(context).size.width - 80,
           child: RawMaterialButton(
             onPressed: () {
               _getCurrentLocation();
@@ -106,5 +106,3 @@ class _MainBodyStackState extends State<MainBodyStack> {
     );
   }
 }
-
-

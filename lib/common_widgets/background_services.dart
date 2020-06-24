@@ -43,8 +43,8 @@ void instantReportExecuter() {
           desiredAccuracy: LocationAccuracy.high,
           locationPermissionLevel: GeolocationPermission.locationAlways);
       if (_currentPosition != null && _currentPosition.latitude != null) {
-        _location =
-            LatLng(_currentPosition.latitude, _currentPosition.longitude);
+        // _location =
+        //     LatLng(_currentPosition.latitude, _currentPosition.longitude);
         // print("Location from Location report: "+_currentPosition.toString());
         InfoObject infoObject = InfoObject(
             _fName,

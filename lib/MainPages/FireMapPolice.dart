@@ -10,27 +10,35 @@ import "dart:async";
 
 Completer<GoogleMapController> _controller = Completer();
 
-
 Future<void> moveCamera() async {
-  
-    Position res = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        locationPermissionLevel: GeolocationPermission.locationAlways);
+  Position res = await Geolocator().getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+      locationPermissionLevel: GeolocationPermission.locationAlways);
 
-    GoogleMapController mapController = await _controller.future;
+  GoogleMapController mapController = await _controller.future;
 
-    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(res.latitude, res.longitude),
-      zoom: 17.0,
-    )));
-
-  }
+  mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+    target: LatLng(res.latitude, res.longitude),
+    zoom: 17.0,
+  )));
+}
 
 class FireMapPolice extends StatefulWidget {
   FireMapPolice(); //use this uid here
   @override
   _FireMapPoliceState createState() => _FireMapPoliceState();
 }
+
+// UserDetails user = Provider.of<UserDetails>(context, listen: false);
+StreamSubscription _streamSubscription = Firestore.instance
+    .collection("registeredUsers")
+    .snapshots()
+    .listen((querySnapshot) {
+  querySnapshot.documentChanges.forEach((element) {
+    
+  });
+});
+// StreamSubscription subscription;
 
 class _FireMapPoliceState extends State<FireMapPolice> {
   String uid;
@@ -41,11 +49,14 @@ class _FireMapPoliceState extends State<FireMapPolice> {
   @override
   void initState() {
     getCurrentLocation(); //current location of the police official
-    populateOfficials(); // accesses the database
     print("hello " + position.toString());
-    Future.delayed(Duration(seconds: 5)).then((value) {
+    Future.delayed(Duration(seconds: 3)).then((value) {
       updateData(); //updates location in the database
     });
+    Future.delayed(Duration(seconds: 3)).then((value) {
+      populateOfficials(); // accesses the database
+    });
+
     super.initState();
   }
 
@@ -110,7 +121,10 @@ class _FireMapPoliceState extends State<FireMapPolice> {
   }
 
   populateOfficials() {
-    Firestore.instance.collection('police data').getDocuments().then((docs) {
+    Firestore.instance
+        .collection('registeredUsers')
+        .getDocuments()
+        .then((docs) {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; ++i) {
           initMarker(docs.documents[i].data, docs.documents[i].documentID);
@@ -128,8 +142,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
       markerId: markerId,
       position:
           LatLng(request['location'].latitude, request['location'].longitude),
-      infoWindow:
-          InfoWindow(title: request['name'], snippet: request['location']),
+      infoWindow: InfoWindow(title: request['name']),
       draggable: false,
     );
 

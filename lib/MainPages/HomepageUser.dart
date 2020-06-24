@@ -89,9 +89,10 @@ class _HomepageUserState extends State<HomepageUser> {
 
   @override
   Widget build(BuildContext context) {
-   UserDetails u = Provider.of<UserDetails>(context, listen: false);
+    UserDetails u = Provider.of<UserDetails>(context, listen: false);
     //inherited widget using provider to access uid to all child widgets
-   uid = u.uid;
+    uid = u.uid;
+    
     return Scaffold(
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -107,8 +108,8 @@ class _HomepageUserState extends State<HomepageUser> {
         collapsed: Container(
           child: Divider(
             thickness: 4.0,
-            endIndent: MediaQuery.of(context).size.width *0.5,
-            indent: MediaQuery.of(context).size.width *0.2,
+            endIndent: MediaQuery.of(context).size.width * 0.5,
+            indent: MediaQuery.of(context).size.width * 0.2,
           ),
         ),
       ),
@@ -126,9 +127,14 @@ class FloatingActionButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Colors.red,
-      onPressed: () {  
+      onPressed: () {
         LocationReport(id).saveReport(context);
-         Noti obj = Noti();
+        // Future.delayed(Duration(seconds: 3),(){
+        //   print("Button report: Waiting for report to generate.");
+        // }).then((value) {
+
+        // });
+        Noti obj = Noti();
         obj.showNotification(
           sentence: 'Your report is getting generated.',
           heading: 'Generating...',
