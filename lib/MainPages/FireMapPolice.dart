@@ -110,7 +110,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
   }
 
   populateOfficials() {
-    Firestore.instance.collection('police data').getDocuments().then((docs) {
+    Firestore.instance.collection('registeredUsers').getDocuments().then((docs) {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; ++i) {
           initMarker(docs.documents[i].data, docs.documents[i].documentID);
@@ -129,7 +129,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
       position:
           LatLng(request['location'].latitude, request['location'].longitude),
       infoWindow:
-          InfoWindow(title: request['name'], snippet: request['location']),
+          InfoWindow(title: request['name']),
       draggable: false,
     );
 
