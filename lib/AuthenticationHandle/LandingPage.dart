@@ -38,7 +38,7 @@ class LandingPage extends StatelessWidget {
     return StreamBuilder<FirebaseUser>(
       stream: Authenticate.currentAuthState,
       builder: (context, authSnapshot) {
-       // authSnapshot.data.delete();
+        // authSnapshot.data.delete();
         print('Auth state rebuild..auth value:' + authSnapshot.data.toString());
         if (authSnapshot.data == null) {
           if (registerHandle.loginMode == true)
