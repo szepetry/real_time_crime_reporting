@@ -20,7 +20,7 @@ import 'package:flutter/services.dart';
 // import 'package:flutter/services.dart';
 
 PanelController _panelController = PanelController();
-const platform = const EventChannel("events");
+const platform = const EventChannel("com.renegades.miniproject/voldown");
 
 class HomepageUser extends StatefulWidget {
   // String uid;
@@ -46,7 +46,7 @@ class _HomepageUserState extends State<HomepageUser> {
   void initState() {
     // uid = widget.uid;
     Workmanager.initialize(instantReportExecuter, isInDebugMode: true);
-
+    // Workmanager.cancelAll();
     // Workmanager.registerOneOffTask("1", "Background instant report",
     //     inputData: {
     //       "uid": uid,
@@ -55,7 +55,7 @@ class _HomepageUserState extends State<HomepageUser> {
     subscription = _stream.listen(actionTaken);
     // print("$subscription");
     subscription.onData((data) {
-      Workmanager.registerOneOffTask("2", "Background instant report",
+      Workmanager.registerOneOffTask("5", "Background instant report",
           inputData: {
             "uid": uid,
           });
@@ -68,15 +68,17 @@ class _HomepageUserState extends State<HomepageUser> {
       // );
       print("$data");
     });
+    //To start the service whenever Homepage opens
+    startServiceInPlatform();
 
     super.initState();
   }
 
-  @override
-  void dispose() {
-    subscription.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   subscription.cancel();
+  //   super.dispose();
+  // }
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();

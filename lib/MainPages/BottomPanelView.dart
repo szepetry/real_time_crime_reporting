@@ -24,7 +24,7 @@ class BottomPanelView extends StatefulWidget {
 
 class _BottomPanelViewState extends State<BottomPanelView> {
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
-  static const platform = const EventChannel("events");
+  static const platform = const EventChannel("com.renegades.miniproject/voldown");
 
   //Takes the app to report form
   navigateToReportForm(id) {
