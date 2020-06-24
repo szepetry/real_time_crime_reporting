@@ -1,35 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
+import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import "dart:async";
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:workmanager/workmanager.dart';
+//import 'package:instant_reporter/pages/FireMap.dart';
+import '../Forms/LocationReport.dart';
+import 'package:instant_reporter/MainPages/MainBodyStack.dart';
+import 'package:instant_reporter/MainPages/BottomPanelView.dart';
+import 'package:instant_reporter/common_widgets/notifications.dart';
+import 'MainBodyStackPolice.dart';
+
+import 'package:flutter/services.dart';
+
+PanelController _panelController = PanelController();
+// const platform = const EventChannel("events");
 
 class HomepagePolice extends StatefulWidget {
   HomepagePolice(); //use this uid here
+  // HomepagePolice(this.uid);
   @override
   _HomepagePoliceState createState() => _HomepagePoliceState();
 }
 
+// String actionTaken(dynamic data) {
+//   // print("Data: $data");
+//   return data;
+// }
+
+// Stream _stream = platform.receiveBroadcastStream();
+// StreamSubscription subscription;
+
 class _HomepagePoliceState extends State<HomepagePolice> {
   String uid;
-  GoogleMapController mapController;
-  Position position;
-  Widget _child;
+  String temp;
 
   @override
   void initState() {
-    getCurrentLocation(); //current location of the police official
-    populateOfficials();  // accesses the database 
-    print("hello "+position.toString());
-    Future.delayed(Duration(seconds: 5)).then((value) {
-    updateData(); //updates location in the database 
-    
-    });
+    // uid = widget.uid;
+    // Workmanager.initialize(instantReportExecuter, isInDebugMode: true);
+
+    // // Workmanager.registerOneOffTask("1", "Background instant report",
+    // //     inputData: {
+    // //       "uid": uid,
+    // //     });
+    // // print();
+    // subscription = _stream.listen(actionTaken);
+    // // print("$subscription");
+    // subscription.onData((data) {
+    //   Workmanager.registerOneOffTask("2", "Background instant report",
+    //       inputData: {
+    //         "uid": uid,
+    //       });
+    //   // Workmanager.registerPeriodicTask(
+    //   //   "3",
+    //   //   "Background instant report",
+    //   //   inputData: {
+    //   //     "uid": uid,
+    //   //   },
+    //   // );
+    //   print("$data");
+    // });
+
     super.initState();
   }
+
+  // @override
+  // void dispose() {
+  //   subscription.cancel();
+  //   super.dispose();
+  // }
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
@@ -40,93 +85,58 @@ class _HomepagePoliceState extends State<HomepagePolice> {
     //need to make more changes for sign out..uid u can use for now
     //il delete useless files later
   }
-  List<Placemark> placemark;
-  String _address;
-  void getAddress(double latitude, double longitude) async {
-    placemark =
-        await Geolocator().placemarkFromCoordinates(latitude, longitude);
-    _address =
-        placemark[0].name.toString() + "," + placemark[0].locality.toString();
-    setState(() {
-      _child = mapWidget();
-    });
-    
-  }
-  void getCurrentLocation() async {
-    Position res =  await Geolocator().getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-          locationPermissionLevel: GeolocationPermission.locationAlways);
-    setState(() {
-      position = res;
-    });
 
-    var _lat = position.latitude;
-    var _lng = position.longitude;
-    getAddress(_lat, _lng);
-  }
   @override
   Widget build(BuildContext context) {
-    UserDetails u = Provider.of<UserDetails>(context, listen: false);
-    uid = u.uid;
-    return Container(
-      child: Center(
-        child: FlatButton(onPressed: signOut, child: Text('\tPolice\Touch to Log Out'),color: Colors.indigo[200],),
+   UserDetails u = Provider.of<UserDetails>(context, listen: false);
+    //inherited widget using provider to access uid to all child widgets
+   uid = u.uid;
+    return Scaffold(
+      // floatingActionButton: FloatingActionButtonWidget(uid),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: SlidingUpPanel(
+        maxHeight: 600,
+        minHeight: 100,
+        isDraggable: true,
+        backdropEnabled: true,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+        // panel: BottomPanelView(uid),
+        panel: Container(),
+        body: MainBodyStackPolice(),
+        // body:Container(),
+        collapsed: Container(
+          child: Divider(
+            thickness: 4.0,
+            endIndent: MediaQuery.of(context).size.width *0.5,
+            indent: MediaQuery.of(context).size.width *0.2,
+          ),
+        ),
       ),
     );
   }
-    Widget mapWidget() {
-    var googleMap = GoogleMap(
-      mapType: MapType.normal,
-      markers: Set<Marker>.of(markers.values),
-      initialCameraPosition: CameraPosition(
-          target: LatLng(position.latitude, position.longitude), zoom: 12.0),
-      onMapCreated: (GoogleMapController controller) {
-        mapController = controller;
-      },
-    );
-    return googleMap;
-  }
-  populateOfficials() {
-    Firestore.instance
-        .collection('police data')
-        .getDocuments()
-        .then((docs) {
-      if (docs.documents.isNotEmpty) {
-        for (int i = 0; i < docs.documents.length; ++i) {
-          initMarker(docs.documents[i].data, docs.documents[i].documentID);
-        }
-      }
-    });
-  }
-    Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
-  void initMarker(request, requestId) {
-    var markerIdVal=requestId;
-    final MarkerId markerId = MarkerId(markerIdVal);
-    final Marker marker=Marker(
-      markerId: markerId,
-      position:
-          LatLng(request['location'].latitude, request['location'].longitude),
-      infoWindow: InfoWindow(title: request['name'],snippet: markerIdVal),
-      draggable: false,);
-    
-    setState(() {
-      markers[markerId] = marker;
-      print(markerId);
-    
-    });
-
-  }
-  
-
-  updateData() async {  
-    print("location in updateData: $position");
-    await Firestore.instance
-        .collection('registeredUsers')
-        .document(u.)
-        .updateData({
-      "location": GeoPoint(position.latitude, position.longitude),
-    });
-
-  }
 }
+
+// class FloatingActionButtonWidget extends StatelessWidget {
+//   final String id;
+//   FloatingActionButtonWidget(this.id);
+//   // PanelController _panelController = PanelController();
+//   // onPressed: () => _panelController.open(),
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return FloatingActionButton(
+//       backgroundColor: Colors.red,
+//       onPressed: () {  
+//         LocationReport(id).saveReport(context);
+//          Noti obj = Noti();
+//         obj.showNotification(
+//           sentence: 'Your report is getting generated.',
+//           heading: 'Generating...',
+//         );
+//         _panelController.open();
+//       },
+//       child: Icon(Icons.offline_bolt),
+//     );
+//   }
+// }

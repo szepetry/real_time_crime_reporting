@@ -32,22 +32,24 @@ class LandingPage extends StatelessWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<FirebaseUser>(
       stream: Authenticate.currentAuthState,
       builder: (context, authSnapshot) {
-        // authSnapshot.data.delete();
-        print('Auth state rebuild..auth value:' + authSnapshot.data.toString());
+       // authSnapshot.data.delete();
+       print('Auth state rebuild..auth value:' + authSnapshot.data.toString());
         if (authSnapshot.data == null) {
           if (registerHandle.loginMode == true)
             return LoginPage(registerHandle, auth);
           else
             return RegisterPage(registerHandle, auth);
-           } else if(authSnapshot.data!=null) {
+        } else if(authSnapshot.data!=null) {
           auth.isLoadingController.add(false);
           return handleNavigation(authSnapshot);
-        } else
+        }
+        else
           return Center(child: CircularProgressIndicator());
       },
     );
@@ -73,15 +75,19 @@ class LandingPage extends StatelessWidget {
         if (firestoreSnapshot.hasData) {
           if (firestoreSnapshot.data['occupation'] != 'Police')
             return Provider<UserDetails>(
-            child: HomepageUser()      );
+              create: (context) => UserDetails(uid),
+              child: HomepageUser()
+              );
           else
             return Provider<UserDetails>(
-   );
+              create: (context) => UserDetails(uid),
+              child: HomepagePolice()
+              );
         }
         return Center(child: CircularProgressIndicator());
       },
     );
-    }
+  }
 }
 
 class UserDetails{

@@ -6,7 +6,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
-import 'package:instant_reporter/MainPages/FireMap.dart';
+import 'package:instant_reporter/MainPages/FireMapPolice.dart';
 import 'Buttons/ProfileMenu.dart';
 import 'package:provider/provider.dart';
 import 'package:instant_reporter/MainPages/Drawers.dart';
@@ -18,8 +18,8 @@ Position _currentPosition;
 
 //TODO:Main body of the application
 class MainBodyStackPolice extends StatefulWidget {
-  final String uid;
-  MainBodyStackPolice(this.uid);
+  // final String uid;
+  MainBodyStackPolice();
   @override
   _MainBodyStackPoliceState createState() => _MainBodyStackPoliceState();
 }
@@ -55,7 +55,7 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
     return Stack(
       children: <Widget>[
         // HomepagePolice(),
-        FireMap(),
+        FireMapPolice(),
         Align(
           alignment: Alignment.topRight,
           child: IconButton(
