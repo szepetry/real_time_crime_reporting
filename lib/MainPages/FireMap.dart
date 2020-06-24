@@ -85,7 +85,7 @@ class _FireMapState extends State<FireMap> {
           myLocationEnabled: true,
           
       onMapCreated: (GoogleMapController controller) {
-        mapController = controller;
+        _controller.complete(controller);
       },
     );
     return googleMap;
