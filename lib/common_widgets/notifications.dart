@@ -5,7 +5,7 @@ class Noti{
    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-    showNotification(String sentence, String heading) async {
+    showNotification({@required String sentence, @required String heading}) async {
       
    var android= AndroidInitializationSettings('@mipmap/ic_launcher');
     var ios=IOSInitializationSettings();

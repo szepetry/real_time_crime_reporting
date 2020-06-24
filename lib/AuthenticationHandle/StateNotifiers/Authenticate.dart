@@ -165,6 +165,7 @@ class Authenticate with ChangeNotifier {
       await displayDialog('An error has occurred', 'Auth Failed');
     });
     _otpsent = false;
+   
     // closeLoadingStream();
   }
 }

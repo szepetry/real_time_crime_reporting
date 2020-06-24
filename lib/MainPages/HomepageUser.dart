@@ -1,29 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
+import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'dart:async';
-// import 'package:geolocator/geolocator.dart';
-// import 'package:transparent_image/transparent_image.dart';
-// import 'package:instant_reporter/pages/FireMap.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:workmanager/workmanager.dart';
+//import 'package:instant_reporter/pages/FireMap.dart';
 import '../Forms/LocationReport.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
-import 'package:workmanager/workmanager.dart';
-import 'dart:async';
-import '../common_widgets/background_services.dart';
-import 'dart:io';
-import 'package:flutter/services.dart';
+import 'package:instant_reporter/common_widgets/notifications.dart';
 
-// import 'package:flutter/services.dart';
+import 'package:flutter/services.dart';
 
 PanelController _panelController = PanelController();
 const platform = const EventChannel("events");
 
 class HomepageUser extends StatefulWidget {
-  // String uid;
   HomepageUser(); //use this uid here
   // HomepageUser(this.uid);
   @override
@@ -90,9 +87,9 @@ class _HomepageUserState extends State<HomepageUser> {
 
   @override
   Widget build(BuildContext context) {
-    UserDetails u =Provider.of<UserDetails>(context, listen: false);
+   UserDetails u = Provider.of<UserDetails>(context, listen: false);
     //inherited widget using provider to access uid to all child widgets
-    uid=u.uid;
+   uid = u.uid;
     return Scaffold(
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -108,8 +105,8 @@ class _HomepageUserState extends State<HomepageUser> {
         collapsed: Container(
           child: Divider(
             thickness: 4.0,
-            endIndent: MediaQuery.of(context).size.width - 200,
-            indent: MediaQuery.of(context).size.width - 300,
+            endIndent: MediaQuery.of(context).size.width *0.5,
+            indent: MediaQuery.of(context).size.width *0.2,
           ),
         ),
       ),
@@ -127,8 +124,13 @@ class FloatingActionButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Colors.red,
-      onPressed: () {
+      onPressed: () {  
         LocationReport(id).saveReport(context);
+         Noti obj = Noti();
+        obj.showNotification(
+          sentence: 'Your report is getting generated.',
+          heading: 'Generating...',
+        );
         _panelController.open();
       },
       child: Icon(Icons.offline_bolt),

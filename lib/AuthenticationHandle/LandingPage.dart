@@ -39,16 +39,18 @@ class LandingPage extends StatelessWidget {
       stream: Authenticate.currentAuthState,
       builder: (context, authSnapshot) {
        // authSnapshot.data.delete();
-        print('Auth state rebuild..auth value:' + authSnapshot.data.toString());
+       print('Auth state rebuild..auth value:' + authSnapshot.data.toString());
         if (authSnapshot.data == null) {
           if (registerHandle.loginMode == true)
             return LoginPage(registerHandle, auth);
           else
             return RegisterPage(registerHandle, auth);
-        } else {
+        } else if(authSnapshot.data!=null) {
           auth.isLoadingController.add(false);
           return handleNavigation(authSnapshot);
         }
+        else
+          return Center(child: CircularProgressIndicator());
       },
     );
   }

@@ -1,9 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/Authenticate.dart';
-import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/FirestoreService.dart';
+
 
 enum bailOutOptions {closeApp,signOut,deleteAccount}
 bailOutOptions bailOutState;
@@ -44,13 +42,20 @@ Future<void> confirmBailOutRequest(BuildContext context, String message) {
         _closeAndSignOut(context);
         break;
       case bailOutOptions.deleteAccount:
-        deleteAccount();
+        _deleteAccount();
       break;
       default:
     }
   }
 
-  void deleteAccount() => Authenticate.deleteAccount();
+  void _deleteAccount() => Authenticate.deleteAccount();
+  
+  Future<void> _signOut() async => Authenticate.signOut();
+
+  Future<void> _closeAndSignOut(BuildContext context) async {
+    await _signOut();
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+  }
 
    Widget ascertainText(String message) {
     switch (message) {
@@ -72,12 +77,5 @@ Future<void> confirmBailOutRequest(BuildContext context, String message) {
       default:
         return null;
     }
-  }
-
-  Future<void> _signOut() async => Authenticate.signOut();
-
-  Future<void> _closeAndSignOut(BuildContext context) async {
-    await _signOut();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 }

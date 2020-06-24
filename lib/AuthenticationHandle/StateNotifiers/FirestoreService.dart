@@ -5,7 +5,7 @@ import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/RegisterPag
 class FirestoreService {
   bool isError = false;
 
-  String aadharDB, occupation, phoneNoDB, passwordDB;
+  String aadharDB, occupation, phoneNoDB, passwordDB,nameDB;
   
   String get getOccupation => this.occupation;
 
@@ -72,6 +72,7 @@ class FirestoreService {
   void _loadRegisterCreds(Map<String,dynamic> aadharDetails){
     aadharDB = aadharDetails['aadhar'];
     occupation = aadharDetails['occupation'];
+    nameDB=aadharDetails['name'];
   }
 
   Future<void> _getPassword(String aadharKey, String enteredAadhar) async {
