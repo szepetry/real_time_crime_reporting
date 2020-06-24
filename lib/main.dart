@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
-<<<<<<< HEAD
 import 'package:instant_reporter/MainPages/HomepageUser.dart';
-=======
->>>>>>> afcf98a81c13c2b614a22044705dfbe3bc5dfbf5
 
 void main() => runApp(MyApp());
 

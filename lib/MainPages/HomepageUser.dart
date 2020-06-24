@@ -1,36 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
+import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'dart:async';
-// import 'package:geolocator/geolocator.dart';
-// import 'package:transparent_image/transparent_image.dart';
-// import 'package:instant_reporter/pages/FireMap.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
+import 'package:transparent_image/transparent_image.dart';
+import 'package:workmanager/workmanager.dart';
+//import 'package:instant_reporter/pages/FireMap.dart';
 import '../Forms/LocationReport.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
-<<<<<<< HEAD
 import 'package:instant_reporter/common_widgets/notifications.dart';
-=======
-import 'package:workmanager/workmanager.dart';
-import 'dart:async';
-import '../common_widgets/background_services.dart';
-import 'dart:io';
-import 'package:flutter/services.dart';
->>>>>>> afcf98a81c13c2b614a22044705dfbe3bc5dfbf5
 
-// import 'package:flutter/services.dart';
+import 'package:flutter/services.dart';
 
 PanelController _panelController = PanelController();
 const platform = const EventChannel("events");
 
 class HomepageUser extends StatefulWidget {
-<<<<<<< HEAD
-=======
-  // String uid;
->>>>>>> afcf98a81c13c2b614a22044705dfbe3bc5dfbf5
   HomepageUser(); //use this uid here
   // HomepageUser(this.uid);
   @override
@@ -115,8 +105,8 @@ class _HomepageUserState extends State<HomepageUser> {
         collapsed: Container(
           child: Divider(
             thickness: 4.0,
-            endIndent: MediaQuery.of(context).size.width - 200,
-            indent: MediaQuery.of(context).size.width - 300,
+            endIndent: MediaQuery.of(context).size.width *0.5,
+            indent: MediaQuery.of(context).size.width *0.2,
           ),
         ),
       ),
