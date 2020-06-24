@@ -41,20 +41,39 @@ class _ReportFormState extends State<ReportForm> {
         type: MaterialType.transparency,
         child: Container(
           //Change the form color here.
-          color: Colors.white,
+          color: Color(backgroundColor),
           child: Stack(
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Align(
-                      child: Container(
-                          child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Text(
-                                "Your Reports",
-                                style: TextStyle(fontSize: 40.0),
-                              ))),
-                      alignment: Alignment.topCenter),
+                  Container(
+                      child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          "Your Reports",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 40.0, color: Colors.white),
+                        ),
+                         CommonInfo(
+                           heading: ' Name:',
+                           data: ' Xyz',
+                         ),
+                         CommonInfo(
+                           heading: ' Email:',
+                           data: ' xyz@gmail.com',
+                         ),
+                            CommonInfo(
+                           heading: ' Phone Number: ',
+                           data: ' 1234567894',
+                         ),
+                          
+                         
+                          
+                      ],
+                    ),
+                  )),
                   Padding(padding: EdgeInsets.all(1.0)),
                   // Divider(),
                   Expanded(
@@ -69,7 +88,7 @@ class _ReportFormState extends State<ReportForm> {
                             return Column(
                               children: <Widget>[
                                 Card(
-                                  // color: Colors.white30,
+                                  color: Color(cardColor),
                                   elevation: 2.0,
                                   child: Container(
                                     padding: EdgeInsets.all(15),
@@ -110,8 +129,12 @@ class _ReportFormState extends State<ReportForm> {
                           print(
                               "Result from report Form: ${result.toString()}");
                         },
-                        backgroundColor: Colors.deepOrange,
-                        label: Text("Add to the report"),
+                        backgroundColor: Color(buttonColor),
+                        label: Text("Add to the report",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        ),
                       ))),
             ],
           ),
@@ -124,88 +147,89 @@ class _ReportFormState extends State<ReportForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          "Location:",
-          style: kTextStyleOfHeadings,
+        Row(children: <Widget>[
+          ReportRows(
+            colourOfTheBackground: colourHeading,
+            styleOfText: kTextStyleOfHeadings,
+            textString: 'Location:',
+          ),
+        ]),
+        Row(
+          children: <Widget>[
+            ReportRows(
+              colourOfTheBackground: colourbelow,
+              styleOfText: kTextStyleForData,
+              textString: snapshot.value['location'],
+            ),
+          ],
         ),
-        Text(
-          snapshot.value['location'],
-          style: kTextStyleForData,
+        Row(children: <Widget>[
+          ReportRows(
+            colourOfTheBackground: colourHeading,
+            styleOfText: kTextStyleOfHeadings,
+            textString: 'Description: ',
+          ),
+        ]),
+        
+        Row(
+          children: [
+            ReportRows(
+              colourOfTheBackground: colourbelow,
+              styleOfText: kTextStyleForData,
+              textString: snapshot.value['description'],
+            ),
+          ],
         ),
-        Text(
-          "Description:",
-          style: kTextStyleOfHeadings,
+ Row(children: <Widget>[
+          ReportRows(
+            colourOfTheBackground: colourHeading,
+            styleOfText: kTextStyleOfHeadings,
+            textString: 'Date and Time:',
+          ),
+          ReportRows(
+            colourOfTheBackground: colourbelow,
+            styleOfText: kTextStyleForData,
+            textString: '10/04/19 10:20pm',
+          ),
+        ]),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: ReusableCard(
+                colour: Color(colourHeading),
+                cardChild: Text(
+                  "Image:",
+                  style: kTextStyleOfHeadings,
+                ),
+              ),
+            ),
+            Expanded(
+              child: ReusableCard(
+                colour: Color(colourHeading),
+                cardChild: Text(
+                  "Video:",
+                  style: kTextStyleOfHeadings,
+                ),
+              ),
+            ),
+          ],
         ),
-        Text(
-          snapshot.value['description'],
-          style: kTextStyleForData,
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: snapshot.value['urlAttachmentPhoto'],
+                
+              ),
+            ),
+            Expanded(
+              child: VideoPlayerWidget(
+                url: snapshot.value['urlAttachmentVideo'],
+              ),
+            ),
+          ],
         ),
-        Text(
-          "Image:",
-          style: kTextStyleOfHeadings,
-        ),
-        // Text(
-        //   snapshot.value['urlAttachmentPhoto'],
-        //   style: kTextStyleForUrl,
-        // ),
-        FadeInImage.memoryNetwork(
-          placeholder: kTransparentImage,
-          image: snapshot.value['urlAttachmentPhoto'],
-          height: 80.0,
-          width: 80.0,
-        ),
-        // Image.network(
-        //   snapshot.value['urlAttachmentPhoto'],
-        //   height: 80.0,
-        //   width: 80.0,
-        // ),
-        Text(
-          "Video:",
-          style: kTextStyleOfHeadings,
-        ),
-
-        VideoPlayerWidget(
-          url: snapshot.value['urlAttachmentVideo'],
-        ),
-        // Center(
-        //   child: _controller.value.initialized
-        //       ? AspectRatio(
-        //           aspectRatio: _controller.value.aspectRatio,
-        //           child: VideoPlayer(_controller),
-        //         )
-        //       : Container(),
-        // ),
-        // FloatingActionButton(
-        //   heroTag: "btn3",
-        //   onPressed: () {
-        //     setState(() {
-        //       _controller.value.isPlaying
-        //           ? _controller.pause()
-        //           : _controller.play();
-        //     });
-        //   },
-        //   child: Icon(
-        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        //   ),
-        // ),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {
-        //     setState(() {
-        //       _controller.value.isPlaying
-        //           ? _controller.pause()
-        //           : _controller.play();
-        //     });
-        //   },
-        //   child: Icon(
-        //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        //   ),
-        // ),
-
-        // Text(
-        //   snapshot.value['urlAttachmentVideo'],
-        //   style: kTextStyleForUrl,
-        // ),
-
         Divider(),
       ],
     );
@@ -221,3 +245,4 @@ class _ReportFormState extends State<ReportForm> {
     _controller.play();
   }
 }
+
