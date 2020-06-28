@@ -7,20 +7,26 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:async";
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:instant_reporter/common_widgets/constants.dart';
 
 Completer<GoogleMapController> _controller = Completer();
+String _mapStyleNight;
+
 
 Future<void> moveCamera() async {
-  Position res = await Geolocator().getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-      locationPermissionLevel: GeolocationPermission.locationAlways);
+  await Geolocator()
+      .getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          locationPermissionLevel: GeolocationPermission.locationAlways)
+      .then((value) async {
+    GoogleMapController mapController = await _controller.future;
 
-  GoogleMapController mapController = await _controller.future;
-
-  mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-    target: LatLng(res.latitude, res.longitude),
-    zoom: 17.0,
-  )));
+    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: LatLng(value.latitude, value.longitude),
+      zoom: 17.0,
+    )));
+  });
 }
 
 class FireMapPolice extends StatefulWidget {
@@ -34,9 +40,7 @@ StreamSubscription _streamSubscription = Firestore.instance
     .collection("registeredUsers")
     .snapshots()
     .listen((querySnapshot) {
-  querySnapshot.documentChanges.forEach((element) {
-    
-  });
+  querySnapshot.documentChanges.forEach((element) {});
 });
 // StreamSubscription subscription;
 
@@ -48,6 +52,9 @@ class _FireMapPoliceState extends State<FireMapPolice> {
 
   @override
   void initState() {
+        rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
+      _mapStyleNight = json;
+    });
     getCurrentLocation(); //current location of the police official
     print("hello " + position.toString());
     Future.delayed(Duration(seconds: 3)).then((value) {
@@ -114,7 +121,9 @@ class _FireMapPoliceState extends State<FireMapPolice> {
       initialCameraPosition: CameraPosition(
           target: LatLng(position.latitude, position.longitude), zoom: 12.0),
       onMapCreated: (GoogleMapController controller) {
-        _controller.complete(controller);
+        _controller.complete(controller);        
+        mapController = controller;
+        mapController.setMapStyle(_mapStyleNight);
       },
     );
     return googleMap;

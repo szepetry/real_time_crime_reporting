@@ -4,19 +4,18 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:path/path.dart';
 import 'package:instant_reporter/model/infoObject.dart';
 import 'package:instant_reporter/model/multiInfoObject.dart';
-import '../MainPages/FireMap.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
+import '../common_widgets/video_player_widget.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
 Position _currentPosition;
-//TODO: change count to 1
 int count = 0;
 bool isLoading = true;
 MultiInfoObject _multiInfoObject;
@@ -48,22 +47,17 @@ class _AddReportFormState extends State<AddReportForm> {
   String _urlAttachmentPhoto = '';
   String _urlAttachmentVideo = '';
   LatLng _location;
-  // String loc;
   String _description = '';
 
   @override
   void initState() {
     super.initState();
-    // infoObjs.clear();
     print("hello first load init state: " + firstLoad.toString());
     _getLocation();
     _databaseReference.child(id).onValue.listen((event) {
       count = event.snapshot.value['count'];
       print("Count value init: " + count.toString());
     });
-    // if(count!=0){
-    //   firstLoad=true;
-    // }
   }
 
   @override
@@ -77,7 +71,6 @@ class _AddReportFormState extends State<AddReportForm> {
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
       _currentPosition = position;
-      // _location = LatLng(_currentPosition.latitude, _currentPosition.longitude);
     });
   }
 
@@ -88,8 +81,6 @@ class _AddReportFormState extends State<AddReportForm> {
         print("Firstload in getReport: " + this.firstLoad.toString());
         print("count value getReport: " + count.toString());
         if (count >= 0) {
-          
-          // count = event.snapshot.value['count'];
           for (int index = 0; index < snapshot.value['count']; index++) {
             // print(infoObjs);
             infoObjs.add(snapshot.value['infoObject'][index]);
@@ -103,7 +94,6 @@ class _AddReportFormState extends State<AddReportForm> {
 
   saveReport(BuildContext context) async {
     try {
-      // if(count)
       bool loadStat = this.firstLoad;
       print("save report state check: $loadStat");
       if (_fName.isNotEmpty ||
@@ -115,25 +105,19 @@ class _AddReportFormState extends State<AddReportForm> {
           _urlAttachmentVideo.isNotEmpty ||
           _description.isNotEmpty ||
           _location != null) {
-        // infoObjs.clear();
-        print("1st $count");
-
         if (loadStat == false) {
           print("1st load count: $count");
 
-          //TODO: make 0 -> 1 here
-          // if (count >= 1) {
           getReport(id, context);
           setState(() {
             loadStat = true;
-            Noti obj = Noti();
-          obj.showNotification(
-            sentence: 'Your report has been submitted successfully',
-            heading: 'Report',
-          );
-            // isLoading = false;
+            NotificationManager notificationManager = NotificationManager();
+            notificationManager.showNotification(
+                sentence: 'Your report has been submitted successfully',
+                heading: 'Report',
+                priority: priority,
+                importance: importance);
           });
-          // }
         }
 
         print(_description);
@@ -156,30 +140,11 @@ class _AddReportFormState extends State<AddReportForm> {
 
         infoObjs.add(infoObject.toJson());
         _multiInfoObject = MultiInfoObject(infoObjs, count);
-        // //Sleep statement
-        // print("sleeping for 2 now\n");
-        // sleep(Duration(seconds: 2));
         _timer = Timer(Duration(seconds: 2), () async {
           await _databaseReference.child("$id").set(_multiInfoObject.toJson());
           print("The object sent: $infoObjs");
         });
-
-        // await _databaseReference.child("$id").set(_multiInfoObject.toJson());
-        // print("The object sent: $infoObjs");
-
-        // infoObjs.clear();
-      }
-      //  else if (isLoading == true) {
-      //   showDialog(
-      //       context: context,
-      //       builder: (context) {
-      //         return AlertDialog(
-      //           // title: Text("At least one field required"),
-      //           content: CircularProgressIndicator(),
-      //         );
-      //       });
-      // }
-      else {
+      } else {
         showDialog(
             context: context,
             builder: (context) {
@@ -204,11 +169,14 @@ class _AddReportFormState extends State<AddReportForm> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      // color: Colors.grey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      color: Color(backgroundColor),
       elevation: 6.0,
       child: Container(
         height: MediaQuery.of(context).size.height * 0.60,
-        width: MediaQuery.of(context).size.width *0.8,
+        width: MediaQuery.of(context).size.width * 0.8,
         child: Center(
           child: ListView(
             children: <Widget>[
@@ -216,14 +184,17 @@ class _AddReportFormState extends State<AddReportForm> {
                   padding: EdgeInsets.all(15.0),
                   child: Text(
                     "Add to the report",
-                    style: TextStyle(fontSize: 30.0),
+                    style: TextStyle(fontSize: 30.0, color: Colors.white),
                   )),
               Divider(
-                color: Colors.black12,
+                color: Color(cardColor),
               ),
               Container(
                 margin: EdgeInsets.all(20.0),
                 child: TextField(
+                  cursorColor: Colors.white,
+                  style: TextStyle(color: Colors.white),
+                      
                   onChanged: (value) {
                     setState(() {
                       _description = value;
@@ -232,7 +203,16 @@ class _AddReportFormState extends State<AddReportForm> {
                   maxLines: 10,
                   decoration: InputDecoration(
                       labelText: "Description",
-                      labelStyle: TextStyle(fontSize: 20),
+                      // fillColor: Colors.white,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color:Colors.white10)
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color:Colors.white10)
+                      ),
+                      labelStyle: TextStyle(fontSize: 20, color: Colors.white),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       )),
@@ -240,14 +220,13 @@ class _AddReportFormState extends State<AddReportForm> {
               ),
               Row(
                 //TODO: Add as gesture buttons
-                // crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(top: 20.0),
                     child: GestureDetector(
                       onTap: () {
-                        this.pickVideo();
+                        this.pickVideo(context);
                       },
                       child: Stack(
                         children: <Widget>[
@@ -255,7 +234,10 @@ class _AddReportFormState extends State<AddReportForm> {
                             child: Container(
                               width: 50.0,
                               height: 50.0,
-                              child: Icon(Icons.video_call),
+                              child: Icon(
+                                Icons.video_call,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           Center(
@@ -276,7 +258,7 @@ class _AddReportFormState extends State<AddReportForm> {
                     margin: EdgeInsets.only(top: 20.0),
                     child: GestureDetector(
                       onTap: () {
-                        this.pickImage();
+                        this.pickImage(context);
                       },
                       child: Stack(
                         children: <Widget>[
@@ -284,7 +266,10 @@ class _AddReportFormState extends State<AddReportForm> {
                             child: Container(
                               width: 50.0,
                               height: 50.0,
-                              child: Icon(Icons.add_a_photo),
+                              child: Icon(
+                                Icons.add_a_photo,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           Center(
@@ -302,27 +287,17 @@ class _AddReportFormState extends State<AddReportForm> {
                   ),
                 ],
               ),
-
-              // BoxDecoration(
-              //                   shape: BoxShape.circle,
-              //                   image: DecorationImage(
-              //                     fit: BoxFit.cover,
-              //                     image: _urlAttachmentVideo == "empty"
-              //                         ? Icons.add_a_photo
-              //                         : NetworkImage(_urlAttachmentVideo),
-              //                   ),
-              //                 ),
               Padding(padding: EdgeInsets.all(20.0)),
               Center(
                 child: Container(
                   padding: EdgeInsets.all(15.0),
                   child: _currentPosition != null
                       ? Text(
-                          "Current location: ${_currentPosition.latitude}, ${_currentPosition.longitude}")
+                          "Current location: ${_currentPosition.latitude}, ${_currentPosition.longitude}",style: TextStyle(color: Colors.green))
                       : CircularProgressIndicator(),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
-                    color: Colors.green,
+                    color: Color(cardColor),
                   ),
                 ),
               ),
@@ -334,7 +309,7 @@ class _AddReportFormState extends State<AddReportForm> {
                 child: RawMaterialButton(
                   // elevation: 2.0,
                   // constraints: BoxConstraints(minHeight: 100,minWidth: 10),
-                  fillColor: Colors.orangeAccent,
+                  fillColor: Colors.red,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -344,7 +319,7 @@ class _AddReportFormState extends State<AddReportForm> {
                   },
                   child: Text(
                     "Submit",
-                    style: TextStyle(fontSize: 20.0),
+                    style: TextStyle(fontSize: 20.0, color: Colors.black),
                   ),
                 ),
               )
@@ -355,37 +330,82 @@ class _AddReportFormState extends State<AddReportForm> {
     );
   }
 
-  Future pickImage() async {
-    File file = await ImagePicker.pickImage(
-        source: ImageSource.gallery, imageQuality: 100);
-    String fileName = basename(file.path);
-    uploadImage(fileName, file);
+  Future pickImage(BuildContext context) async {
+    await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 100)
+        .then((file) {
+      String fileName = basename(file.path);
+      uploadImage(fileName, file, context);
+    });
   }
 
-  Future pickVideo() async {
-    File file = await ImagePicker.pickVideo(source: ImageSource.gallery);
-    String fileName = basename(file.path);
-    uploadVideo(fileName, file);
+  Future pickVideo(BuildContext context) async {
+    await ImagePicker.pickVideo(source: ImageSource.gallery).then((file) {
+      String fileName = basename(file.path);
+      uploadVideo(fileName, file, context);
+    });
   }
 
-  void uploadImage(String fileName, File file) {
+  void uploadImage(String fileName, File file, BuildContext context) async {
     StorageReference _storageReference =
         FirebaseStorage.instance.ref().child("{$id}/images/{$fileName}");
-    _storageReference.putFile(file).onComplete.then((firebaseFile) async {
-      var downloadUrl = await firebaseFile.ref.getDownloadURL();
-      setState(() {
-        _urlAttachmentPhoto = downloadUrl;
+    await _storageReference.putFile(file).onComplete.then((firebaseFile) async {
+      await firebaseFile.ref.getDownloadURL().then((url) {
+        debugPrint("url picture: " + url);
+        setState(() {
+          _urlAttachmentPhoto = url;
+        });
+      }).then((value) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Image uploaded"),
+              content: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: _urlAttachmentPhoto,
+                width: MediaQuery.of(context).size.width * 0.40,
+                height: MediaQuery.of(context).size.height * 0.40,
+              ),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Ok"))
+              ],
+            );
+          },
+        );
       });
     });
   }
 
-  void uploadVideo(String fileName, File file) {
+  void uploadVideo(String fileName, File file, BuildContext context) async {
     StorageReference _storageReference =
         FirebaseStorage.instance.ref().child("{$id}/videos/{$fileName}");
-    _storageReference.putFile(file).onComplete.then((firebaseFile) async {
-      var downloadUrl = await firebaseFile.ref.getDownloadURL();
-      setState(() {
-        _urlAttachmentVideo = downloadUrl;
+    await _storageReference.putFile(file).onComplete.then((firebaseFile) async {
+      await firebaseFile.ref.getDownloadURL().then((url) {
+        debugPrint("url video: " + url);
+        setState(() {
+          _urlAttachmentVideo = url;
+        });
+      }).then((value) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Video uploaded"),
+              content: VideoPlayerWidget(url: _urlAttachmentVideo),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Ok")),
+              ],
+            );
+          },
+        );
       });
     });
   }
