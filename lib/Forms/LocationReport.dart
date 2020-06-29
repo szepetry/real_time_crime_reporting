@@ -43,7 +43,8 @@ class LocationReport {
               value.toString(),
               this._urlAttachmentPhoto,
               this._urlAttachmentVideo,
-              this._address);
+              this._address,
+              DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toString());
           infoObjs.clear();
           infoObjs.add(infoObject.toJson());
           _multiInfoObject = MultiInfoObject(infoObjs, count);

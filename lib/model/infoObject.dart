@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'dart:core';
 
 class InfoObject {
   String _id;
@@ -11,6 +12,10 @@ class InfoObject {
   String _urlAttachmentVideo;
   String _location;
   String _description;
+  String _dateTime;
+
+  // DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch)
+  
 
   InfoObject(
       this._fName,
@@ -21,7 +26,8 @@ class InfoObject {
       this._location,
       this._urlAttachmentPhoto,
       this._urlAttachmentVideo,
-      this._address);
+      this._address,
+      this._dateTime);
   InfoObject.withId(
       this._id,
       this._fName,
@@ -32,7 +38,8 @@ class InfoObject {
       this._location,
       this._urlAttachmentPhoto,
       this._urlAttachmentVideo,
-      this._address);
+      this._address,
+      this._dateTime);
 
   InfoObject.fromSnapshot(DataSnapshot snapshot) {
     this._id = snapshot.key;
@@ -45,6 +52,7 @@ class InfoObject {
     this._urlAttachmentVideo = snapshot.value['urlAttachmentVideo'];
     this._description = snapshot.value['description'];
     this._location = snapshot.value['location'];
+    this._dateTime = snapshot.value['timeStamp'];
   }
 
   List<Map<String, dynamic>> toJsonList() {
@@ -57,7 +65,8 @@ class InfoObject {
         "urlAttachmentPhoto": _urlAttachmentPhoto,
         "urlAttachmentVideo": _urlAttachmentVideo,
         "description": _description,
-        "location": _location
+        "location": _location,
+        "timeStamp": _dateTime
       },];
   }
 
@@ -71,7 +80,8 @@ class InfoObject {
       "urlAttachmentPhoto": _urlAttachmentPhoto,
       "urlAttachmentVideo": _urlAttachmentVideo,
       "description": _description,
-      "location": _location
+      "location": _location,
+      "timeStamp": _dateTime
     };
   }
 
@@ -92,6 +102,7 @@ class InfoObject {
   String get urlAttachmentVideo => this._urlAttachmentVideo;
   String get description => this._description;
   String get location => this._location;
+  String get dateTime => this._dateTime;
 
   //Setters
   set fName(String fName) {
@@ -128,5 +139,9 @@ class InfoObject {
 
   set location(String location) {
     this._location = location;
+  }
+
+  set dateTime(String dateTime) {
+    this._dateTime = dateTime;
   }
 }

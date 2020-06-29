@@ -6,6 +6,8 @@ import 'dart:core';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../common_widgets/video_player_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 
 bool result = false;
 
@@ -14,14 +16,32 @@ class ReportForm extends StatefulWidget {
   ReportForm(this.id);
 
   @override
-  _ReportFormState createState() => _ReportFormState(id);
+  _ReportFormState createState() => _ReportFormState();
 }
 
 class _ReportFormState extends State<ReportForm> {
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
   bool loadState = false;
   String id;
-  _ReportFormState(this.id);
+  String _name;
+  String _phoneNo;
+  // _ReportFormState(this.id);
+  
+  @override
+  void initState() {
+    id = widget.id;
+    getUserDetails();
+    super.initState();
+  }
+
+  void getUserDetails() async {
+    await FirestoreService.registeredUserDocument(id).get().then((value) {
+      setState(() {
+        _name = value.data['name'];
+        _phoneNo = value.data['phoneNo'];
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +66,14 @@ class _ReportFormState extends State<ReportForm> {
                           style: TextStyle(fontSize: 40.0, color: Colors.white),
                         ),
                         CommonInfo(
-                          heading: ' Name:',
-                          data: ' Xyz',
-                        ),
-                        CommonInfo(
-                          heading: ' Email:',
-                          data: ' xyz@gmail.com',
+                          heading: ' Name: ',
+                          data: _name != null?
+                          _name:"Loading name.",
                         ),
                         CommonInfo(
                           heading: ' Phone Number: ',
-                          data: ' 1234567894',
+                          data: _phoneNo != null?
+                          _phoneNo:"Loading phone number.",
                         ),
                       ],
                     ),
@@ -73,10 +91,11 @@ class _ReportFormState extends State<ReportForm> {
                             return Column(
                               children: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(20.0),
-                                                                    child: Card(
+                                    child: Card(
                                       color: Color(cardColor),
                                       elevation: 2.0,
                                       child: Container(
@@ -105,17 +124,20 @@ class _ReportFormState extends State<ReportForm> {
                       child: FloatingActionButton.extended(
                         heroTag: "btn1",
                         onPressed: () async {
-                          result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              return Center(
+                          showDialog(
+                            context: context,
+                            builder: (context) => Center(
                                 child: Stack(
-                                  children: <Widget>[
-                                    AddReportForm(result, id),
-                                  ],
-                                ),
-                              );
-                            }),
+                              children: <Widget>[
+                                AddReportForm(result, id, (value) {
+                                  setState(() {
+                                    result = value;
+                                  });
+                                  return result = value;
+                                }),
+                              ],
+                            )),
+                            
                           );
                           print(
                               "Result from report Form: ${result.toString()}");
@@ -180,7 +202,7 @@ class _ReportFormState extends State<ReportForm> {
           ReportRows(
             colourOfTheBackground: colourbelow,
             styleOfText: kTextStyleForData,
-            textString: '10/04/19 10:20pm',
+            textString: snapshot.value['timeStamp'].toString(),
           ),
         ]),
         Row(
@@ -208,7 +230,7 @@ class _ReportFormState extends State<ReportForm> {
         Row(
           children: <Widget>[
             Expanded(
-              flex: 1,
+                flex: 1,
                 child: snapshot.value['urlAttachmentPhoto'] != ""
                     ? FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
