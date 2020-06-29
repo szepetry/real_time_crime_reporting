@@ -23,12 +23,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     });
     _controller.setLooping(true);
     _controller.initialize().then((_) => setState(() {}));
-    _controller.play();
+    // _controller.play();      //Uncomment to start on initState
+    if (_url == "") _controller.play(); //Comment when above line is uncommented
   }
 
   @override
   void dispose() {
     super.dispose();
+    _controller.pause();
     _controller.dispose();
   }
 
@@ -46,11 +48,12 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
               controller: _controller,
               url: _url,
             ),
-            VideoProgressIndicator(
-              _controller,
-              allowScrubbing: true,
-              
-            ),
+            _url != ""
+                ? VideoProgressIndicator(
+                    _controller,
+                    allowScrubbing: true,
+                  )
+                : Text(""),
           ],
         ),
       ),
@@ -59,7 +62,9 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 }
 
 class _PlayPauseOverlay extends StatelessWidget {
-  const _PlayPauseOverlay({Key key, @required this.controller, @required this.url}) : super(key: key);
+  const _PlayPauseOverlay(
+      {Key key, @required this.controller, @required this.url})
+      : super(key: key);
 
   final VideoPlayerController controller;
   final String url;
@@ -73,21 +78,35 @@ class _PlayPauseOverlay extends StatelessWidget {
           reverseDuration: Duration(milliseconds: 200),
           child: controller.value.isPlaying && url != ""
               ? SizedBox.shrink()
-              : Container(
-                // This is when video isn't playable or string is empty.
-                  color: Colors.black26,
-                  child: Center(
-                    child: Icon(
-                      Icons.videocam_off,
-                      color: Colors.white,
-                      size: 100.0,
+              : !controller.value.isPlaying
+                  ? Container(
+                      // This is when video isn't playable or string is empty.
+                      color: Colors.black26,
+                      child: Center(
+                        child: Icon(
+                          Icons.pause,
+                          color: Colors.white,
+                          size: 100.0,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      // This is when video isn't playable or string is empty.
+                      color: Colors.black26,
+                      child: Center(
+                        child: Icon(
+                          Icons.videocam_off,
+                          color: Colors.white,
+                          size: 100.0,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
         ),
         GestureDetector(
           onTap: () {
-            controller.value.isPlaying  && url != "" ? controller.pause() : controller.play();
+            controller.value.isPlaying && url != ""
+                ? controller.pause()
+                : controller.play();
           },
         ),
       ],

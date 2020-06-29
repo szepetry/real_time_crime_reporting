@@ -1,14 +1,10 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'infoObject.dart';
 
 class MultiInfoObject {
   String _id;
 
   List<dynamic> infoMap = List<dynamic>();
-  // List<InfoObject> infoObjs = List<InfoObject>();
   
-  InfoObject _infoObject;
   int _count;
   MultiInfoObject(this.infoMap,this._count);
   MultiInfoObject.withId(this._id, this.infoMap,this._count);

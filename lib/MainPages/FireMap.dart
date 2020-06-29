@@ -3,6 +3,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:instant_reporter/common_widgets/constants.dart';
 
 Completer<GoogleMapController> _controller = Completer();
 
@@ -10,17 +12,23 @@ Marker marker;
 
 Position _currentPosition;
 
+String _mapStyleNight;
 
 Future<void> moveCamera() async {
+  await Geolocator()
+      .getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+          locationPermissionLevel: GeolocationPermission.locationAlways)
+      .then((value) async {
     GoogleMapController mapController = await _controller.future;
 
     mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: LatLng(_currentPosition.latitude, _currentPosition.longitude),
+      target: LatLng(value.latitude, value.longitude),
       zoom: 17.0,
     )));
-  }
+  });
+}
 
-//TODO: Integrate maps
 class FireMap extends StatefulWidget {
   @override
   _FireMapState createState() => _FireMapState();
@@ -33,6 +41,9 @@ class _FireMapState extends State<FireMap> {
 
   @override
   void initState() {
+    rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
+      _mapStyleNight = json;
+    });
     // _child=RippleIndicator("Getting Location");
     getCurrentLocation();
 
@@ -66,12 +77,11 @@ class _FireMapState extends State<FireMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
+      backgroundColor: Color(cardColor),
       body: _child,
     );
   }
 
-  
   Widget mapWidget() {
     var googleMap = GoogleMap(
       mapType: MapType.normal,
@@ -81,11 +91,13 @@ class _FireMapState extends State<FireMap> {
       //markers: _createMarker(),
       initialCameraPosition: CameraPosition(
           target: LatLng(position.latitude, position.longitude), zoom: 15.0),
-          myLocationButtonEnabled: false,
-          myLocationEnabled: true,
-          
+      myLocationButtonEnabled: false,
+      myLocationEnabled: true,
+
       onMapCreated: (GoogleMapController controller) {
+        _controller.complete(controller);
         mapController = controller;
+        mapController.setMapStyle(_mapStyleNight);
       },
     );
     return googleMap;
@@ -124,7 +136,6 @@ class _FireMapState extends State<FireMap> {
     });
   }
 }
-
 
 // Completer<GoogleMapController> _controller = Completer();
 

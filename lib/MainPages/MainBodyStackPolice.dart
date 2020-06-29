@@ -6,7 +6,7 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
-import 'package:instant_reporter/MainPages/FireMap.dart';
+import 'package:instant_reporter/MainPages/FireMapPolice.dart';
 import 'Buttons/ProfileMenu.dart';
 import 'package:provider/provider.dart';
 import 'package:instant_reporter/MainPages/Drawers.dart';
@@ -17,16 +17,17 @@ Marker marker;
 // Position _currentPosition;
 
 //TODO:Main body of the application
-class MainBodyStack extends StatefulWidget {
-  final String uid;
-  MainBodyStack(this.uid);
+class MainBodyStackPolice extends StatefulWidget {
+  // final String uid;
+  MainBodyStackPolice();
   @override
-  _MainBodyStackState createState() => _MainBodyStackState();
+  _MainBodyStackPoliceState createState() => _MainBodyStackPoliceState();
 }
 
-class _MainBodyStackState extends State<MainBodyStack> {
+class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
   void initState() {
     super.initState();
+    // _getCurrentLocation();
   }
 
   // Future<void> _getCurrentLocation() async {
@@ -53,12 +54,15 @@ class _MainBodyStackState extends State<MainBodyStack> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        FireMap(),
+        FireMapPolice(),
         Align(
           alignment: Alignment.topRight,
           child: IconButton(
             tooltip: "Profile",
-            icon: Icon(Icons.person,color: Colors.white,),
+            icon: Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -85,6 +89,7 @@ class _MainBodyStackState extends State<MainBodyStack> {
           left: MediaQuery.of(context).size.width - 80,
           child: RawMaterialButton(
             onPressed: () {
+              // _getCurrentLocation();
               moveCamera();
             },
             child: Icon(
@@ -96,6 +101,16 @@ class _MainBodyStackState extends State<MainBodyStack> {
             padding: EdgeInsets.all(15.0),
           ),
         ),
+        // Align(
+        //   alignment: Alignment.topLeft,
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(8.0),
+        //     child: Text(
+        //       "Police",
+        //       style: TextStyle(color: Colors.white,fontSize: 40),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

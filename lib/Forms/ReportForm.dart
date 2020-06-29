@@ -1,20 +1,10 @@
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/Forms/AddReportForm.dart';
-import 'package:instant_reporter/Forms/ReportForm.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
-import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
-import 'package:instant_reporter/MainPages/FireMap.dart';
-import 'package:instant_reporter/MainPages/MainBodyStack.dart';
-import '../model/infoObject.dart';
 import 'dart:core';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import '../common_widgets/video_player_widget.dart';
 
 bool result = false;
@@ -32,7 +22,6 @@ class _ReportFormState extends State<ReportForm> {
   bool loadState = false;
   String id;
   _ReportFormState(this.id);
-  VideoPlayerController _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -56,26 +45,22 @@ class _ReportFormState extends State<ReportForm> {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 40.0, color: Colors.white),
                         ),
-                         CommonInfo(
-                           heading: ' Name:',
-                           data: ' Xyz',
-                         ),
-                         CommonInfo(
-                           heading: ' Email:',
-                           data: ' xyz@gmail.com',
-                         ),
-                            CommonInfo(
-                           heading: ' Phone Number: ',
-                           data: ' 1234567894',
-                         ),
-                          
-                         
-                          
+                        CommonInfo(
+                          heading: ' Name:',
+                          data: ' Xyz',
+                        ),
+                        CommonInfo(
+                          heading: ' Email:',
+                          data: ' xyz@gmail.com',
+                        ),
+                        CommonInfo(
+                          heading: ' Phone Number: ',
+                          data: ' 1234567894',
+                        ),
                       ],
                     ),
                   )),
                   Padding(padding: EdgeInsets.all(1.0)),
-                  // Divider(),
                   Expanded(
                     child: Container(
                       child: FirebaseAnimatedList(
@@ -87,16 +72,22 @@ class _ReportFormState extends State<ReportForm> {
                             // Map<dynamic,dynamic> tempMap = snapshot.value['infoObject'];
                             return Column(
                               children: <Widget>[
-                                Card(
-                                  color: Color(cardColor),
-                                  elevation: 2.0,
-                                  child: Container(
-                                    padding: EdgeInsets.all(15),
-                                    // margin: EdgeInsets.all(10.0),
-                                    child: Column(
-                                      children: <Widget>[
-                                        eachObject(snapshot),
-                                      ],
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                                                    child: Card(
+                                      color: Color(cardColor),
+                                      elevation: 2.0,
+                                      child: Container(
+                                        padding: EdgeInsets.all(15),
+                                        // margin: EdgeInsets.all(10.0),
+                                        child: Column(
+                                          children: <Widget>[
+                                            eachObject(snapshot),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 )
@@ -130,10 +121,11 @@ class _ReportFormState extends State<ReportForm> {
                               "Result from report Form: ${result.toString()}");
                         },
                         backgroundColor: Color(buttonColor),
-                        label: Text("Add to the report",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                        label: Text(
+                          "Add to the report",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ))),
             ],
@@ -170,7 +162,6 @@ class _ReportFormState extends State<ReportForm> {
             textString: 'Description: ',
           ),
         ]),
-        
         Row(
           children: [
             ReportRows(
@@ -180,7 +171,7 @@ class _ReportFormState extends State<ReportForm> {
             ),
           ],
         ),
- Row(children: <Widget>[
+        Row(children: <Widget>[
           ReportRows(
             colourOfTheBackground: colourHeading,
             styleOfText: kTextStyleOfHeadings,
@@ -217,13 +208,29 @@ class _ReportFormState extends State<ReportForm> {
         Row(
           children: <Widget>[
             Expanded(
-              child: FadeInImage.memoryNetwork(
-                placeholder: kTransparentImage,
-                image: snapshot.value['urlAttachmentPhoto'],
-                
-              ),
-            ),
+              flex: 1,
+                child: snapshot.value['urlAttachmentPhoto'] != ""
+                    ? FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: snapshot.value['urlAttachmentPhoto'],
+                        // width: MediaQuery.of(context).size.width*0.5,
+                        // height: MediaQuery.of(context).size.height*0.5,
+                      )
+                    : SizedBox(
+                        height: 170,
+                        child: Container(
+                          color: Colors.black26,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              color: Colors.white,
+                              size: 100.0,
+                            ),
+                          ),
+                        ),
+                      )),
             Expanded(
+              flex: 1,
               child: VideoPlayerWidget(
                 url: snapshot.value['urlAttachmentVideo'],
               ),
@@ -234,15 +241,4 @@ class _ReportFormState extends State<ReportForm> {
       ],
     );
   }
-
-  void videoPlayer(String url) {
-    _controller = VideoPlayerController.network(url);
-    _controller.addListener(() {
-      setState(() {});
-    });
-    _controller.setLooping(true);
-    _controller.initialize().then((_) => setState(() {}));
-    _controller.play();
-  }
 }
-

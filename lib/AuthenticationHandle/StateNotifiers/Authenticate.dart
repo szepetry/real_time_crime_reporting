@@ -160,8 +160,8 @@ class Authenticate with ChangeNotifier {
         .then((user) async {
       uid = user.user.uid;
     }).catchError((e) async {
-       isLoadingController.add(false);
       print(e);
+      isLoadingController.add(false);
       await displayDialog('An error has occurred', 'Auth Failed');
     });
     _otpsent = false;

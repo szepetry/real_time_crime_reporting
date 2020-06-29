@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class Noti{
-   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
-    showNotification({@required String sentence, @required String heading}) async {
-      
-   var android= AndroidInitializationSettings('@mipmap/ic_launcher');
-    var ios=IOSInitializationSettings();
+Priority priority = Priority.High;
+Importance importance = Importance.High;
 
-    var init= new InitializationSettings(android, ios);
-     flutterLocalNotificationsPlugin.initialize(init,onSelectNotification: (String payload)async{
-      if (payload!=null) {
-              debugPrint('notification payload: ' + payload);
-       }
+class NotificationManager {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  showNotification(
+      {@required String sentence, @required String heading, @required Priority priority, @required Importance importance}) async {
+    var androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOSSettings = IOSInitializationSettings();
+
+    var init = new InitializationSettings(androidSettings, iOSSettings);
+    flutterLocalNotificationsPlugin.initialize(init,
+        onSelectNotification: (String payload) async {
+      if (payload != null) {
+        debugPrint('notification payload: ' + payload);
+      }
     });
-    var and =  AndroidNotificationDetails(
+    var androidDetails = AndroidNotificationDetails(
         'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
-        priority: Priority.High,importance: Importance.Max
-    );
+        priority: priority, importance: importance);
 
-    var iOS =  IOSNotificationDetails();
-    var platform =  NotificationDetails(and, iOS);
-    await flutterLocalNotificationsPlugin.show(
-        0, heading, sentence, platform);
+    var iOSDetails = IOSNotificationDetails();
+    var platform = NotificationDetails(androidDetails, iOSDetails);
+    await flutterLocalNotificationsPlugin.show(0, heading, sentence, platform);
   }
 }
-
