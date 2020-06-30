@@ -51,6 +51,8 @@ dependencies:
   firebase_auth: ^0.16.0
   #for the notifications
   flutter_local_notifications: ^1.4.4+1
+    # For google places API
+  google_maps_webservice: ^0.0.17
 
 
   cloud_firestore: ^0.13.5
