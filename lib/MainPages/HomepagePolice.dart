@@ -15,15 +15,12 @@ import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import 'MainBodyStackPolice.dart';
-
-import 'package:flutter/services.dart';
+import '../common_widgets/constants.dart';
 
 PanelController _panelController = PanelController();
-// const platform = const EventChannel("events");
 
 class HomepagePolice extends StatefulWidget {
-  HomepagePolice(); //use this uid here
-  // HomepagePolice(this.uid);
+  HomepagePolice();
   @override
   _HomepagePoliceState createState() => _HomepagePoliceState();
 }
@@ -88,28 +85,63 @@ class _HomepagePoliceState extends State<HomepagePolice> {
 
   @override
   Widget build(BuildContext context) {
-   UserDetails u = Provider.of<UserDetails>(context, listen: false);
+    UserDetails u = Provider.of<UserDetails>(context, listen: false);
     //inherited widget using provider to access uid to all child widgets
-   uid = u.uid;
+    uid = u.uid;
     return Scaffold(
       // floatingActionButton: FloatingActionButtonWidget(uid),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SlidingUpPanel(
+        color: Color(backgroundColor),
         maxHeight: 600,
         minHeight: 100,
         isDraggable: true,
         backdropEnabled: true,
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-        // panel: BottomPanelView(uid),
+        //TODO: Make panel
         panel: Container(),
         body: MainBodyStackPolice(),
-        // body:Container(),
+        controller: panelController,
+
         collapsed: Container(
-          child: Divider(
-            thickness: 4.0,
-            endIndent: MediaQuery.of(context).size.width *0.5,
-            indent: MediaQuery.of(context).size.width *0.2,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 65.0),
+            child: Divider(
+              color: Colors.white,
+              thickness: 5.0,
+              endIndent: MediaQuery.of(context).size.width * 0.3,
+              indent: MediaQuery.of(context).size.width * 0.3,
+            ),
+          ),
+        ),
+        header: Padding(
+          padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.05, top: 30),
+          child: Row(
+            children: <Widget>[
+              Container(
+                  child: Text(
+                "Reports",
+                style: TextStyle(fontSize: 40, color: Colors.white),
+              )),
+              SizedBox(width: MediaQuery.of(context).size.width*0.55,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                      child: Text(
+                    "Police",
+                    style: TextStyle(fontSize: 20, color: Colors.red),
+                  )),
+                  Container(
+                      child: Text(
+                    "level",
+                    style: TextStyle(fontSize: 20, color: Colors.red,),
+                  )),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -127,7 +159,7 @@ class _HomepagePoliceState extends State<HomepagePolice> {
 //   Widget build(BuildContext context) {
 //     return FloatingActionButton(
 //       backgroundColor: Colors.red,
-//       onPressed: () {  
+//       onPressed: () {
 //         LocationReport(id).saveReport(context);
 //          Noti obj = Noti();
 //         obj.showNotification(

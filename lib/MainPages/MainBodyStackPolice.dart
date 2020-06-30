@@ -14,7 +14,7 @@ import '../Forms/LocationReport.dart';
 
 Marker marker;
 
-Position _currentPosition;
+// Position _currentPosition;
 
 //TODO:Main body of the application
 class MainBodyStackPolice extends StatefulWidget {
@@ -27,19 +27,19 @@ class MainBodyStackPolice extends StatefulWidget {
 class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    // _getCurrentLocation();
   }
 
-  Future<void> _getCurrentLocation() async {
-    // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
+  // Future<void> _getCurrentLocation() async {
+  //   // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  //   Position position = await Geolocator()
+  //       .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
-    setState(() {
-      _currentPosition = position;
-    });
-  }
+  //   setState(() {
+  //     _currentPosition = position;
+  //   });
+  // }
 
   void choiceAction(String choice) {
     if (choice == ProfileMenu.signout) {
@@ -54,13 +54,15 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        // HomepagePolice(),
         FireMapPolice(),
         Align(
           alignment: Alignment.topRight,
           child: IconButton(
             tooltip: "Profile",
-            icon: Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -87,8 +89,8 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
           left: MediaQuery.of(context).size.width - 80,
           child: RawMaterialButton(
             onPressed: () {
-              _getCurrentLocation();
-              //moveCamera();
+              // _getCurrentLocation();
+              moveCamera();
             },
             child: Icon(
               Icons.gps_fixed,
@@ -99,13 +101,17 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
             padding: EdgeInsets.all(15.0),
           ),
         ),
-        _currentPosition != null
-            ? Text(
-                "LAT: ${_currentPosition.latitude}, LNG: ${_currentPosition.longitude}")
-            : CircularProgressIndicator(),
+        // Align(
+        //   alignment: Alignment.topLeft,
+        //   child: Padding(
+        //     padding: const EdgeInsets.all(8.0),
+        //     child: Text(
+        //       "Police",
+        //       style: TextStyle(color: Colors.white,fontSize: 40),
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }
 }
-
-
