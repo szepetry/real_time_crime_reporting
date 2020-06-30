@@ -40,7 +40,6 @@ class FireMapPolice extends StatefulWidget {
 }
 
 // UserDetails user = Provider.of<UserDetails>(context, listen: false);
-
 // StreamSubscription subscription;
 
 class _FireMapPoliceState extends State<FireMapPolice> {
