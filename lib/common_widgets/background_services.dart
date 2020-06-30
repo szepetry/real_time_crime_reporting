@@ -14,7 +14,7 @@ const simpleTaskKey = 'simpleTask';
 const simpleDelayedTask = 'simpleDelayedTask';
 const simplePeriodicTask = 'simplePeriodicTask';
 const simplePeriodic1HourTask = 'simplePeriodic1HourTask';
-const platform = const EventChannel("events");
+const platform = const EventChannel("com.renegades.miniproject/voldown");
 
 void instantReportExecuter() {
   print('Instant Report Executer');
@@ -43,8 +43,8 @@ void instantReportExecuter() {
           desiredAccuracy: LocationAccuracy.high,
           locationPermissionLevel: GeolocationPermission.locationAlways);
       if (_currentPosition != null && _currentPosition.latitude != null) {
-        _location =
-            LatLng(_currentPosition.latitude, _currentPosition.longitude);
+        // _location =
+        //     LatLng(_currentPosition.latitude, _currentPosition.longitude);
         // print("Location from Location report: "+_currentPosition.toString());
         InfoObject infoObject = InfoObject(
             _fName,
@@ -84,9 +84,16 @@ void instantReportExecuter() {
 //   },
 // );
 
-
     return true;
   });
+}
+
+void startServiceInPlatform() async {
+  if (Platform.isAndroid) {
+    var methodChannel = MethodChannel("com.renegades.miniproject/report");
+    String data = await methodChannel.invokeMethod("startReportService");
+    debugPrint(data);
+  }
 }
 
 // Stream _stream = platform.receiveBroadcastStream();
@@ -96,9 +103,4 @@ void instantReportExecuter() {
 //   print("Data: $data");
 // }
 
-class BackgroundServices {
-
-
-
-}
-
+class BackgroundServices {}

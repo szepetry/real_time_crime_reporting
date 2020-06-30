@@ -56,21 +56,18 @@ class _ReportFormState extends State<ReportForm> {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 40.0, color: Colors.white),
                         ),
-                         CommonInfo(
-                           heading: ' Name:',
-                           data: ' Xyz',
-                         ),
-                         CommonInfo(
-                           heading: ' Email:',
-                           data: ' xyz@gmail.com',
-                         ),
-                            CommonInfo(
-                           heading: ' Phone Number: ',
-                           data: ' 1234567894',
-                         ),
-                          
-                         
-                          
+                        CommonInfo(
+                          heading: ' Name:',
+                          data: ' Xyz',
+                        ),
+                        CommonInfo(
+                          heading: ' Email:',
+                          data: ' xyz@gmail.com',
+                        ),
+                        CommonInfo(
+                          heading: ' Phone Number: ',
+                          data: ' 1234567894',
+                        ),
                       ],
                     ),
                   )),
@@ -130,10 +127,11 @@ class _ReportFormState extends State<ReportForm> {
                               "Result from report Form: ${result.toString()}");
                         },
                         backgroundColor: Color(buttonColor),
-                        label: Text("Add to the report",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                        label: Text(
+                          "Add to the report",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ))),
             ],
@@ -170,7 +168,6 @@ class _ReportFormState extends State<ReportForm> {
             textString: 'Description: ',
           ),
         ]),
-        
         Row(
           children: [
             ReportRows(
@@ -180,7 +177,7 @@ class _ReportFormState extends State<ReportForm> {
             ),
           ],
         ),
- Row(children: <Widget>[
+        Row(children: <Widget>[
           ReportRows(
             colourOfTheBackground: colourHeading,
             styleOfText: kTextStyleOfHeadings,
@@ -220,7 +217,6 @@ class _ReportFormState extends State<ReportForm> {
               child: FadeInImage.memoryNetwork(
                 placeholder: kTransparentImage,
                 image: snapshot.value['urlAttachmentPhoto'],
-                
               ),
             ),
             Expanded(
@@ -245,4 +241,3 @@ class _ReportFormState extends State<ReportForm> {
     _controller.play();
   }
 }
-

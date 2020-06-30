@@ -18,7 +18,7 @@ import 'package:instant_reporter/common_widgets/notifications.dart';
 import 'package:flutter/services.dart';
 
 PanelController _panelController = PanelController();
-const platform = const EventChannel("events");
+const platform = const EventChannel("com.renegades.miniproject/voldown");
 
 class HomepageUser extends StatefulWidget {
   HomepageUser(); //use this uid here
@@ -43,7 +43,7 @@ class _HomepageUserState extends State<HomepageUser> {
   void initState() {
     // uid = widget.uid;
     Workmanager.initialize(instantReportExecuter, isInDebugMode: true);
-
+    // Workmanager.cancelAll();
     // Workmanager.registerOneOffTask("1", "Background instant report",
     //     inputData: {
     //       "uid": uid,
@@ -52,7 +52,7 @@ class _HomepageUserState extends State<HomepageUser> {
     subscription = _stream.listen(actionTaken);
     // print("$subscription");
     subscription.onData((data) {
-      Workmanager.registerOneOffTask("2", "Background instant report",
+      Workmanager.registerOneOffTask("5", "Background instant report",
           inputData: {
             "uid": uid,
           });
@@ -65,15 +65,17 @@ class _HomepageUserState extends State<HomepageUser> {
       // );
       print("$data");
     });
+    //To start the service whenever Homepage opens
+    startServiceInPlatform();
 
     super.initState();
   }
 
-  @override
-  void dispose() {
-    subscription.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   subscription.cancel();
+  //   super.dispose();
+  // }
 
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
@@ -87,9 +89,10 @@ class _HomepageUserState extends State<HomepageUser> {
 
   @override
   Widget build(BuildContext context) {
-   UserDetails u = Provider.of<UserDetails>(context, listen: false);
+    UserDetails u = Provider.of<UserDetails>(context, listen: false);
     //inherited widget using provider to access uid to all child widgets
-   uid = u.uid;
+    uid = u.uid;
+    
     return Scaffold(
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -105,8 +108,8 @@ class _HomepageUserState extends State<HomepageUser> {
         collapsed: Container(
           child: Divider(
             thickness: 4.0,
-            endIndent: MediaQuery.of(context).size.width *0.5,
-            indent: MediaQuery.of(context).size.width *0.2,
+            endIndent: MediaQuery.of(context).size.width * 0.5,
+            indent: MediaQuery.of(context).size.width * 0.2,
           ),
         ),
       ),
@@ -124,9 +127,14 @@ class FloatingActionButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Colors.red,
-      onPressed: () {  
+      onPressed: () {
         LocationReport(id).saveReport(context);
-         Noti obj = Noti();
+        // Future.delayed(Duration(seconds: 3),(){
+        //   print("Button report: Waiting for report to generate.");
+        // }).then((value) {
+
+        // });
+        Noti obj = Noti();
         obj.showNotification(
           sentence: 'Your report is getting generated.',
           heading: 'Generating...',

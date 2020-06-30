@@ -88,7 +88,7 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
           child: RawMaterialButton(
             onPressed: () {
               _getCurrentLocation();
-              moveCamera();
+              //moveCamera();
             },
             child: Icon(
               Icons.gps_fixed,

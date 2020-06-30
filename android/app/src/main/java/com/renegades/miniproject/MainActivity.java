@@ -3,7 +3,11 @@ package com.renegades.miniproject;
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+
+import android.os.Build;
 import android.os.Handler;
 import io.flutter.plugin.common.EventChannel;
 import android.content.Context;
@@ -23,12 +27,14 @@ import android.view.KeyEvent;
 import android.util.Log;
 
 public class MainActivity extends FlutterActivity {
-    public static final String STREAM = "events";
+    public static final String STREAM = "com.renegades.miniproject/voldown";
+    public static final String REPORT = "com.renegades.miniproject/report";
     private EventChannel channel;
+    private MethodChannel mChannel;
     private int count1;
-    private int count2;
+    private Intent foregroundService;
+//    private int count2;
     private EventChannel.EventSink eventSink = null;
-
     // @Override
     // public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
     // super.configureFlutterEngine(flutterEngine);
@@ -38,6 +44,20 @@ public class MainActivity extends FlutterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        foregroundService = new Intent(MainActivity.this, ReportingService.class);
+
+        mChannel = new MethodChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), REPORT);
+        mChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
+            @Override
+            public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
+                if(call.method.equals("startReportService")){
+                    startReportService();
+                    result.success("Report Service started");
+                }
+            }
+        });
+
         channel = new EventChannel(getFlutterEngine().getDartExecutor().getBinaryMessenger(), STREAM);
         channel.setStreamHandler(new EventChannel.StreamHandler() {
             @Override
@@ -49,9 +69,23 @@ public class MainActivity extends FlutterActivity {
             public void onCancel(Object args) {
                 eventSink = null;
                 count1 = 0;
-                count2 = 0;
+//                count2 = 0;
             }
         });
+    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        stopService(foregroundService);
+//    }
+
+    private void startReportService(){
+        if(VERSION.SDK_INT>= VERSION_CODES.O){
+            startForegroundService(foregroundService);
+        } else {
+            startService(foregroundService);
+        }
     }
 
     @Override

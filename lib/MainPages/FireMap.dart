@@ -20,7 +20,6 @@ Future<void> moveCamera() async {
     )));
   }
 
-//TODO: Integrate maps
 class FireMap extends StatefulWidget {
   @override
   _FireMapState createState() => _FireMapState();

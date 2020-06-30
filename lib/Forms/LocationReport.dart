@@ -117,11 +117,13 @@ class LocationReport {
   void saveReport(BuildContext context) async {
     await _databaseReference.child(id).remove();
     _getCurrentLocation();
-    _location = LatLng(_currentPosition.latitude,_currentPosition.longitude);
-    print("Location from Location report: "+_currentPosition.toString());
+    
     try {
       // bool loadStat = this.firstLoad;
       // print("save report state check: $loadStat");
+      Future.delayed(Duration(seconds: 3)).then((value) async{
+    _location = LatLng(_currentPosition.latitude,_currentPosition.longitude);
+    print("Location from Location report: "+_currentPosition.toString());
       if (_location != null) {
         print("1st $count");
 
@@ -183,6 +185,8 @@ class LocationReport {
               );
             });
       }
+      });
+
     } catch (e) {
       print("Caught exceptions: $e");
     }
