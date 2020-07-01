@@ -20,10 +20,13 @@ int count = 0;
 bool isLoading = true;
 MultiInfoObject _multiInfoObject;
 
+typedef voidCallback = bool Function(bool);
+
 class AddReportForm extends StatefulWidget {
+  voidCallback callback;
   bool firstLoad;
   final String id;
-  AddReportForm(this.firstLoad, this.id);
+  AddReportForm(this.firstLoad, this.id, this.callback);
 
   @override
   _AddReportFormState createState() {
@@ -125,7 +128,9 @@ class _AddReportFormState extends State<AddReportForm> {
         print(_urlAttachmentPhoto);
         print(_urlAttachmentVideo);
 
-        navigateToLastScreen(context, loadStat);
+        // navigateToLastScreen(context, loadStat);
+        widget.callback(loadStat);
+        Navigator.pop(context);
 
         InfoObject infoObject = InfoObject(
             this._fName,
@@ -136,7 +141,8 @@ class _AddReportFormState extends State<AddReportForm> {
             _currentPosition.toString(),
             this._urlAttachmentPhoto,
             this._urlAttachmentVideo,
-            this._address);
+            this._address,
+            DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toString());
 
         infoObjs.add(infoObject.toJson());
         _multiInfoObject = MultiInfoObject(infoObjs, count);
@@ -194,7 +200,6 @@ class _AddReportFormState extends State<AddReportForm> {
                 child: TextField(
                   cursorColor: Colors.white,
                   style: TextStyle(color: Colors.white),
-                      
                   onChanged: (value) {
                     setState(() {
                       _description = value;
@@ -205,13 +210,11 @@ class _AddReportFormState extends State<AddReportForm> {
                       labelText: "Description",
                       // fillColor: Colors.white,
                       enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color:Colors.white10)
-                      ),
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.white10)),
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color:Colors.white10)
-                      ),
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.white10)),
                       labelStyle: TextStyle(fontSize: 20, color: Colors.white),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
@@ -293,7 +296,8 @@ class _AddReportFormState extends State<AddReportForm> {
                   padding: EdgeInsets.all(15.0),
                   child: _currentPosition != null
                       ? Text(
-                          "Current location: ${_currentPosition.latitude}, ${_currentPosition.longitude}",style: TextStyle(color: Colors.green))
+                          "Current location: ${_currentPosition.latitude}, ${_currentPosition.longitude}",
+                          style: TextStyle(color: Colors.green))
                       : CircularProgressIndicator(),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
