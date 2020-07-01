@@ -29,6 +29,8 @@ dependencies:
   google_maps_flutter: ^0.5.28+1
   # Geolocation
   geolocator: ^5.3.1
+  # For google places API
+  google_maps_webservice: ^0.0.17
 
   location: ^2.3.5
   # Connecting flutter maps with firebase
@@ -61,6 +63,8 @@ dependencies:
 
   # video player library
   video_player: ^0.10.11+1
+
+
 
 dev_dependencies:
   flutter_test:

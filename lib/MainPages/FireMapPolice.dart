@@ -1,3 +1,6 @@
+//import 'dart:html';
+
+
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,6 +32,7 @@ Future<void> moveCamera() async {
   });
 }
 
+
 class FireMapPolice extends StatefulWidget {
   FireMapPolice(); //use this uid here
   @override
@@ -36,37 +40,62 @@ class FireMapPolice extends StatefulWidget {
 }
 
 // UserDetails user = Provider.of<UserDetails>(context, listen: false);
-StreamSubscription _streamSubscription = Firestore.instance
-    .collection("registeredUsers")
-    .snapshots()
-    .listen((querySnapshot) {
-  querySnapshot.documentChanges.forEach((element) {});
-});
 // StreamSubscription subscription;
 
 class _FireMapPoliceState extends State<FireMapPolice> {
   String uid;
   GoogleMapController mapController;
-  Position position;
   Widget _child;
+  StreamSubscription _streamSubscription;
+  Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
+  double lat, lng;
 
   @override
   void initState() {
-        rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
+      rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
       _mapStyleNight = json;
-    });
+    }).then((value) {
+    UserDetails u = Provider.of<UserDetails>(context, listen: false);
+    uid = u.uid;
+      moveCamera();
+
+
     getCurrentLocation(); //current location of the police official
-    print("hello " + position.toString());
-    Future.delayed(Duration(seconds: 3)).then((value) {
-      updateData(); //updates location in the database
+        _streamSubscription = _stream.listen((event) {
+      debugPrint("$event happened?");});
+    //print("hello " + position.toString());
+
+    _streamSubscription.onData((data) {
+
+      for (int i = 0; i < data.documents.length; i++) {
+        if(data.documents[i].documentID!=uid){
+        debugPrint(
+            "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
+        debugPrint("${data.documents[i].data['name']}");
+        allMarkers.add(new Marker(
+          markerId: MarkerId('${i.toString()}'),
+          position: new LatLng(data.documents[i].data['location'].latitude,
+              data.documents[i].data['location'].longitude),
+          infoWindow: InfoWindow(
+              title: data.documents[i].data['name'],
+              snippet:
+                  "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}"),
+        ));}
+      }
+      setState(() {
+        _child = mapWidget();
+      });
     });
-    Future.delayed(Duration(seconds: 3)).then((value) {
-      populateOfficials(); // accesses the database
     });
+
 
     super.initState();
   }
-
+ @override
+  void dispose() {
+    _streamSubscription.cancel();
+    super.dispose();
+  }
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
     /*  Navigator.push(
@@ -77,30 +106,46 @@ class _FireMapPoliceState extends State<FireMapPolice> {
     //il delete useless files later
   }
 
-  List<Placemark> placemark;
-  String _address;
+
+  void getCurrentLocation() async {
+    await Geolocator()
+        .getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+            locationPermissionLevel: GeolocationPermission.locationAlways)
+        .then((value) {
+      lat = value.latitude;
+      lng = value.longitude;
+      updateData(lat, lng);
+    }).then((value) {
+      getAddress(lat, lng);
+    });
+  }
+
   void getAddress(double latitude, double longitude) async {
-    placemark =
-        await Geolocator().placemarkFromCoordinates(latitude, longitude);
-    _address =
-        placemark[0].name.toString() + "," + placemark[0].locality.toString();
+        UserDetails u = Provider.of<UserDetails>(context, listen: false);
+    uid = u.uid;
+    setState(() {
+      _child = mapWidget();
+    });
+
+    await Firestore.instance
+        .collection('registeredUsers')
+        .getDocuments()
+        .then((docs) {
+      if (docs.documents.isNotEmpty) {
+        for (int i = 0; i < docs.documents.length; ++i) {
+          if(docs.documents[i].documentID!=uid){
+            debugPrint("id$i   ${docs.documents[i].documentID}!=$uid");
+            initMarker(docs.documents[i].data, docs.documents[i].documentID);}
+        }
+      }
+    });
+
     setState(() {
       _child = mapWidget();
     });
   }
-
-  void getCurrentLocation() async {
-    Position res = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        locationPermissionLevel: GeolocationPermission.locationAlways);
-    setState(() {
-      position = res;
-    });
-
-    var _lat = position.latitude;
-    var _lng = position.longitude;
-    getAddress(_lat, _lng);
-  }
+    List<Marker> allMarkers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -114,36 +159,26 @@ class _FireMapPoliceState extends State<FireMapPolice> {
     // );
   }
 
-  Widget mapWidget() {
-    var googleMap = GoogleMap(
+   Widget mapWidget() {
+    return GoogleMap(
       mapType: MapType.normal,
-      markers: Set<Marker>.of(markers.values),
-      initialCameraPosition: CameraPosition(
-          target: LatLng(position.latitude, position.longitude), zoom: 12.0),
+      //markers: Set<Marker>.of(markers.values),
+      markers: Set<Marker>.of(allMarkers),
+      initialCameraPosition:
+          CameraPosition(target: LatLng(12.9932732,77.593868), zoom: 17.0),
+          myLocationButtonEnabled: false,
+          myLocationEnabled: true,          
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);        
         mapController = controller;
         mapController.setMapStyle(_mapStyleNight);
       },
     );
-    return googleMap;
   }
 
-  populateOfficials() {
-    Firestore.instance
-        .collection('registeredUsers')
-        .getDocuments()
-        .then((docs) {
-      if (docs.documents.isNotEmpty) {
-        for (int i = 0; i < docs.documents.length; ++i) {
-          initMarker(docs.documents[i].data, docs.documents[i].documentID);
-        }
-      }
-    });
-  }
-
+  
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
+  
   void initMarker(request, requestId) {
     var markerIdVal = requestId;
     final MarkerId markerId = MarkerId(markerIdVal);
@@ -151,7 +186,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
       markerId: markerId,
       position:
           LatLng(request['location'].latitude, request['location'].longitude),
-      infoWindow: InfoWindow(title: request['name']),
+      infoWindow: InfoWindow(title: request['name'], snippet: markerIdVal),
       draggable: false,
     );
 
@@ -161,14 +196,49 @@ class _FireMapPoliceState extends State<FireMapPolice> {
     });
   }
 
-  updateData() async {
+   updateData(latitude, longitude) async {
     UserDetails u = Provider.of<UserDetails>(context, listen: false);
-    print("location in updateData: $position");
+    uid = u.uid;
     await Firestore.instance
         .collection('registeredUsers')
-        .document(u.uid)
+        .document('${u.uid}')
         .updateData({
-      "location": GeoPoint(position.latitude, position.longitude),
+      "location": GeoPoint(latitude, longitude),
     });
   }
 }
+/*       StreamBuilder(
+      stream: Firestore.instance.collection('registeredUsers').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.data != null) {
+          for (var i = 0; i < snapshot.data.documents.length; i++) {
+            initMarker(
+                snapshot.data.documents[i]);
+        //  you have to add return here 
+          }
+        }
+      },
+    ); */
+
+/* StreamBuilder(
+        stream: Firestore.instance.collection('registeredUsers').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green)));
+          } else {
+            return ListView.builder(
+              itemBuilder: (_, var i){
+                  return Card(
+                    child: ListTile(
+                      title: Text(snapshot.data.documents[i].data[ ]),
+                    ),
+                  );
+              });
+          }
+        }); */
+
+/* for (var i = 0; i < snapshot.data.documents.length; i++) {
+              initMarker(snapshot.data.documents[i]);
+            } */
