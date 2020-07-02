@@ -1,8 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-<<<<<<< HEAD
-=======
 import 'dart:core';
->>>>>>> a8d2c19ded6fbbb6ac5ec871f76317d540b37c56
 
 class InfoObject {
   String _id;
