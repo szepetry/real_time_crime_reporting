@@ -1,5 +1,7 @@
+  
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
+import 'package:instant_reporter/Forms/ReportForm.dart';
 import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ import '../Forms/LocationReport.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 
 class HomepageUser extends StatefulWidget {
@@ -27,7 +30,7 @@ StreamSubscription subscription;
 
 class _HomepageUserState extends State<HomepageUser> {
   String uid;
-
+String shortcut = "no action set";
   @override
   void initState() {
     Workmanager.initialize(instantReportExecuter, isInDebugMode: true);
@@ -41,6 +44,32 @@ class _HomepageUserState extends State<HomepageUser> {
     });
     //To start the service whenever Homepage opens
     startServiceInPlatform();
+final QuickActions quickActions = QuickActions();
+    quickActions.initialize((String shortcutType) {
+      setState(() {
+        if (shortcutType =='inst1') {
+          setState(() {
+          //  print('quick action');
+            //to go to the report page
+             Navigator.push(context, MaterialPageRoute(builder:(context){
+            return ReportForm(uid,"");
+          }));
+          });
+         
+        }
+      });
+    });
+
+    quickActions.setShortcutItems(<ShortcutItem>[
+    
+    const ShortcutItem(
+          type: 'inst1',
+          localizedTitle: 'Report',
+          icon: 'ic_launcher'),
+    ]);
+
+
+
     super.initState();
   }
 
@@ -54,36 +83,38 @@ class _HomepageUserState extends State<HomepageUser> {
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SlidingUpPanel(
-        color: Color(backgroundColor),
-        maxHeight: 600,
-        minHeight: 100,
-        isDraggable: true,
-        backdropEnabled: true,
-        controller: panelController,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-        panel: BottomPanelView(uid),
-        body: MainBodyStack(uid),
-        collapsed: Container(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 65.0),
-            child: Divider(
-              color: Colors.white,
-              thickness: 5.0,
-              endIndent: MediaQuery.of(context).size.width * 0.3,
-              indent: MediaQuery.of(context).size.width * 0.3,
+          color: Color(backgroundColor),
+          maxHeight: 600,
+          minHeight: 100,
+          isDraggable: true,
+          backdropEnabled: true,
+          controller: panelController,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+          panel: BottomPanelView(uid),
+          body: MainBodyStack(uid),
+          collapsed: Container(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 65.0),
+              child: Divider(
+                color: Colors.white,
+                thickness: 5.0,
+                endIndent: MediaQuery.of(context).size.width * 0.3,
+                indent: MediaQuery.of(context).size.width * 0.3,
+              ),
             ),
           ),
-        ),
-        header: Center(
-          child: Padding(
-            padding: EdgeInsets.only(left:MediaQuery.of(context).size.width * 0.05,top: 30),
-            child: Container(
-              child: Text("Reports",style: TextStyle(fontSize: 40,color: Colors.white),)
+          header: Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.05, top: 30),
+              child: Container(
+                  child: Text(
+                "Reports",
+                style: TextStyle(fontSize: 40, color: Colors.white),
+              )),
             ),
-          ),
-        )
-      ),
+          )),
     );
   }
 }
@@ -91,21 +122,28 @@ class _HomepageUserState extends State<HomepageUser> {
 class FloatingActionButtonWidget extends StatelessWidget {
   final String id;
   FloatingActionButtonWidget(this.id);
+  bool firstClick = false;
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Colors.red,
       onPressed: () {
-        LocationReport(id).saveReport(context);
+        if (firstClick == false) {
+          firstClick = true;
+          LocationReport(id).saveReport(context);
 
-        NotificationManager notificationManager = NotificationManager();
-        notificationManager.showNotification(
-            sentence: 'Instant reporter service',
-            heading: 'Your report has been generated.',
-            priority: priority,
-            importance: importance);
-        panelController.open();
+          NotificationManager notificationManager = NotificationManager();
+          notificationManager.showNotification(
+              sentence: 'Instant reporter service',
+              heading: 'Your report has been generated.',
+              priority: priority,
+              importance: importance);
+          panelController.open();
+          Future.delayed(Duration(seconds: 5)).then((value) {
+            firstClick = false;
+          });
+        }
       },
       child: Icon(Icons.offline_bolt),
     );

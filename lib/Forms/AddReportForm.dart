@@ -15,9 +15,9 @@ import 'package:instant_reporter/common_widgets/notifications.dart';
 import '../common_widgets/video_player_widget.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
+
 Position _currentPosition;
 int count = 0;
-bool isLoading = true;
 MultiInfoObject _multiInfoObject;
 
 typedef voidCallback = bool Function(bool);
@@ -36,7 +36,6 @@ class AddReportForm extends StatefulWidget {
 }
 
 class _AddReportFormState extends State<AddReportForm> {
-  Timer _timer;
   bool firstLoad;
   String id;
   _AddReportFormState(this.firstLoad, this.id);
@@ -55,18 +54,12 @@ class _AddReportFormState extends State<AddReportForm> {
   @override
   void initState() {
     super.initState();
-    print("hello first load init state: " + firstLoad.toString());
     _getLocation();
-    _databaseReference.child(id).onValue.listen((event) {
-      count = event.snapshot.value['count'];
-      print("Count value init: " + count.toString());
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    // _timer.cancel();
   }
 
   Future<void> _getLocation() async {
@@ -75,24 +68,6 @@ class _AddReportFormState extends State<AddReportForm> {
     setState(() {
       _currentPosition = position;
     });
-  }
-
-  void getReport(id, BuildContext context) {
-    try {
-      _databaseReference.child(id).once().then((DataSnapshot snapshot) {
-        // count = 0;
-        print("Firstload in getReport: " + this.firstLoad.toString());
-        print("count value getReport: " + count.toString());
-        if (count >= 0) {
-          for (int index = 0; index < snapshot.value['count']; index++) {
-            // print(infoObjs);
-            infoObjs.add(snapshot.value['infoObject'][index]);
-          }
-        }
-      });
-    } catch (e) {
-      print("Get report exception: $e");
-    }
   }
 
   saveReport(BuildContext context) async {
@@ -108,30 +83,6 @@ class _AddReportFormState extends State<AddReportForm> {
           _urlAttachmentVideo.isNotEmpty ||
           _description.isNotEmpty ||
           _location != null) {
-        if (loadStat == false) {
-          print("1st load count: $count");
-
-          getReport(id, context);
-          setState(() {
-            loadStat = true;
-            NotificationManager notificationManager = NotificationManager();
-            notificationManager.showNotification(
-                sentence: 'Your report has been submitted successfully',
-                heading: 'Report',
-                priority: priority,
-                importance: importance);
-          });
-        }
-
-        print(_description);
-        print(_location);
-        print(_urlAttachmentPhoto);
-        print(_urlAttachmentVideo);
-
-        // navigateToLastScreen(context, loadStat);
-        widget.callback(loadStat);
-        Navigator.pop(context);
-
         InfoObject infoObject = InfoObject(
             this._fName,
             this._lName,
@@ -142,14 +93,47 @@ class _AddReportFormState extends State<AddReportForm> {
             this._urlAttachmentPhoto,
             this._urlAttachmentVideo,
             this._address,
-            DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toString());
+            DateTime.fromMillisecondsSinceEpoch(
+                    DateTime.now().millisecondsSinceEpoch)
+                .toString());
+        setState(() {
+          NotificationManager notificationManager = NotificationManager();
+          notificationManager.showNotification(
+              sentence: 'Your report has been submitted successfully',
+              heading: 'Report',
+              priority: priority,
+              importance: importance);
+        });
+        Navigator.pop(context);
+        infoObjs.clear();
+        if (loadStat == false) {
+          print("1st load count: $count");
 
-        infoObjs.add(infoObject.toJson());
-        _multiInfoObject = MultiInfoObject(infoObjs, count);
-        _timer = Timer(Duration(seconds: 2), () async {
+          await _databaseReference.child("$id").once().then((value) async {
+            count = value.value['count'];
+            infoObjs.addAll(value.value['infoObject']);
+            debugPrint("COunt value $count");
+          }).then((value) {
+            infoObjs.add(infoObject.toJson());
+          }).then((value) async {
+            _multiInfoObject = MultiInfoObject(infoObjs, count);
+            await _databaseReference
+                .child("$id")
+                .set(_multiInfoObject.toJson());
+            print("The object sent: $infoObjs");
+          });
+
+          setState(() {
+            loadStat = true;
+          });
+        } else {
+          infoObjs.add(infoObject.toJson());
+          _multiInfoObject = MultiInfoObject(infoObjs, count);
           await _databaseReference.child("$id").set(_multiInfoObject.toJson());
           print("The object sent: $infoObjs");
-        });
+        }
+
+        widget.callback(loadStat);
       } else {
         showDialog(
             context: context,
@@ -222,7 +206,6 @@ class _AddReportFormState extends State<AddReportForm> {
                 ),
               ),
               Row(
-                //TODO: Add as gesture buttons
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
@@ -363,7 +346,11 @@ class _AddReportFormState extends State<AddReportForm> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text("Image uploaded"),
+              backgroundColor: Color(backgroundColor),
+              title: Text(
+                "Image uploaded",
+                style: TextStyle(color: Colors.white),
+              ),
               content: FadeInImage.memoryNetwork(
                 placeholder: kTransparentImage,
                 image: _urlAttachmentPhoto,
@@ -372,10 +359,11 @@ class _AddReportFormState extends State<AddReportForm> {
               ),
               actions: <Widget>[
                 FlatButton(
+                    // color: Colors.red,
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text("Ok"))
+                    child: Text("Ok", style: TextStyle(color: Colors.white)))
               ],
             );
           },
@@ -398,14 +386,16 @@ class _AddReportFormState extends State<AddReportForm> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text("Video uploaded"),
+              backgroundColor: Color(backgroundColor),
+              title:
+                  Text("Video uploaded", style: TextStyle(color: Colors.white)),
               content: VideoPlayerWidget(url: _urlAttachmentVideo),
               actions: <Widget>[
                 FlatButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text("Ok")),
+                    child: Text("Ok", style: TextStyle(color: Colors.white))),
               ],
             );
           },

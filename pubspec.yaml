@@ -53,7 +53,8 @@ dependencies:
   firebase_auth: ^0.16.0
   #for the notifications
   flutter_local_notifications: ^1.4.4+1
-
+  #for quick actions
+  quick_actions: ^0.4.0+6
 
   cloud_firestore: ^0.13.5
   provider: ^4.1.1

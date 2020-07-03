@@ -6,14 +6,14 @@ import 'dart:core';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../common_widgets/video_player_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 
 bool result = false;
 
 class ReportForm extends StatefulWidget {
   final String id;
-  ReportForm(this.id);
+  final String id2;
+  ReportForm(this.id, this.id2);
 
   @override
   _ReportFormState createState() => _ReportFormState();
@@ -22,14 +22,15 @@ class ReportForm extends StatefulWidget {
 class _ReportFormState extends State<ReportForm> {
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
   bool loadState = false;
-  String id;
+  String id, id2;
   String _name;
   String _phoneNo;
   // _ReportFormState(this.id);
-  
+
   @override
   void initState() {
     id = widget.id;
+    id2 = widget.id2;
     getUserDetails();
     super.initState();
   }
@@ -67,13 +68,13 @@ class _ReportFormState extends State<ReportForm> {
                         ),
                         CommonInfo(
                           heading: ' Name: ',
-                          data: _name != null?
-                          _name:"Loading name.",
+                          data: _name != null ? _name : "Loading name.",
                         ),
                         CommonInfo(
                           heading: ' Phone Number: ',
-                          data: _phoneNo != null?
-                          _phoneNo:"Loading phone number.",
+                          data: _phoneNo != null
+                              ? _phoneNo
+                              : "Loading phone number.",
                         ),
                       ],
                     ),
@@ -82,7 +83,7 @@ class _ReportFormState extends State<ReportForm> {
                   Expanded(
                     child: Container(
                       child: FirebaseAnimatedList(
-                          query: _databaseReference.child(id + "/infoObject"),
+                          query: _databaseReference.child(id2 + "/infoObject"),
                           itemBuilder: (BuildContext context,
                               DataSnapshot snapshot,
                               Animation<double> animation,
@@ -104,6 +105,7 @@ class _ReportFormState extends State<ReportForm> {
                                         child: Column(
                                           children: <Widget>[
                                             eachObject(snapshot),
+                                            // Text("${snapshot.value['timeStamp']}")
                                           ],
                                         ),
                                       ),
@@ -129,7 +131,7 @@ class _ReportFormState extends State<ReportForm> {
                             builder: (context) => Center(
                                 child: Stack(
                               children: <Widget>[
-                                AddReportForm(result, id, (value) {
+                                AddReportForm(result, id2, (value) {
                                   setState(() {
                                     result = value;
                                   });
@@ -137,7 +139,6 @@ class _ReportFormState extends State<ReportForm> {
                                 }),
                               ],
                             )),
-                            
                           );
                           print(
                               "Result from report Form: ${result.toString()}");
@@ -205,6 +206,7 @@ class _ReportFormState extends State<ReportForm> {
             textString: snapshot.value['timeStamp'].toString(),
           ),
         ]),
+        
         Row(
           children: <Widget>[
             Expanded(
