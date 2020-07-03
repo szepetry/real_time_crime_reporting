@@ -52,7 +52,7 @@ final QuickActions quickActions = QuickActions();
           //  print('quick action');
             //to go to the report page
              Navigator.push(context, MaterialPageRoute(builder:(context){
-            return ReportForm(uid);
+            return ReportForm(uid,"");
           }));
           });
          
