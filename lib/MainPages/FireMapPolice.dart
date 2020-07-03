@@ -49,16 +49,21 @@ class _FireMapPoliceState extends State<FireMapPolice> {
   StreamSubscription _streamSubscription;
   Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
   double lat, lng;
+  BitmapDescriptor myIcon;
 
   @override
   void initState() {
       rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
       _mapStyleNight = json;
     }).then((value) {
+
     UserDetails u = Provider.of<UserDetails>(context, listen: false);
     uid = u.uid;
       moveCamera();
-
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(128,128)),'assets/images/police.png')
+    .then((onValue){
+      myIcon=onValue;
+    });
 
     getCurrentLocation(); //current location of the police official
         _streamSubscription = _stream.listen((event) {
@@ -80,6 +85,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
               title: data.documents[i].data['name'],
               snippet:
                   "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}"),
+              icon: myIcon
         ));}
       }
       setState(() {
@@ -178,7 +184,6 @@ class _FireMapPoliceState extends State<FireMapPolice> {
 
   
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  
   void initMarker(request, requestId) {
     var markerIdVal = requestId;
     final MarkerId markerId = MarkerId(markerIdVal);
@@ -188,6 +193,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
           LatLng(request['location'].latitude, request['location'].longitude),
       infoWindow: InfoWindow(title: request['name'], snippet: markerIdVal),
       draggable: false,
+              icon: myIcon
     );
 
     setState(() {

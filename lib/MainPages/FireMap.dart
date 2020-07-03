@@ -42,6 +42,7 @@ class _FireMapState extends State<FireMap> {
   GoogleMapController mapController;
   // Position position;
   Widget _child;
+  BitmapDescriptor myIcon;
 
   @override
   void initState() {
@@ -49,6 +50,10 @@ class _FireMapState extends State<FireMap> {
       _mapStyleNight = json;
     }).then((value) {
         moveCamera();
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(128,128)),'assets/images/police.png')
+    .then((onValue){
+      myIcon=onValue;
+    });
 
       getCurrentLocation();
     });
@@ -99,8 +104,7 @@ class _FireMapState extends State<FireMap> {
     placemark = await Geolocator().placemarkFromAddress(address);
     debugPrint("Name " + placemark[0].locality);
 
-    initMarker(placemark[0], j.toString(), name,
-        BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed));
+    initMarker(placemark[0], j.toString(), name);
 
     // await Firestore.instance
     //     .collection('registeredHospitals')
@@ -159,8 +163,8 @@ class _FireMapState extends State<FireMap> {
   }
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
-  void initMarker(request, requestId, name, BitmapDescriptor icon) {
+ 
+  void initMarker(request, requestId, name) {
     var markerIdVal = requestId;
     final MarkerId markerId = MarkerId(markerIdVal);
     final Marker marker = Marker(
@@ -169,8 +173,9 @@ class _FireMapState extends State<FireMap> {
         infoWindow: InfoWindow(
             title: "$name, ${request.subLocality}",
             snippet: "(${request.position})"),
+            
         draggable: false,
-        icon: icon);
+        icon: myIcon);
 
     setState(() {
       markers[markerId] = marker;
