@@ -205,6 +205,7 @@ class _ReportFormState extends State<ReportForm> {
             textString: snapshot.value['timeStamp'].toString(),
           ),
         ]),
+        
         Row(
           children: <Widget>[
             Expanded(
