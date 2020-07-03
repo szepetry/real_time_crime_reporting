@@ -11,7 +11,6 @@ import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 
-
 class HomepageUser extends StatefulWidget {
   HomepageUser();
   @override
@@ -54,36 +53,38 @@ class _HomepageUserState extends State<HomepageUser> {
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SlidingUpPanel(
-        color: Color(backgroundColor),
-        maxHeight: 600,
-        minHeight: 100,
-        isDraggable: true,
-        backdropEnabled: true,
-        controller: panelController,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-        panel: BottomPanelView(uid),
-        body: MainBodyStack(uid),
-        collapsed: Container(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 65.0),
-            child: Divider(
-              color: Colors.white,
-              thickness: 5.0,
-              endIndent: MediaQuery.of(context).size.width * 0.3,
-              indent: MediaQuery.of(context).size.width * 0.3,
+          color: Color(backgroundColor),
+          maxHeight: 600,
+          minHeight: 100,
+          isDraggable: true,
+          backdropEnabled: true,
+          controller: panelController,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+          panel: BottomPanelView(uid),
+          body: MainBodyStack(uid),
+          collapsed: Container(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 65.0),
+              child: Divider(
+                color: Colors.white,
+                thickness: 5.0,
+                endIndent: MediaQuery.of(context).size.width * 0.3,
+                indent: MediaQuery.of(context).size.width * 0.3,
+              ),
             ),
           ),
-        ),
-        header: Center(
-          child: Padding(
-            padding: EdgeInsets.only(left:MediaQuery.of(context).size.width * 0.05,top: 30),
-            child: Container(
-              child: Text("Reports",style: TextStyle(fontSize: 40,color: Colors.white),)
+          header: Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width * 0.05, top: 30),
+              child: Container(
+                  child: Text(
+                "Reports",
+                style: TextStyle(fontSize: 40, color: Colors.white),
+              )),
             ),
-          ),
-        )
-      ),
+          )),
     );
   }
 }
@@ -91,21 +92,28 @@ class _HomepageUserState extends State<HomepageUser> {
 class FloatingActionButtonWidget extends StatelessWidget {
   final String id;
   FloatingActionButtonWidget(this.id);
+  bool firstClick = false;
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: Colors.red,
       onPressed: () {
-        LocationReport(id).saveReport(context);
+        if (firstClick == false) {
+          firstClick = true;
+          LocationReport(id).saveReport(context);
 
-        NotificationManager notificationManager = NotificationManager();
-        notificationManager.showNotification(
-            sentence: 'Instant reporter service',
-            heading: 'Your report has been generated.',
-            priority: priority,
-            importance: importance);
-        panelController.open();
+          NotificationManager notificationManager = NotificationManager();
+          notificationManager.showNotification(
+              sentence: 'Instant reporter service',
+              heading: 'Your report has been generated.',
+              priority: priority,
+              importance: importance);
+          panelController.open();
+          Future.delayed(Duration(seconds: 5)).then((value) {
+            firstClick = false;
+          });
+        }
       },
       child: Icon(Icons.offline_bolt),
     );

@@ -13,58 +13,65 @@ class BottomPanelView extends StatefulWidget {
 
 class _BottomPanelViewState extends State<BottomPanelView> {
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
-
+  String uid;
+  bool firstClick;
   //Takes the app to report form
-  navigateToReportForm(id) {
+  navigateToReportForm(id, id2) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return ReportForm(id);
+      return ReportForm(id, id2);
     }));
+  }
+
+  @override
+  void initState() {
+    uid = widget.uid;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 75.0),
-            margin: EdgeInsets.only(top: 20.0,left: 8.0,right: 8.0),
-            child: FirebaseAnimatedList(
-                query: _databaseReference,
-                itemBuilder: (BuildContext context, DataSnapshot snapshot,
-                    Animation<double> animation, int index) {
-                  if (snapshot.key == widget.uid) //TODO: Janky way still
-                    return GestureDetector(
-                      onTap: () {
-                        navigateToReportForm(widget.uid);
-                      },
-                      child: Card(
-                        color: Colors.grey,
-                        elevation: 2.0,
-                        child: Container(
-                            margin: EdgeInsets.all(10.0),
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                  width: 50.0,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.all(20.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text("${snapshot.key}"),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )),
-                      ),
-                    );
-                  else
-                    return Container();
-                }));
+        padding: EdgeInsets.only(top: 75.0),
+        margin: EdgeInsets.only(top: 20.0, left: 8.0, right: 8.0),
+        child: FirebaseAnimatedList(
+            query: _databaseReference.child(uid + "/multiObject"),
+            itemBuilder: (BuildContext context, DataSnapshot snapshot,
+                Animation<double> animation, int index) {
+              if (snapshot.value != null)
+                return GestureDetector(
+                  onTap: () {
+                    navigateToReportForm(uid, uid + "/multiObject/$index");
+                  },
+                  child: Card(
+                    color: Colors.grey,
+                    elevation: 2.0,
+                    child: Container(
+                        margin: EdgeInsets.all(10.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                      "Report made on: ${snapshot.value['infoObject'][0]['timeStamp']}"),
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                  ),
+                );
+              else
+                return Container();
+            }));
   }
 }

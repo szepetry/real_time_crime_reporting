@@ -48,7 +48,7 @@ class _FireMapState extends State<FireMap> {
     rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
       _mapStyleNight = json;
     }).then((value) {
-        moveCamera();
+      moveCamera();
 
       getCurrentLocation();
     });
@@ -64,7 +64,9 @@ class _FireMapState extends State<FireMap> {
       await places
           .searchByText("Police stations",
               location: Location(value.latitude, value.longitude),
-              opennow: true,type: "police",radius: 2000)
+              opennow: true,
+              type: "police",
+              radius: 2000)
           .then((response) async {
         for (int i = 0; i < response.results.length; i++) {
           debugPrint("Name $i: " + response.results[i].name);
@@ -72,7 +74,7 @@ class _FireMapState extends State<FireMap> {
           //     response.results[i].name,
           //     i,
           //     response.results[i].name);
-                        await takeAddress(
+          await takeAddress(
               response.results[i].name +
                   ", " +
                   response.results[i].formattedAddress,
@@ -148,7 +150,8 @@ class _FireMapState extends State<FireMap> {
       // liteModeEnabled: true,
       trafficEnabled: false,
 
-      initialCameraPosition: CameraPosition(target: LatLng(12.9538477,77.3507442), zoom: 15.0),
+      initialCameraPosition:
+          CameraPosition(target: LatLng(12.9538477, 77.3507442), zoom: 15.0),
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
 
@@ -199,6 +202,6 @@ class _FireMapState extends State<FireMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _child!=null?_child:mapWidget());
+    return Scaffold(body: _child != null ? _child : mapWidget());
   }
 }
