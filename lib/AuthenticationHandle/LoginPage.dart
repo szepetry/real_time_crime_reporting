@@ -104,4 +104,5 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
           'password', registerHandle.password, true),
     );
   }
+
 }

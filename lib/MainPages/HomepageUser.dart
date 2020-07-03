@@ -1,5 +1,7 @@
+  
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
+import 'package:instant_reporter/Forms/ReportForm.dart';
 import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,8 @@ import '../Forms/LocationReport.dart';
 import 'package:instant_reporter/MainPages/MainBodyStack.dart';
 import 'package:instant_reporter/MainPages/BottomPanelView.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
+import 'package:quick_actions/quick_actions.dart';
+
 
 class HomepageUser extends StatefulWidget {
   HomepageUser();
@@ -26,7 +30,7 @@ StreamSubscription subscription;
 
 class _HomepageUserState extends State<HomepageUser> {
   String uid;
-
+String shortcut = "no action set";
   @override
   void initState() {
     Workmanager.initialize(instantReportExecuter, isInDebugMode: true);
@@ -40,6 +44,32 @@ class _HomepageUserState extends State<HomepageUser> {
     });
     //To start the service whenever Homepage opens
     startServiceInPlatform();
+final QuickActions quickActions = QuickActions();
+    quickActions.initialize((String shortcutType) {
+      setState(() {
+        if (shortcutType =='inst1') {
+          setState(() {
+          //  print('quick action');
+            //to go to the report page
+             Navigator.push(context, MaterialPageRoute(builder:(context){
+            return ReportForm(uid);
+          }));
+          });
+         
+        }
+      });
+    });
+
+    quickActions.setShortcutItems(<ShortcutItem>[
+    
+    const ShortcutItem(
+          type: 'inst1',
+          localizedTitle: 'Report',
+          icon: 'ic_launcher'),
+    ]);
+
+
+
     super.initState();
   }
 
