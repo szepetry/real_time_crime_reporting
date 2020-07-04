@@ -27,7 +27,7 @@ Stream _stream = platform.receiveBroadcastStream();
 StreamSubscription subscription;
 
 class _HomepageUserState extends State<HomepageUser> {
-  String id;
+  // String id;
   //_HomepageUserState(this.id);
   String uid;
 
@@ -49,11 +49,8 @@ class _HomepageUserState extends State<HomepageUser> {
     quickActions.initialize((String shortcutType) {
       setState(() {
         if (shortcutType == 'inst1') {
-          // setState(() {
-           
-
+          
             LocationReport(uid).saveReport(context);
-
             NotificationManager notificationManager = NotificationManager();
             notificationManager.showNotification(
                 sentence: 'Instant reporter service',
@@ -61,7 +58,7 @@ class _HomepageUserState extends State<HomepageUser> {
                 priority: priority,
                 importance: importance);
             panelController.open();
-          // });
+          
         }
       });
     });
