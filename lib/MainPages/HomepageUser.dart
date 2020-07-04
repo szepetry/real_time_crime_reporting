@@ -1,4 +1,3 @@
-  
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:instant_reporter/Forms/ReportForm.dart';
@@ -14,7 +13,6 @@ import 'package:instant_reporter/MainPages/BottomPanelView.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import 'package:quick_actions/quick_actions.dart';
 
-
 class HomepageUser extends StatefulWidget {
   HomepageUser();
   @override
@@ -29,8 +27,11 @@ Stream _stream = platform.receiveBroadcastStream();
 StreamSubscription subscription;
 
 class _HomepageUserState extends State<HomepageUser> {
+  String id;
+  //_HomepageUserState(this.id);
   String uid;
-String shortcut = "no action set";
+
+  String shortcut = "no action set";
   @override
   void initState() {
     Workmanager.initialize(instantReportExecuter, isInDebugMode: true);
@@ -44,31 +45,31 @@ String shortcut = "no action set";
     });
     //To start the service whenever Homepage opens
     startServiceInPlatform();
-final QuickActions quickActions = QuickActions();
+    final QuickActions quickActions = QuickActions();
     quickActions.initialize((String shortcutType) {
       setState(() {
-        if (shortcutType =='inst1') {
-          setState(() {
-          //  print('quick action');
-            //to go to the report page
-             Navigator.push(context, MaterialPageRoute(builder:(context){
-            return ReportForm(uid,"");
-          }));
-          });
-         
+        if (shortcutType == 'inst1') {
+          // setState(() {
+           
+
+            LocationReport(uid).saveReport(context);
+
+            NotificationManager notificationManager = NotificationManager();
+            notificationManager.showNotification(
+                sentence: 'Instant reporter service',
+                heading: 'Your report has been generated.',
+                priority: priority,
+                importance: importance);
+            panelController.open();
+          // });
         }
       });
     });
 
     quickActions.setShortcutItems(<ShortcutItem>[
-    
-    const ShortcutItem(
-          type: 'inst1',
-          localizedTitle: 'Report',
-          icon: 'ic_launcher'),
+      const ShortcutItem(
+          type: 'inst1', localizedTitle: 'Report', icon: 'ic_launcher'),
     ]);
-
-
 
     super.initState();
   }
