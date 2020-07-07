@@ -165,7 +165,7 @@ class _AddReportFormState extends State<AddReportForm> {
       color: Color(backgroundColor),
       elevation: 6.0,
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.60,
+        height: MediaQuery.of(context).size.height * 0.67,
         width: MediaQuery.of(context).size.width * 0.8,
         child: Center(
           child: ListView(

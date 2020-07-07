@@ -28,11 +28,15 @@ const kTextStyleForUrl = TextStyle(
     fontSize: 10.0,
     fontWeight: FontWeight.w300);
 
+    const kTextStyleforLabelText= TextStyle(
+      color: Colors.white,
+    );
+
 //colour for heading
 const colourHeading = 0xFF6DB891; //Kelly green
-const colourbelow = 0xFFF0F0EB; //star white
-const cardColor = 0xFF333333; //Teal blue
-const buttonColor = 0xFFE84C3D; //orange
+const colourbelow = 0xFFF0F0EB; 
+const cardColor = 0xFF333333; 
+const buttonColor = 0xFFE84C3D; 
 const backgroundColor = 0xFF111111;
 
 class ReusableCard extends StatelessWidget {

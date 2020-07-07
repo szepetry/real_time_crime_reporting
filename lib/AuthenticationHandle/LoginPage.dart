@@ -3,6 +3,7 @@ import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/RegisterPag
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/SubmitButtons/FormSubmitButton.dart';
 
+
 class LoginPage extends StatelessWidget with ChangeNotifier {
   final RegisterPageNotifier registerHandle;
   final Authenticate auth;

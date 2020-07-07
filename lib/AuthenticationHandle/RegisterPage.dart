@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/RegisterPageNotifier.dart';
 import 'package:instant_reporter/AuthenticationHandle/SubmitButtons/FormSubmitButton.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/Authenticate.dart';
+import 'package:instant_reporter/common_widgets/constants.dart';
 
 class RegisterPage extends StatelessWidget {
   final RegisterPageNotifier registerHandle;
@@ -20,6 +21,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Register'),
@@ -29,10 +31,12 @@ class RegisterPage extends StatelessWidget {
         padding: const EdgeInsets.only(
             top: 16.0, bottom: 260.0, left: 16.0, right: 16.0),
         child: Card(
+          color: Color(cardColor),
           child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
+                  
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: _buildChildren(context),
@@ -67,6 +71,7 @@ return TextField(
         decoration: InputDecoration(
             labelText: 'Enter 12 digit aadhar number',
             hintText: 'XXXXXXXXXXXX',
+           labelStyle: kTextStyleforLabelText,
             errorText:
                 registerHandle.checkValidAadhar ? null : 'Enter Valid Aadhar',
             enabled: true), //_submitted ? true : false),
