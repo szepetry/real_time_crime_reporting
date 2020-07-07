@@ -8,6 +8,7 @@ import '../../../common_widgets/video_player_widget.dart';
 import '../../../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 bool result = false;
 
@@ -71,12 +72,41 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                           heading: ' Name: ',
                           data: _name != null ? _name : "Loading name.",
                         ),
-                        CommonInfo(
-                          heading: ' Phone Number: ',
-                          data: _phoneNo != null
-                              ? _phoneNo
-                              : "Loading phone number.",
-                        ),
+                        Row(children: <Widget>[
+                          CommonInfo(
+                            heading: ' Phone Number: ',
+                            data: _phoneNo != null
+                                ? _phoneNo
+                                : "Loading phone number.",
+                          ),
+                          SizedBox(
+                            width: 70,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                          //  print('hello');
+                            if(_phoneNo!=null){
+                              String phno ="tel:"+_phoneNo;
+                              launch(phno);
+                            }
+                          },
+                          child: Icon(Icons.call, color: Colors.white,)
+                          
+                          ),
+                          SizedBox(
+                            width: 30,
+                          ),
+                            GestureDetector(
+                              onTap: (){
+                                if(_phoneNo!=null){
+                              String sms ="sms:"+_phoneNo;
+                              launch(sms);
+                            }
+                              },
+                              child: Icon(Icons.sms, color:Colors.white,),
+                            ),
+                          
+                        ]),
                       ],
                     ),
                   )),

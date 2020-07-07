@@ -21,7 +21,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+     // backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Register'),
@@ -31,7 +31,7 @@ class RegisterPage extends StatelessWidget {
         padding: const EdgeInsets.only(
             top: 16.0, bottom: 260.0, left: 16.0, right: 16.0),
         child: Card(
-          color: Color(cardColor),
+        //  color: Color(cardColor),
           child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
@@ -71,7 +71,7 @@ return TextField(
         decoration: InputDecoration(
             labelText: 'Enter 12 digit aadhar number',
             hintText: 'XXXXXXXXXXXX',
-           labelStyle: kTextStyleforLabelText,
+         //  labelStyle: kTextStyleforLabelText,
             errorText:
                 registerHandle.checkValidAadhar ? null : 'Enter Valid Aadhar',
             enabled: true), //_submitted ? true : false),
