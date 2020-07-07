@@ -3,6 +3,7 @@ import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'BottomPanelViewPolice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
@@ -10,12 +11,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:workmanager/workmanager.dart';
 //import 'package:instant_reporter/pages/FireMap.dart';
-import '../Forms/LocationReport.dart';
-import 'package:instant_reporter/MainPages/MainBodyStack.dart';
-import 'package:instant_reporter/MainPages/BottomPanelView.dart';
+import '../../Forms/LocationReport.dart';
+import 'package:instant_reporter/MainPages/User/MainBodyStack.dart';
+import 'package:instant_reporter/MainPages/User/BottomPanelView.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import 'MainBodyStackPolice.dart';
-import '../common_widgets/constants.dart';
+import '../../common_widgets/constants.dart';
 
 PanelController _panelController = PanelController();
 
@@ -100,7 +101,7 @@ class _HomepagePoliceState extends State<HomepagePolice> {
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
         //TODO: Make panel
-        panel: Container(),
+        panel: BottomPanelViewPolice(),
         body: MainBodyStackPolice(),
         controller: panelController,
 

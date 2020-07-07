@@ -6,8 +6,8 @@ import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/RegisterPag
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/RegisterPage.dart';
-import 'package:instant_reporter/MainPages/HomepagePolice.dart';
-import 'package:instant_reporter/MainPages/HomepageUser.dart';
+import 'package:instant_reporter/MainPages/Police/HomepagePolice.dart';
+import 'package:instant_reporter/MainPages/User/HomepageUser.dart';
 import 'package:provider/provider.dart';
 
 class LandingPage extends StatelessWidget {

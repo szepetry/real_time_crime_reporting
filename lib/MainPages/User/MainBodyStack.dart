@@ -6,17 +6,16 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
-import 'package:instant_reporter/MainPages/FireMap.dart';
-import 'Buttons/ProfileMenu.dart';
+import 'package:instant_reporter/MainPages/User/FireMap.dart';
+import '../Buttons/ProfileMenu.dart';
 import 'package:provider/provider.dart';
 import 'package:instant_reporter/MainPages/Drawers.dart';
-import '../Forms/LocationReport.dart';
+import '../../Forms/LocationReport.dart';
 
 Marker marker;
 
 // Position _currentPosition;
 
-//TODO:Main body of the application
 class MainBodyStack extends StatefulWidget {
   final String uid;
   MainBodyStack(this.uid);

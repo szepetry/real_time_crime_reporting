@@ -113,3 +113,38 @@ class CommonInfo extends StatelessWidget {
     );
   }
 }
+
+class MaterialButtonWidget extends StatelessWidget {
+  final Function() onPressed;
+  final Color color;
+  final String text;
+
+  MaterialButtonWidget(
+      {Key key,
+      @required this.onPressed,
+      @required this.color,
+      @required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color,
+              shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(30),
+          ),
+        ),
+        elevation: 18.0,
+        clipBehavior: Clip.antiAlias,
+          child: MaterialButton(
+            height: 50,
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+    );
+  }
+}

@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'dart:async';
 import 'package:workmanager/workmanager.dart';
-import '../Forms/LocationReport.dart';
-import 'package:instant_reporter/MainPages/MainBodyStack.dart';
-import 'package:instant_reporter/MainPages/BottomPanelView.dart';
+import '../../Forms/LocationReport.dart';
+import 'package:instant_reporter/MainPages/User/MainBodyStack.dart';
+import 'package:instant_reporter/MainPages/User/BottomPanelView.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import 'package:quick_actions/quick_actions.dart';
 

@@ -74,25 +74,15 @@ class _AddReportFormState extends State<AddReportForm> {
     try {
       bool loadStat = this.firstLoad;
       print("save report state check: $loadStat");
-      if (_fName.isNotEmpty ||
-          _lName.isNotEmpty ||
-          _phone.isNotEmpty ||
-          _email.isNotEmpty ||
-          _address.isNotEmpty ||
-          _urlAttachmentPhoto.isNotEmpty ||
+      if (_urlAttachmentPhoto.isNotEmpty ||
           _urlAttachmentVideo.isNotEmpty ||
           _description.isNotEmpty ||
-          _location != null) {
+          _currentPosition != null) {
         InfoObject infoObject = InfoObject(
-            this._fName,
-            this._lName,
-            this._phone,
-            this._email,
             this._description,
             _currentPosition.toString(),
             this._urlAttachmentPhoto,
             this._urlAttachmentVideo,
-            this._address,
             DateTime.fromMillisecondsSinceEpoch(
                     DateTime.now().millisecondsSinceEpoch)
                 .toString());
