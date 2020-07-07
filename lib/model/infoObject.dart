@@ -3,11 +3,6 @@ import 'dart:core';
 
 class InfoObject {
   String _id;
-  String _fName;
-  String _lName;
-  String _phone;
-  String _email;
-  String _address;
   String _urlAttachmentPhoto;
   String _urlAttachmentVideo;
   String _location;
@@ -18,36 +13,21 @@ class InfoObject {
   
 
   InfoObject(
-      this._fName,
-      this._lName,
-      this._phone,
-      this._email,
       this._description,
       this._location,
       this._urlAttachmentPhoto,
       this._urlAttachmentVideo,
-      this._address,
       this._dateTime);
   InfoObject.withId(
       this._id,
-      this._fName,
-      this._lName,
-      this._phone,
-      this._email,
       this._description,
       this._location,
       this._urlAttachmentPhoto,
       this._urlAttachmentVideo,
-      this._address,
       this._dateTime);
 
   InfoObject.fromSnapshot(DataSnapshot snapshot) {
     this._id = snapshot.key;
-    this._fName = snapshot.value['fName'];
-    this._lName = snapshot.value['lName'];
-    this._phone = snapshot.value['phone'];
-    this._email = snapshot.value['email'];
-    this._address = snapshot.value['address'];
     this._urlAttachmentPhoto = snapshot.value['urlAttachmentPhoto'];
     this._urlAttachmentVideo = snapshot.value['urlAttachmentVideo'];
     this._description = snapshot.value['description'];
@@ -57,11 +37,6 @@ class InfoObject {
 
   List<Map<String, dynamic>> toJsonList() {
     return [{
-        "fName": _fName,
-        "lName": _lName,
-        "phone": _phone,
-        "email": _email,
-        "address": _address,
         "urlAttachmentPhoto": _urlAttachmentPhoto,
         "urlAttachmentVideo": _urlAttachmentVideo,
         "description": _description,
@@ -72,11 +47,6 @@ class InfoObject {
 
   Map<String, dynamic> toJson() {
     return {
-      "fName": _fName,
-      "lName": _lName,
-      "phone": _phone,
-      "email": _email,
-      "address": _address,
       "urlAttachmentPhoto": _urlAttachmentPhoto,
       "urlAttachmentVideo": _urlAttachmentVideo,
       "description": _description,
@@ -93,11 +63,6 @@ class InfoObject {
 
   //Getters
   String get id => this._id;
-  String get fName => this._fName;
-  String get lName => this._lName;
-  String get phone => this._phone;
-  String get email => this._email;
-  String get address => this._address;
   String get urlAttachmentPhoto => this._urlAttachmentPhoto;
   String get urlAttachmentVideo => this._urlAttachmentVideo;
   String get description => this._description;
@@ -105,26 +70,6 @@ class InfoObject {
   String get dateTime => this._dateTime;
 
   //Setters
-  set fName(String fName) {
-    this._fName = fName;
-  }
-
-  set lName(String lName) {
-    this._lName = lName;
-  }
-
-  set phone(String phone) {
-    this._phone = phone;
-  }
-
-  set email(String email) {
-    this._email = email;
-  }
-
-  set address(String address) {
-    this._address = address;
-  }
-
   set urlAttactmentPhoto(String urlAttachmentPhoto) {
     this._urlAttachmentPhoto = urlAttachmentPhoto;
   }

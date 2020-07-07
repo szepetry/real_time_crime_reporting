@@ -4,6 +4,7 @@ import 'package:instant_reporter/model/infoObject.dart';
 import 'package:instant_reporter/model/multiInfoObject.dart';
 import '../model/multiReportObject.dart';
 import 'package:geolocator/geolocator.dart';
+import '../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
 List<dynamic> multiObjs = List<dynamic>();
@@ -13,18 +14,25 @@ Geolocator geolocator = Geolocator();
 MultiInfoObject _multiInfoObject;
 MultiReportObject _multiReportObject;
 
+// void getUserDetails() async {
+//   await FirestoreService.registeredUserDocument(id).get().then((value) {
+//     setState(() {
+//       _name = value.data['name'];
+//       _phoneNo = value.data['phoneNo'];
+//     });
+//   });
+// }
+
 class LocationReport {
   String id;
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
-  String _fName = '';
-  String _lName = '';
-  String _phone = '';
-  String _email = '';
-  String _address = '';
   String _urlAttachmentPhoto = '';
   String _urlAttachmentVideo = '';
   String _description = '';
+  String aadhar;
+  String name;
+  String phone;
 
   LocationReport(this.id);
 
@@ -38,15 +46,10 @@ class LocationReport {
         print("Location from Location report: " + value.toString());
         if (value != null) {
           InfoObject infoObject = InfoObject(
-              this._fName,
-              this._lName,
-              this._phone,
-              this._email,
               this._description,
               value.toString(),
               this._urlAttachmentPhoto,
               this._urlAttachmentVideo,
-              this._address,
               DateTime.fromMillisecondsSinceEpoch(
                       DateTime.now().millisecondsSinceEpoch)
                   .toString());
@@ -73,6 +76,50 @@ class LocationReport {
               });
         }
       }).then((value) async {
+        await FirestoreService.registeredUserDocument(id).get().then((value) {
+          aadhar = value.data['aadhar'];
+          name = value.data['name'];
+          phone = value.data['phoneNo'];
+        }).then((value) async {
+          await _databaseReference.child("$id").once().then((value) async {
+            if (value.value == null) {
+              _multiReportObject =
+                  MultiReportObject(multiObjs, 1, aadhar, name, phone);
+              await _databaseReference
+                  .child("$id")
+                  .set(_multiReportObject.toJson());
+              print("The object sent: $multiObjs");
+            } else {
+              count2 = value.value['count'];
+              multiObjs.addAll(value.value['multiObject']);
+            }
+          }).then((value) async {
+            multiObjs.add(_multiInfoObject.toJson());
+            if (count2 != null || count2 != 0) {
+              _multiReportObject =
+                  MultiReportObject(multiObjs, count2, aadhar, name, phone);
+              await _databaseReference
+                  .child("$id")
+                  .set(_multiReportObject.toJson());
+              print("The object sent: $multiObjs");
+            } else {
+              _multiReportObject =
+                  MultiReportObject(multiObjs, 0, aadhar, name, phone);
+              await _databaseReference
+                  .child("$id")
+                  .set(_multiReportObject.toJson());
+              print("The object sent: $multiObjs");
+            }
+          });
+        });
+      });
+    } catch (e) {
+      print("Caught exceptions: $e");
+    }
+  }
+}
+
+/*
         await _databaseReference.child("$id").once().then((value) async {
           if (value.value == null) {
             _multiReportObject = MultiReportObject(multiObjs, 1);
@@ -100,9 +147,5 @@ class LocationReport {
             print("The object sent: $multiObjs");
           }
         });
-      });
-    } catch (e) {
-      print("Caught exceptions: $e");
-    }
-  }
-}
+
+ */

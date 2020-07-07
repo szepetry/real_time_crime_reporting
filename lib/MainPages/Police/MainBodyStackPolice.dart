@@ -6,11 +6,11 @@ import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
-import 'package:instant_reporter/MainPages/FireMapPolice.dart';
-import 'Buttons/ProfileMenu.dart';
+import 'package:instant_reporter/MainPages/Police/FireMapPolice.dart';
+import '../Buttons/ProfileMenu.dart';
 import 'package:provider/provider.dart';
 import 'package:instant_reporter/MainPages/Drawers.dart';
-import '../Forms/LocationReport.dart';
+import '../../Forms/LocationReport.dart';
 
 Marker marker;
 

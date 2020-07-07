@@ -9,6 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter/material.dart';
 import '../model/multiReportObject.dart';
+import '../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 
 // const simpleTaskKey = 'simpleTask';
 // const simpleDelayedTask = 'simpleDelayedTask';
@@ -35,14 +36,12 @@ void instantReportExecuter() {
     DatabaseReference _databaseReference =
         FirebaseDatabase.instance.reference();
 
-    String _fName = '';
-    String _lName = '';
-    String _phone = '';
-    String _email = '';
-    String _address = '';
     String _urlAttachmentPhoto = '';
     String _urlAttachmentVideo = '';
     String _description = '';
+    String aadhar;
+    String name;
+    String phone;
 
     try {
       await geolocator
@@ -53,15 +52,10 @@ void instantReportExecuter() {
         print("Location from Location report: " + value.toString());
         if (value != null) {
           InfoObject infoObject = InfoObject(
-              _fName,
-              _lName,
-              _phone,
-              _email,
               _description,
               value.toString(),
               _urlAttachmentPhoto,
               _urlAttachmentVideo,
-              _address,
               DateTime.fromMillisecondsSinceEpoch(
                       DateTime.now().millisecondsSinceEpoch)
                   .toString());
@@ -71,32 +65,41 @@ void instantReportExecuter() {
           multiObjs.clear();
         }
       }).then((value) async {
-        await _databaseReference.child("$uid").once().then((value) async {
-          if (value.value == null) {
-            _multiReportObject = MultiReportObject(multiObjs, 1);
-            await _databaseReference
-                .child("$uid")
-                .set(_multiReportObject.toJson());
-            print("The object sent: $multiObjs");
-          } else {
-            count2 = value.value['count'];
-            multiObjs.addAll(value.value['multiObject']);
-          }
+        await FirestoreService.registeredUserDocument(uid).get().then((value) {
+          aadhar = value.data['aadhar'];
+          name = value.data['name'];
+          phone = value.data['phoneNo'];
         }).then((value) async {
-          multiObjs.add(_multiInfoObject.toJson());
-          if (count2 != null || count2 != 0) {
-            _multiReportObject = MultiReportObject(multiObjs, count2);
-            await _databaseReference
-                .child("$uid")
-                .set(_multiReportObject.toJson());
-            print("The object sent: $multiObjs");
-          } else {
-            _multiReportObject = MultiReportObject(multiObjs, 0);
-            await _databaseReference
-                .child("$uid")
-                .set(_multiReportObject.toJson());
-            print("The object sent: $multiObjs");
-          }
+          await _databaseReference.child("$uid").once().then((value) async {
+            if (value.value == null) {
+              _multiReportObject =
+                  MultiReportObject(multiObjs, 1, aadhar, name, phone);
+              await _databaseReference
+                  .child("$uid")
+                  .set(_multiReportObject.toJson());
+              print("The object sent: $multiObjs");
+            } else {
+              count2 = value.value['count'];
+              multiObjs.addAll(value.value['multiObject']);
+            }
+          }).then((value) async {
+            multiObjs.add(_multiInfoObject.toJson());
+            if (count2 != null || count2 != 0) {
+              _multiReportObject =
+                  MultiReportObject(multiObjs, count2, aadhar, name, phone);
+              await _databaseReference
+                  .child("$uid")
+                  .set(_multiReportObject.toJson());
+              print("The object sent: $multiObjs");
+            } else {
+              _multiReportObject =
+                  MultiReportObject(multiObjs, 0, aadhar, name, phone);
+              await _databaseReference
+                  .child("$uid")
+                  .set(_multiReportObject.toJson());
+              print("The object sent: $multiObjs");
+            }
+          });
         });
       });
     } catch (e) {
