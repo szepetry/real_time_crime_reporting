@@ -83,29 +83,32 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                             width: 70,
                           ),
                           GestureDetector(
-                            onTap: () {
-                          //  print('hello');
-                            if(_phoneNo!=null){
-                              String phno ="tel:"+_phoneNo;
-                              launch(phno);
-                            }
-                          },
-                          child: Icon(Icons.call, color: Colors.white,)
-                          
-                          ),
+                              onTap: () {
+                                //  print('hello');
+                                if (_phoneNo != null) {
+                                  String phno = "tel:" + _phoneNo;
+                                  launch(phno);
+                                }
+                              },
+                              child: Icon(
+                                Icons.call,
+                                color: Colors.white,
+                              )),
                           SizedBox(
                             width: 30,
                           ),
-                            GestureDetector(
-                              onTap: (){
-                                if(_phoneNo!=null){
-                              String sms ="sms:"+_phoneNo;
-                              launch(sms);
-                            }
-                              },
-                              child: Icon(Icons.sms, color:Colors.white,),
+                          GestureDetector(
+                            onTap: () {
+                              if (_phoneNo != null) {
+                                String sms = "sms:" + _phoneNo;
+                                launch(sms);
+                              }
+                            },
+                            child: Icon(
+                              Icons.sms,
+                              color: Colors.white,
                             ),
-                          
+                          ),
                         ]),
                       ],
                     ),
@@ -147,10 +150,31 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                             );
                           }),
                     ),
-                  )
+                  ),
                 ],
               ),
               //TODO: Add action taken button here
+              Positioned(
+                bottom: 20,
+                left: MediaQuery.of(context).size.width - 100,
+                child: RawMaterialButton(
+                  onPressed: () async{
+                    await _databaseReference.child(id).update({
+                      "handled": "pending"
+                    }).then((value) {
+                      debugPrint("Updated handled reference!");
+                    });
+                    
+                  },
+                  child: Icon(
+                    Icons.check,
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 4.0,
+                  fillColor: Colors.red,
+                  padding: EdgeInsets.all(15.0),
+                ),
+              ),
             ],
           ),
         ),

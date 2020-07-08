@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../common_widgets/constants.dart';
 import 'ReportFormPolice.dart';
 
-  DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
+DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
 class ActionRequired extends StatefulWidget {
   @override
@@ -12,7 +12,6 @@ class ActionRequired extends StatefulWidget {
 }
 
 class _ActionRequiredState extends State<ActionRequired> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +19,7 @@ class _ActionRequiredState extends State<ActionRequired> {
       child: Column(
         children: <Widget>[
           Text(
-            "Actions pending",
+            "Actions required",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -30,7 +29,12 @@ class _ActionRequiredState extends State<ActionRequired> {
             child: FirebaseAnimatedList(
               query: _databaseReference.child("/"),
               itemBuilder: (context, snapshot, animation, index) {
-                if (snapshot.value["multiObject"][index]["handled"] != null) {
+                int inc = 0;
+                for (int i = 0; i < snapshot.value['multiObject'].length; i++) {
+                  if (snapshot.value['multiObject'][i]['handled'] == "action")
+                    ++inc;
+                }
+                if (inc != 0) {
                   return GestureDetector(
                     onTap: () {
                       showDialog(
@@ -57,13 +61,14 @@ class _ActionRequiredState extends State<ActionRequired> {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                 ),
+                                child: Icon(Icons.report),
                               ),
                               Container(
                                 margin: EdgeInsets.all(20.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text("${snapshot.key}"),
+                                    Text("Reporter: ${snapshot.value["name"]}"),
                                   ],
                                 ),
                               )
@@ -107,49 +112,77 @@ class _UserReportsState extends State<UserReports> {
               Padding(padding: EdgeInsets.all(20.0)),
               Text(
                 "Reports made",
-                style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
               ),
-              Expanded(child: FirebaseAnimatedList(query: _databaseReference.child(widget.uid+"/multiObject"), itemBuilder: (context, snapshot, animation, index) {
-                                if (snapshot.value["handled"] == false) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => ReportFormPolice(widget.uid+"/multiObject/$index",widget.uid)));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Card(
-                        color: Colors.grey,
-                        elevation: 2.0,
-                        child: Container(
-                            margin: EdgeInsets.all(10.0),
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                  width: 50.0,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
+              Expanded(
+                  child: FirebaseAnimatedList(
+                query: _databaseReference.child(widget.uid + "/multiObject"),
+                itemBuilder: (context, snapshot, animation, index) {
+                  if (snapshot.value["handled"] == "action") {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ReportFormPolice(
+                                    widget.uid + "/multiObject/$index",
+                                    widget.uid)));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          color: Colors.grey,
+                          elevation: 2.0,
+                          child: Container(
+                              margin: EdgeInsets.all(10.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.black26),
+                                    child: IconButton(
+                                      icon: Icon(Icons.check),
+                                      color: Colors.white,
+                                      onPressed: () async {
+                                        await _databaseReference
+                                            .child(widget.uid +
+                                                "/multiObject/$index")
+                                            .update({
+                                          "handled": "pending"
+                                        }).then((value) {
+                                          debugPrint(
+                                              "Updated handled reference!");
+                                        });
+                                      },
+                                    ),
                                   ),
-                                  child: Text("What"),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.all(20.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text("${snapshot.value['infoObject'][0]["timeStamp"]}"),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            )),
+                                  Container(
+                                    margin: EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                            "Report made on: ${snapshot.value['infoObject'][0]["timeStamp"]}"),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              )),
+                        ),
                       ),
-                    ),
-                  );
-                } else {
-                  return Container();
-                }
-              },))
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ))
             ],
           ),
         ),
