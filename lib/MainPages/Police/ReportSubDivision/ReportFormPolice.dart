@@ -79,33 +79,40 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                                 ? _phoneNo
                                 : "Loading phone number.",
                           ),
-                          SizedBox(
-                            width: 70,
+                          // SizedBox(
+                          //   width: 70,
+                          // ),
+                          Align(
+                            child: GestureDetector(
+                                onTap: () {
+                                  //  print('hello');
+                                  if (_phoneNo != null) {
+                                    String phno = "tel:" + _phoneNo;
+                                    launch(phno);
+                                  }
+                                },
+                                child: Icon(
+                                  Icons.call,
+                                  color: Colors.white,
+                                )),
+                            alignment: Alignment.centerRight,
                           ),
-                          GestureDetector(
-                            onTap: () {
-                          //  print('hello');
-                            if(_phoneNo!=null){
-                              String phno ="tel:"+_phoneNo;
-                              launch(phno);
-                            }
-                          },
-                          child: Icon(Icons.call, color: Colors.white,)
-                          
-                          ),
+
                           SizedBox(
                             width: 30,
                           ),
-                            GestureDetector(
-                              onTap: (){
-                                if(_phoneNo!=null){
-                              String sms ="sms:"+_phoneNo;
-                              launch(sms);
-                            }
-                              },
-                              child: Icon(Icons.sms, color:Colors.white,),
+                          GestureDetector(
+                            onTap: () {
+                              if (_phoneNo != null) {
+                                String sms = "sms:" + _phoneNo;
+                                launch(sms);
+                              }
+                            },
+                            child: Icon(
+                              Icons.sms,
+                              color: Colors.white,
                             ),
-                          
+                          ),
                         ]),
                       ],
                     ),
@@ -169,14 +176,19 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
             textString: 'Location:',
           ),
         ]),
-        Row(
-          children: <Widget>[
-            ReportRows(
-              colourOfTheBackground: colourbelow,
-              styleOfText: kTextStyleForData,
-              textString: snapshot.value['location'],
-            ),
-          ],
+        GestureDetector(
+          onTap: () {
+            print('hello');
+          },
+          child: Row(
+            children: <Widget>[
+              ReportRows(
+                colourOfTheBackground: colourbelow,
+                styleOfText: kTextStyleForData,
+                textString: snapshot.value['location'],
+              ),
+            ],
+          ),
         ),
         Row(children: <Widget>[
           ReportRows(
