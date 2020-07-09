@@ -55,6 +55,7 @@ class _BottomPanelViewState extends State<BottomPanelView> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                               ),
+                              child: Icon(Icons.report),
                             ),
                             Container(
                               margin: EdgeInsets.all(20.0),
