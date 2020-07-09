@@ -9,6 +9,7 @@ import '../../../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 bool result = false;
 
@@ -195,7 +196,13 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
         ]),
         GestureDetector(
           onTap: () {
+           String coordinate = snapshot.value["location"];
+              List<String> coordinateList = coordinate.split(", ");
+            debugPrint("The location: ${double.parse(coordinateList[0].split(": ")[1])},${ double.parse(coordinateList[1].split(": ")[1])}");
+       
             print('hello');
+     MapsLauncher.launchCoordinates(
+                    double.parse(coordinateList[0].split(": ")[1]), double.parse(coordinateList[1].split(": ")[1]));
           },
           child: Row(
             children: <Widget>[
