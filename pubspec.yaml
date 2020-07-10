@@ -55,7 +55,8 @@ dependencies:
   flutter_local_notifications: ^1.4.4+1
   #for quick actions
   quick_actions: ^0.4.0+6
-  
+  #for map intent
+  maps_launcher: ^1.2.0
 
   cloud_firestore: ^0.13.5
   provider: ^4.1.1

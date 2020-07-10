@@ -14,29 +14,29 @@ class BottomPanelViewPolice extends StatefulWidget {
 
 DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
-Stream reportStream = _databaseReference.onChildAdded.asBroadcastStream();
-Stream addReportStream = _databaseReference.onChildChanged.asBroadcastStream();
+// Stream reportStream = _databaseReference.onChildAdded.asBroadcastStream();
+// Stream addReportStream = _databaseReference.onChildChanged.asBroadcastStream();
 
-StreamSubscription reportStreamSubscription;
-StreamSubscription addReportStreamSubscription;
+// StreamSubscription reportStreamSubscription;
+// StreamSubscription addReportStreamSubscription;
 int currentIndex = 0;
 
 class _BottomPanelViewPoliceState extends State<BottomPanelViewPolice> {
   @override
   void initState() {
-    reportStreamSubscription = reportStream.listen((event) {
-      return event;
-    });
-    addReportStreamSubscription = addReportStream.listen((event) {
-      return event;
-    });
+    // reportStreamSubscription = reportStream.listen((event) {
+    //   return event;
+    // });
+    // addReportStreamSubscription = addReportStream.listen((event) {
+    //   return event;
+    // });
 
-    reportStreamSubscription.onData((data) {
-      debugPrint("Report added: " + data.toString());
-    });
-    addReportStreamSubscription.onData((data) {
-      debugPrint("Report modified: " + data.toString());
-    });
+    // reportStreamSubscription.onData((data) {
+    //   debugPrint("Report added: " + data.toString());
+    // });
+    // addReportStreamSubscription.onData((data) {
+    //   debugPrint("Report modified: " + data.toString());
+    // });
 
     super.initState();
   }

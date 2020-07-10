@@ -85,7 +85,7 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
           ), */
         ),
         Positioned(
-          bottom: 150,
+          bottom: 300,
           left: MediaQuery.of(context).size.width - 80,
           child: RawMaterialButton(
             onPressed: () {

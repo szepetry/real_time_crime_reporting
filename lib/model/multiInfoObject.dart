@@ -18,7 +18,7 @@ class MultiInfoObject {
     return {
         "infoObject": infoMap,
         "count": _count+1,
-        "handled": false
+        "handled": "action"
     };
   }
 
