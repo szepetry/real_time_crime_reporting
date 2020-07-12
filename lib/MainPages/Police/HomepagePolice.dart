@@ -126,7 +126,7 @@ class _HomepagePoliceState extends State<HomepagePolice> {
                 "Reports",
                 style: TextStyle(fontSize: 40, color: Colors.white),
               )),
-              SizedBox(width: MediaQuery.of(context).size.width*0.48,),
+              SizedBox(width: MediaQuery.of(context).size.width*0.46,),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[

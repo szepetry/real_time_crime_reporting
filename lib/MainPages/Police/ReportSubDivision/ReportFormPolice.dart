@@ -9,6 +9,7 @@ import '../../../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 bool result = false;
 
@@ -26,6 +27,7 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
   String id, uid;
   String _name;
   String _phoneNo;
+  String firstLocation;
   // _ReportFormPoliceState(this.id);
 
   @override
@@ -33,6 +35,7 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
     id = widget.id;
     uid = widget.uid;
     getUserDetails();
+
     super.initState();
   }
 
@@ -43,6 +46,12 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
         _name = value.data['name'];
         _phoneNo = value.data['phoneNo'];
       });
+    }).then((value) async{
+      if(id != null){
+        await _databaseReference.child("$id/infoObject").once().then((snapshot) {
+          firstLocation = snapshot.value[0]['location'];
+        }).then((value) => debugPrint("$firstLocation"));
+      }
     });
   }
 
@@ -193,14 +202,25 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
             textString: 'Location:',
           ),
         ]),
-        Row(
-          children: <Widget>[
-            ReportRows(
-              colourOfTheBackground: colourbelow,
-              styleOfText: kTextStyleForData,
-              textString: snapshot.value['location'],
-            ),
-          ],
+        GestureDetector(
+          onTap: () {
+           String coordinate = snapshot.value["location"];
+              List<String> coordinateList = coordinate.split(", ");
+            debugPrint("The location: ${double.parse(coordinateList[0].split(": ")[1])},${ double.parse(coordinateList[1].split(": ")[1])}");
+       
+            print('hello');
+     MapsLauncher.launchCoordinates(
+                    double.parse(coordinateList[0].split(": ")[1]), double.parse(coordinateList[1].split(": ")[1]));
+          },
+          child: Row(
+            children: <Widget>[
+              ReportRows(
+                colourOfTheBackground: colourbelow,
+                styleOfText: kTextStyleForData,
+                textString: snapshot.value['location'],
+              ),
+            ],
+          ),
         ),
         Row(children: <Widget>[
           ReportRows(

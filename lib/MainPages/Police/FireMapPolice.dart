@@ -1,8 +1,4 @@
-//import 'dart:html';
-
 import 'package:flutter/material.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
@@ -45,9 +41,6 @@ class FireMapPolice extends StatefulWidget {
   _FireMapPoliceState createState() => _FireMapPoliceState();
 }
 
-// UserDetails user = Provider.of<UserDetails>(context, listen: false);
-// StreamSubscription subscription;
-
 class _FireMapPoliceState extends State<FireMapPolice> {
   String uid;
   GoogleMapController mapController;
@@ -56,6 +49,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
   Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
   double lat, lng;
   BitmapDescriptor myIcon;
+  int temp;
 
   @override
   void initState() {
@@ -78,10 +72,11 @@ class _FireMapPoliceState extends State<FireMapPolice> {
 
       _streamSubscription.onData((data) {
         for (int i = 0; i < data.documents.length; i++) {
+          temp = i;
           if (data.documents[i].documentID != uid) {
-            debugPrint(
-                "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
-            debugPrint("${data.documents[i].data['name']}");
+            // debugPrint(
+            //     "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
+            // debugPrint("${data.documents[i].data['name']}");
             allMarkers.add(new Marker(
                 markerId: MarkerId('${i.toString()}'),
                 position: new LatLng(
@@ -99,19 +94,80 @@ class _FireMapPoliceState extends State<FireMapPolice> {
           _child = mapWidget();
         });
       });
-    }).then((value) {
-      reportStreamSubscription = reportStream.listen((event) {
-        return event;
-      });
-      addReportStreamSubscription = addReportStream.listen((event) {
-        return event;
-      });
+    }).then((value) async {
+      await _databaseReference.child("").once().then((snapshot) {
+        // debugPrint("Hello "+value.value);
 
-      // reportStreamSubscription.onData((data) {
-      //   debugPrint("Police maps: Report added: " + data.toString());
-      // });
-      addReportStreamSubscription.onData((data) {
-        debugPrint("Police maps: Report modified: " + data.value.toString());
+        // if (value.value != null)
+        Map<dynamic, dynamic> reportObjects = snapshot.value;
+        // print(values.toString());
+        reportObjects.forEach((key, value) {
+          List<dynamic> multiObjects = value["multiObject"];
+          // debugPrint(key.toString());
+          // debugPrint(value["name"].toString());
+          multiObjects.forEach((infoObject) {
+            // debugPrint(value['infoObject'][0]['location'].toString());
+            String coordinate = infoObject['infoObject'][0]['location'];
+            List<String> coordinateList = coordinate.split(", ");
+            // Position position = Position(latitude: ,longitude:);
+            debugPrint(
+                "The location: ${double.parse(coordinateList[0].split(": ")[1])},${double.parse(coordinateList[1].split(": ")[1])}");
+            allMarkers.add(new Marker(
+                markerId: MarkerId('${temp.toString()}'),
+                position: LatLng(double.parse(coordinateList[0].split(": ")[1]),
+                    double.parse(coordinateList[1].split(": ")[1])),
+                infoWindow: InfoWindow(
+                    title: value['name'].toString(),
+                    snippet:
+                        "${infoObject['infoObject'][0]['location'].toString()}"),
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueMagenta),
+                consumeTapEvents: false));
+            temp++;
+            setState(() {
+              _child = mapWidget();
+            });
+          });
+        });
+      }).then((value) {
+        reportStreamSubscription = reportStream.listen((event) {
+          return event;
+        });
+        addReportStreamSubscription = addReportStream.listen((event) {
+          return event;
+        });
+
+        reportStreamSubscription.onData((data) {
+          debugPrint("Police maps: Report added: " + data.toString());
+        });
+        addReportStreamSubscription.onData((data) {
+          List<dynamic> multiObjects = data.snapshot.value['multiObject'];
+          debugPrint("Police maps: Report modified: " +
+              data.snapshot.value['multiObject'].toString());
+          multiObjects.forEach((infoObject) {
+            // debugPrint(value['infoObject'][0]['location'].toString());
+            String coordinate = infoObject['infoObject'][0]['location'];
+            List<String> coordinateList = coordinate.split(", ");
+            // Position position = Position(latitude: ,longitude:);
+            debugPrint(
+                "The location: ${double.parse(coordinateList[0].split(": ")[1])},${double.parse(coordinateList[1].split(": ")[1])}");
+            allMarkers.add(new Marker(
+                markerId: MarkerId('${temp.toString()}'),
+                position: LatLng(double.parse(coordinateList[0].split(": ")[1]),
+                    double.parse(coordinateList[1].split(": ")[1])),
+                infoWindow: InfoWindow(
+                    title: data.snapshot.value['name'].toString(),
+                    snippet:
+                        "${infoObject['infoObject'][0]['location'].toString()}"),
+                icon: BitmapDescriptor.defaultMarkerWithHue(
+                    BitmapDescriptor.hueMagenta),
+                consumeTapEvents: false));
+            temp++;
+            setState(() {
+              _child = mapWidget();
+            });
+          });
+        });
       });
     });
 
