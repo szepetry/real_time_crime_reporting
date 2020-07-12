@@ -50,7 +50,7 @@ class _FireMapState extends State<FireMap> {
       _mapStyleNight = json;
     }).then((value) {
         moveCamera();
-    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(128,128)),'assets/images/police.png')
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(128,128)),'assets/images/policestation.png')
     .then((onValue){
       myIcon=onValue;
     });
