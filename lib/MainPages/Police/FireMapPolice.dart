@@ -45,8 +45,8 @@ class _FireMapPoliceState extends State<FireMapPolice> {
   String uid;
   GoogleMapController mapController;
   Widget _child;
-  StreamSubscription _streamSubscription;
-  Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
+  StreamSubscription _streamSubscription;//n
+  Stream _stream = Firestore.instance.collection("registeredUsers").snapshots(); //n
   double lat, lng;
   BitmapDescriptor myIcon;
   int temp;
@@ -74,6 +74,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
         for (int i = 0; i < data.documents.length; i++) {
           temp = i;
           if (data.documents[i].documentID != uid) {
+            if(data.documents[i].data['occupation']=="Police"){
             // debugPrint(
             //     "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
             // debugPrint("${data.documents[i].data['name']}");
@@ -88,7 +89,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
                         "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}"),
                 icon: myIcon,
                 consumeTapEvents: false));
-          }
+          }}
         }
         setState(() {
           _child = mapWidget();
@@ -208,9 +209,10 @@ class _FireMapPoliceState extends State<FireMapPolice> {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; ++i) {
           if (docs.documents[i].documentID != uid) {
+            if(docs.documents[i].data["occupation"]=="Police"){
             debugPrint("id$i   ${docs.documents[i].documentID}!=$uid");
             initMarker(docs.documents[i].data, docs.documents[i].documentID);
-          }
+          }}
         }
       }
     });
