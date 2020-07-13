@@ -89,6 +89,7 @@ flutter:
   assets:
      - assets/images/
      - assets/images/police.png
+     - assets/images/report.png
      - assets/images/policestation.png
      - assets/MapStyles/nightMap.json
   # To add assets to your application, add an assets section, like this:

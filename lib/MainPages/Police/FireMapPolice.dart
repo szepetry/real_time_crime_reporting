@@ -49,6 +49,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
   Stream _stream = Firestore.instance.collection("registeredUsers").snapshots(); //n
   double lat, lng;
   BitmapDescriptor myIcon;
+  BitmapDescriptor myIcon1;
   int temp;
 
   @override
@@ -59,12 +60,16 @@ class _FireMapPoliceState extends State<FireMapPolice> {
       UserDetails u = Provider.of<UserDetails>(context, listen: false);
       uid = u.uid;
       moveCamera();
-      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(128, 128)),
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(64, 64)),
               'assets/images/police.png')
           .then((onValue) {
         myIcon = onValue;
       });
-
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(64, 64)),
+              'assets/images/report.png')
+          .then((onValue) {
+        myIcon1 = onValue;
+      });
       getCurrentLocation(); //current location of the police official
       _streamSubscription = _stream.listen((event) {
         debugPrint("$event happened?");
@@ -121,8 +126,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
                     title: value['name'].toString(),
                     snippet:
                         "${infoObject['infoObject'][0]['location'].toString()}"),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueMagenta),
+                icon: myIcon1,
                 consumeTapEvents: false));
             temp++;
             setState(() {
@@ -160,8 +164,7 @@ class _FireMapPoliceState extends State<FireMapPolice> {
                     title: data.snapshot.value['name'].toString(),
                     snippet:
                         "${infoObject['infoObject'][0]['location'].toString()}"),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueMagenta),
+                icon: myIcon1,
                 consumeTapEvents: false));
             temp++;
             setState(() {
