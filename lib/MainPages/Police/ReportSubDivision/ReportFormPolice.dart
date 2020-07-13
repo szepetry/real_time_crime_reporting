@@ -10,6 +10,7 @@ import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'NearbyPolice.dart';
 
 bool result = false;
 
@@ -168,6 +169,19 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                 left: MediaQuery.of(context).size.width - 100,
                 child: RawMaterialButton(
                   onPressed: () async{
+                     showDialog(
+                        context: context,
+                        builder: (context) => Center(
+                          child: Stack(
+                            children: <Widget>[
+                           NearbyPolice (
+                             userLocation: firstLocation,
+                             uid: uid
+                           ),
+                            ],
+                          ),
+                        ),
+                      );
                     await _databaseReference.child(id).update({
                       "handled": "pending"
                     }).then((value) {
