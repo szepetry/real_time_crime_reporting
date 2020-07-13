@@ -1,13 +1,9 @@
 import 'dart:async';
-
+import 'package:flutter_sms/flutter_sms.dart';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_webservice/directions.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'ReportFormPolice.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -22,10 +18,12 @@ class NearbyPolice extends StatefulWidget {
 class _NearbyPoliceState extends State<NearbyPolice> {
   Map<String, dynamic> nameAndDistance = Map<String, dynamic>();
   List<dynamic> latitudes = List<dynamic>();
+  List<String> phoneNumbers = List<String>();
   List<dynamic> longitudes = List<dynamic>();
-  List<dynamic> namesOfthePolice = List<dynamic>();
   List<dynamic> distance = List<dynamic>();
   LinkedHashMap sortedMap;
+  Map<String, bool> checkedListFinal = Map<String, bool>();
+  Map<String, String> namesAndPhoneNumber = Map<String, String>();
 
   final String userLocation;
   String uid;
@@ -33,7 +31,7 @@ class _NearbyPoliceState extends State<NearbyPolice> {
   _NearbyPoliceState({this.userLocation});
   StreamSubscription _streamSubscription; //n
   Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
-  //n
+  List<int> selectedBox = List();
 
   @override
   void initState() {
@@ -47,15 +45,8 @@ class _NearbyPoliceState extends State<NearbyPolice> {
           if (data.documents[i].data['occupation'] == "Police") {
             print(data.documents[i].data['location'].latitude.toString() +
                 ' fffffffff');
-            //  var lat = ;
-            //  latitudes.add(data.documents[i].data['location'].latitude);
-            //  print(data.documents[i].data['name']);
             print(data.documents[i].data['location'].longitude.toString());
-            // var long = ;
-            //longitudes.add(data.documents[i].data['location'].longitude);
-            //   debugPrint('This one: lat: ${latitudes[i].toString()} , long: ${longitudes[i].toString()}');
 
-            //  namesOfthePolice.add(data.documents[i].data['name']);
             String coordinate = userLocation;
             List<String> coordinateList = coordinate.split(", ");
             await Geolocator()
@@ -66,11 +57,14 @@ class _NearbyPoliceState extends State<NearbyPolice> {
                     data.documents[i].data['location'].longitude)
                 .then((dist) {
               nameAndDistance[data.documents[i].data['name']] = dist;
+              namesAndPhoneNumber[data.documents[i].data['name']] =
+                  data.documents[i].data['phoneNo'];
             });
           }
         }
       }
       print(nameAndDistance);
+      print(namesAndPhoneNumber);
       var sortedKeys = nameAndDistance.keys.toList(growable: false)
         ..sort((k1, k2) => nameAndDistance[k1].compareTo(nameAndDistance[k2]));
       setState(() {
@@ -80,10 +74,17 @@ class _NearbyPoliceState extends State<NearbyPolice> {
 
       print(sortedMap);
     });
-
-    // TODO: implement initState
     super.initState();
   }
+//function to send multiple sms
+
+void _sendSMS(String message, List<String> recipents) async {
+ String _result = await sendSMS(message: message, recipients: recipents)
+        .catchError((onError) {
+      print(onError);
+    });
+print(_result);
+}
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +94,7 @@ class _NearbyPoliceState extends State<NearbyPolice> {
       ),
       color: Color(backgroundColor),
       child: Container(
+        padding: EdgeInsets.only(bottom: 10),
         height: MediaQuery.of(context).size.height * 0.67,
         width: MediaQuery.of(context).size.width * 0.8,
         child: sortedMap != null
@@ -108,111 +110,104 @@ class _NearbyPoliceState extends State<NearbyPolice> {
                           fontWeight: FontWeight.bold),
                     ),
                     Expanded(
-                      child: ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: Container(
-                                    // color: Color(backgroundColor),
-                                    decoration:
-                                        BoxDecoration(color: Color(cardColor)),
-                                    child: ListTile(
-                                      leading: Icon(Icons.person),
-                                      contentPadding: EdgeInsets.all(8.0),
-                                      onTap: (){
-                                        debugPrint("Allo");
-                                      },
-                                      title: Text(
-                                        sortedMap.keys.toList()[index],
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
+                      child: Stack(
+                        children: <Widget>[
+                          ListView.builder(
+                            itemCount: sortedMap.length,
+                            itemBuilder: (context, index) {
+                              //  checkedListFinal[sortedMap.keys.toList()[index]]=false;
+                              // checkedListFinal.values.toList()[index]=false;
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  // color: Color(backgroundColor),
+
+                                  decoration:
+                                      BoxDecoration(color: Color(cardColor)),
+                                  child: CheckboxListTile(
+                                    //  secondary: Icon(Icons.sms,color: Colors.white,),
+                                    // contentPadding: EdgeInsets.all(8.0),
+                                    title: Text(
+                                      sortedMap.keys.toList()[index],
+                                      style: TextStyle(
+                                        color: Colors.white,
                                       ),
-                                      subtitle: Text(
-                                        sortedMap.values
-                                            .toList()[index]
-                                            .toString(),
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
                                     ),
+                                    subtitle: Text(
+                                      sortedMap.values
+                                          .toList()[index]
+                                          .toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    value: selectedBox.contains(index),
+                                    onChanged: (bool value) {
+                                      debugPrint('hello');
+                                      setState(() {
+                                        if (selectedBox.contains(index)) {
+                                          print(selectedBox.contains(index));
+                                          selectedBox.remove(index);
+                                          checkedListFinal[sortedMap.keys
+                                              .toList()[index]] = false;
+                                          //  print(checkedListFinal);
+                                        } else {
+                                          selectedBox.add(index);
+                                          checkedListFinal[sortedMap.keys
+                                              .toList()[index]] = true;
+                                          //   print(checkedListFinal);
+                                        }
+                                        print(index);
+                                      });
+                                    },
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
                                   ),
                                 ),
-                              )
                               );
-                        },
-                        itemCount: sortedMap.length,
+                            },
+                          ),
+                          Align(
+                            child: RawMaterialButton(
+                              child: Text(
+                                'Assign Case',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              fillColor: Colors.red,
+                              constraints: BoxConstraints(
+                                minWidth: 110,
+                                minHeight: 45,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  for (int i = 0;
+                                      i < checkedListFinal.length;
+                                      i++) {
+                                    if (checkedListFinal[checkedListFinal.keys
+                                            .toList()[i]] ==
+                                        true) {
+                                      phoneNumbers.add(namesAndPhoneNumber[
+                                          checkedListFinal.keys.toList()[i]]);
+                                      
+                                    }
+                                  }
+                                  String message ='You Have Been Assigned A Case.';
+                                  _sendSMS(message, phoneNumbers);
+                                  print(phoneNumbers);
+                                  print(checkedListFinal);
+                                });
+                              },
+                            ),
+                            alignment: Alignment.bottomCenter,
+                          )
+                        ],
                       ),
                     ),
-
-                    // Expanded(
-                    //     child: FirebaseAnimatedList(
-                    //   query: _databaseReference.child(widget.userLoction + "/multiObject"),
-                    //   itemBuilder: (context, snapshot, animation, index) {
-                    //     if (snapshot.value["handled"] == "action") {
-                    //       return GestureDetector(
-                    //         onTap: () {
-                    //           Navigator.push(
-                    //               context,
-                    //               MaterialPageRoute(
-                    //                   builder: (context) => ReportFormPolice(
-                    //                       widget.userLoction + "/multiObject/$index",
-                    //                       widget.userLoction)));
-                    //         },
-                    //         child: Padding(
-                    //           padding: const EdgeInsets.all(8.0),
-                    //           child: Card(
-                    //             color: Colors.grey,
-                    //             elevation: 2.0,
-                    //             child: Container(
-                    //                 margin: EdgeInsets.all(10.0),
-                    //                 child: Row(
-                    //                   children: <Widget>[
-                    //                     Container(
-                    //                       width: 50.0,
-                    //                       height: 50.0,
-                    //                       decoration: BoxDecoration(
-                    //                           shape: BoxShape.circle,
-                    //                           color: Colors.black26),
-                    //                       child: IconButton(
-                    //                         icon: Icon(Icons.check),
-                    //                         color: Colors.white,
-                    //                         onPressed: () async {
-                    //                           await _databaseReference
-                    //                               .child(widget.userLoction +
-                    //                                   "/multiObject/$index")
-                    //                               .update({
-                    //                             "handled": "pending"
-                    //                           }).then((value) {
-                    //                             debugPrint(
-                    //                                 "Updated handled reference!");
-                    //                           });
-                    //                         },
-                    //                       ),
-                    //                     ),
-                    //                     Container(
-                    //                       margin: EdgeInsets.all(20.0),
-                    //                       child: Column(
-                    //                         crossAxisAlignment:
-                    //                             CrossAxisAlignment.start,
-                    //                         children: <Widget>[
-                    //                           Text(
-                    //                               "Report made on: ${snapshot.value['infoObject'][0]["timeStamp"]}"),
-                    //                         ],
-                    //                       ),
-                    //                     )
-                    //                   ],
-                    //                 )),
-                    //           ),
-                    //         ),
-                    //       );
-                    //     } else {
-                    //       return Container();
-                    //     }
-                    //   },
-                    // ))
                   ],
                 ),
               )

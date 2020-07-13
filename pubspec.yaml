@@ -66,6 +66,8 @@ dependencies:
 
   # video player library
   video_player: ^0.10.11+2
+  #for multiple sms
+  flutter_sms: ^2.0.0+2
 
 
 
