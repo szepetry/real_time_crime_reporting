@@ -64,7 +64,7 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
   Set<Polygon> test = Set<Polygon>();
   @override
   void initState() {
-    rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
+    rootBundle.loadString('assets/MapStyles/nightMapLandmarks.json').then((json) {
       _mapStyleNight = json;
     }).then((value) {
       moveCamera();

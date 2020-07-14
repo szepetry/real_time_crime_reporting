@@ -70,7 +70,7 @@ class _FireMapPoliceState extends State<FireMapPolice>
 
   @override
   void initState() {
-    rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
+    rootBundle.loadString('assets/MapStyles/nightMapLandmarks.json').then((json) {
       _mapStyleNight = json;
     }).then((value) {
       UserDetails u = Provider.of<UserDetails>(context, listen: false);
