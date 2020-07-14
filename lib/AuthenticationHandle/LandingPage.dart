@@ -10,7 +10,7 @@ import 'package:instant_reporter/AuthenticationHandle/RegisterPage.dart';
 import 'package:instant_reporter/MainPages/Police/HomepagePolice.dart';
 import 'package:instant_reporter/MainPages/User/HomepageUser.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 class LandingPage extends StatelessWidget {
   final RegisterPageNotifier registerHandle;
@@ -50,10 +50,7 @@ class LandingPage extends StatelessWidget {
           auth.isLoadingController.add(false);
           return handleNavigation(authSnapshot);
         } else
-          return Center(child:SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ));
+          return Center(child:CircularProgressIndicator());
       },
     );
   }
@@ -86,10 +83,7 @@ class LandingPage extends StatelessWidget {
             return Provider<UserDetails>(
                 create: (context) => UserDetails(uid), child: HomepagePolice());
         }
-        return Center(child: SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ),);
+        return Center(child: CircularProgressIndicator());
       },
     );
   }

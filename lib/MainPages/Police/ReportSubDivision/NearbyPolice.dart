@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'dart:collection';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -209,10 +208,7 @@ print(_result);
                   ],
                 ),
               )
-            : SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ),
+            : CircularProgressIndicator(),
       ),
     );
   }

@@ -6,7 +6,7 @@ import 'package:instant_reporter/ZoneHandle/ZoneInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/ZoneHandle/ZoneUploadHandle/ZoneMaps.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 class ZoneTapOptions extends StatelessWidget {
   final String polygonId;
   final CollectionReference zones;
@@ -258,10 +258,7 @@ class ZoneTapOptions extends StatelessWidget {
           return buildDetails(context, info);
         } else
           return Center(
-            child: SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ),
+            child:CircularProgressIndicator()
           );
       },
     );

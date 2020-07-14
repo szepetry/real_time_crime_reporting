@@ -68,8 +68,6 @@ dependencies:
   video_player: ^0.10.11+2
   #for multiple sms
   flutter_sms: ^2.0.0+2
-  #for the circular progress indicator
-  flutter_spinkit: ^4.1.2
 
 
 

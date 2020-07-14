@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:async";
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 Completer<GoogleMapController> _controller = Completer();
 String _mapStyleNight;
@@ -332,10 +332,7 @@ class _FireMapPoliceState extends State<FireMapPolice>
           _child != null
               ? _child
               : Center(
-                  child: SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ),
+                  child: CircularProgressIndicator(),
                 ),
           zoneToggleButton(),
           refreshButton()

@@ -10,7 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:instant_reporter/ZoneHandle/ZoneDetailsInputHandle/ZoneDetails.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 enum state { getDetails, other }
 state currentState;
 
@@ -127,10 +127,7 @@ class _ZoneMapState extends State<ZoneMap> {
                       addZone.renderZone(point);
                     })
                 : Center(
-                    child: SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ),
+                    child: CircularProgressIndicator()
                   )),
         //  refreshButton(),
         zoneToggleButton(),
@@ -234,10 +231,7 @@ class _ZoneMapState extends State<ZoneMap> {
                     disabledColor: Colors.grey[400],
                     disabledTextColor: Colors.white,
                   )
-                : SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ),
+                :CircularProgressIndicator(),
             SizedBox(height: 8.0),
             FlatButton(
               shape: new RoundedRectangleBorder(

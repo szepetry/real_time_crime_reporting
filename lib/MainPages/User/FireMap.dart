@@ -10,7 +10,7 @@ import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 Completer<GoogleMapController> _controller = Completer();
 
@@ -323,10 +323,7 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
       _child != null
           ? _child
           : Center(
-              child: SpinKitSquareCircle(
-                color: Colors.grey,
-                   size: 50.0,
-            ),
+              child: CircularProgressIndicator(),
             ),
       zoneToggleButton(),
       refreshButton()

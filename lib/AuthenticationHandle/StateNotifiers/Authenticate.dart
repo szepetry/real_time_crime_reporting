@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -115,10 +115,7 @@ class Authenticate with ChangeNotifier {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        SpinKitSquareCircle(
-                color: Colors.black,
-                   size: 50.0,
-            ),
+       CircularProgressIndicator(),
         SizedBox(height: 5.0),
         Text('Authenticating',
             style: TextStyle(color: Colors.black, fontSize: 20)),
