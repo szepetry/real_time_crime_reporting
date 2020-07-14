@@ -90,9 +90,7 @@ class ZoneTapOptions extends StatelessWidget {
         shape: new RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(10.0)),
         onPressed: () async {
-          await deleteZone()
-              ? messageDialog(context, 'Zone Delete Successful')
-              : messageDialog(context, 'Zone Delete Failed');
+          await deleteZone(context);
         },
         child: Text('Delete Zone', style: TextStyle(fontSize: 20)),
         color: Colors.blue,
@@ -101,14 +99,13 @@ class ZoneTapOptions extends StatelessWidget {
     );
   }
 
-  Future<bool> deleteZone() async {
+  Future<void> deleteZone(BuildContext context) async {
     String documentId = zones.document('$polygonId').documentID;
-    bool isDeleted = await zones
-        .document(documentId)
-        .delete()
-        .then((value) => true)
-        .catchError((onError) => false);
-    return Future.value(isDeleted);
+    await zones.document(documentId).delete().then((value) {
+      generateDialog(context, 'Zone Delete Successful');
+    }).catchError((onError) {
+      generateDialog(context, 'Zone Delete Failed');
+    });
   }
 
   Widget viewZoneDetails(BuildContext context) {

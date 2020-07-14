@@ -12,19 +12,20 @@ class ZoneNotificationsManager {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print(message);
-        Scaffold.of(context).showSnackBar(createSnackbar(message));
+        Scaffold.of(context).showSnackBar(createSnackbar(message, context));
       },
       onResume: (Map<String, dynamic> message) async {},
       onLaunch: (Map<String, dynamic> message) async {},
     );
   }
 
-  static createSnackbar(Map<String, dynamic> message) {
+  static createSnackbar(Map<String, dynamic> message, BuildContext context) {
     String title = message['notification']['title'];
     String body = message['notification']['body'];
     return SnackBar(
         duration: const Duration(seconds: 8),
         content: ListTile(
+          onTap: () => Scaffold.of(context).hideCurrentSnackBar(),
           leading: Icon(
             Icons.info_outline,
             size: 50,
