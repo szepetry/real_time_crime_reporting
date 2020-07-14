@@ -3,7 +3,6 @@ import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/RegisterPag
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/SubmitButtons/FormSubmitButton.dart';
 
-
 class LoginPage extends StatelessWidget with ChangeNotifier {
   final RegisterPageNotifier registerHandle;
   final Authenticate auth;
@@ -66,15 +65,20 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
           return FormSubmitButton(
             text: 'Login',
             onPressed: snapshot.data != true
-                ? () {
-                    auth.isLoadingController.add(true);
-                    auth.isNewUser = false;
-                    registerHandle.processRegistration(context, auth);
-                  }
+                ? registerHandle.canSubmit
+                    ? () {
+                        auth.isLoadingController.add(true);
+                        auth.isNewUser = false;
+                        registerHandle.processRegistration(context, auth);
+                      }
+                    : null
                 : null,
           );
         });
   }
+
+  bool get validateFields =>
+      !registerHandle.getValidPhone || !registerHandle.validLoginPassword;
 
   Widget buildPhoneField() {
     return TextField(
@@ -105,5 +109,4 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
           'password', registerHandle.password, true),
     );
   }
-
 }

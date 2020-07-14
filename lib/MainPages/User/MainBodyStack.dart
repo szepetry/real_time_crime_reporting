@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
+import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneRender.dart';
+import 'package:instant_reporter/ZoneHandle/ZoneNotificationManager.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 // import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/MainPages/User/FireMap.dart';
@@ -19,13 +22,18 @@ Marker marker;
 class MainBodyStack extends StatefulWidget {
   final String uid;
   MainBodyStack(this.uid);
+
   @override
   _MainBodyStackState createState() => _MainBodyStackState();
 }
 
 class _MainBodyStackState extends State<MainBodyStack> {
+  bool displayZone = false;
+
   void initState() {
     super.initState();
+    ZoneNotificationsManager.init(widget.uid);
+    ZoneNotificationsManager.invokeZoneListener(context);
   }
 
   // Future<void> _getCurrentLocation() async {
@@ -52,32 +60,20 @@ class _MainBodyStackState extends State<MainBodyStack> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        FireMap(),
+        FireMap.create(context),
         Align(
           alignment: Alignment.topRight,
           child: IconButton(
+            iconSize: 45,
             tooltip: "Profile",
-            icon: Icon(Icons.person,color: Colors.white,),
+            icon: Icon(
+              Icons.person_pin,
+              color: Colors.white,
+            ),
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => Drawers(),
-                ),
-              );
+              Scaffold.of(context).openEndDrawer();
             },
-          ), /* PopupMenuButton<String>(
-            tooltip: "Profile",
-            onSelected: choiceAction,
-            icon: Icon(Icons.person),
-            itemBuilder: (BuildContext context) {
-              return ProfileMenu.choices.map((String choice){
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            }
-          ), */
+          ),
         ),
         Positioned(
           bottom: 150,
@@ -99,3 +95,16 @@ class _MainBodyStackState extends State<MainBodyStack> {
     );
   }
 }
+/* PopupMenuButton<String>(
+            tooltip: "Profile",
+            onSelected: choiceAction,
+            icon: Icon(Icons.person),
+            itemBuilder: (BuildContext context) {
+              return ProfileMenu.choices.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            }
+          ), */
