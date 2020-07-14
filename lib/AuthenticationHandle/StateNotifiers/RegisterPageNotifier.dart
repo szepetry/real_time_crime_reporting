@@ -160,6 +160,7 @@ class UserData {
   String _password;
   String _occupation;
   GeoPoint _point;
+  bool _entered = false;
   UserData(this._name, this._aadhar, this._phoneNo, this._occupation,
       this._password);
 
@@ -173,6 +174,9 @@ class UserData {
       'location': _point,
       'token': "",
       "zoneId": "",
+      "zoneColor": "",
+      "zoneNotification": "",
+      "entered": _entered
     };
     return userData;
   }
