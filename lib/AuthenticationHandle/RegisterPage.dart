@@ -77,8 +77,12 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildAadharField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getAadharController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
           labelText: 'Enter 12 digit aadhar number',
           hintText: 'XXXXXXXXXXXX',
           labelStyle: kTextStyleforLabelText,
@@ -92,8 +96,12 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildPhoneField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getPhoneNoController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
          labelStyle: kTextStyleforLabelText,
           labelText: 'Enter 10 digit Phone Number',
           hintText: '+91 ',
@@ -106,8 +114,12 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildPasswordField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getPasswordController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
         labelStyle: kTextStyleforLabelText,
           labelText: 'Enter Password',
           errorText:
@@ -121,8 +133,12 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildRePasswordField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getRePasswordController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
         labelStyle: kTextStyleforLabelText,
           labelText: 'Re-Enter Password',
           errorText: registerHandle.checkRepass ? null : 'Password Mismatch',
