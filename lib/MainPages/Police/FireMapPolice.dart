@@ -1,14 +1,16 @@
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
+import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneRender.dart';
+import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "dart:async";
 import 'package:flutter/services.dart' show rootBundle;
-
-import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Completer<GoogleMapController> _controller = Completer();
 String _mapStyleNight;
@@ -36,25 +38,40 @@ Future<void> moveCamera() async {
 }
 
 class FireMapPolice extends StatefulWidget {
-  FireMapPolice(); //use this uid here
+  final ZoneRender renderZone;
+  FireMapPolice(this.renderZone); //use this uid here
+
+  static Widget create(BuildContext context) {
+    return Provider<ZoneRender>(
+      create: (context) => ZoneRender(context),
+      child: Consumer<ZoneRender>(
+          builder: (context, renderZone, _) => FireMapPolice(renderZone)),
+    );
+  }
+
   @override
   _FireMapPoliceState createState() => _FireMapPoliceState();
 }
 
-class _FireMapPoliceState extends State<FireMapPolice> {
+class _FireMapPoliceState extends State<FireMapPolice>
+    with SingleTickerProviderStateMixin {
+  ZoneRender get renderZone => widget.renderZone;
   String uid;
   GoogleMapController mapController;
   Widget _child;
-  StreamSubscription _streamSubscription;//n
-  Stream _stream = Firestore.instance.collection("registeredUsers").snapshots(); //n
+  StreamSubscription _streamSubscription; //n
+  Stream _stream =
+      Firestore.instance.collection("registeredUsers").snapshots(); //n
   double lat, lng;
   BitmapDescriptor myIcon;
+  bool displayZone = false;
   BitmapDescriptor myIcon1;
   int temp;
+  AnimationController rotationController;
 
   @override
   void initState() {
-    rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
+    rootBundle.loadString('assets/MapStyles/nightMapLandmarks.json').then((json) {
       _mapStyleNight = json;
     }).then((value) {
       UserDetails u = Provider.of<UserDetails>(context, listen: false);
@@ -79,22 +96,23 @@ class _FireMapPoliceState extends State<FireMapPolice> {
         for (int i = 0; i < data.documents.length; i++) {
           temp = i;
           if (data.documents[i].documentID != uid) {
-            if(data.documents[i].data['occupation']=="Police"){
-            // debugPrint(
-            //     "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
-            // debugPrint("${data.documents[i].data['name']}");
-            allMarkers.add(new Marker(
-                markerId: MarkerId('${i.toString()}'),
-                position: new LatLng(
-                    data.documents[i].data['location'].latitude,
-                    data.documents[i].data['location'].longitude),
-                infoWindow: InfoWindow(
-                    title: data.documents[i].data['name'],
-                    snippet:
-                        "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}"),
-                icon: myIcon,
-                consumeTapEvents: false));
-          }}
+            if (data.documents[i].data['occupation'] == "Police") {
+              // debugPrint(
+              //     "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
+              // debugPrint("${data.documents[i].data['name']}");
+              allMarkers.add(new Marker(
+                  markerId: MarkerId('${i.toString()}'),
+                  position: new LatLng(
+                      data.documents[i].data['location'].latitude,
+                      data.documents[i].data['location'].longitude),
+                  infoWindow: InfoWindow(
+                      title: data.documents[i].data['name'],
+                      snippet:
+                          "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}"),
+                  icon: myIcon,
+                  consumeTapEvents: false));
+            }
+          }
         }
         setState(() {
           _child = mapWidget();
@@ -176,11 +194,16 @@ class _FireMapPoliceState extends State<FireMapPolice> {
     });
 
     super.initState();
+    rotationController = AnimationController(
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+        upperBound: 22 * 6 / 7);
   }
 
   @override
   void dispose() {
     _streamSubscription.cancel();
+    rotationController.dispose();
     super.dispose();
   }
 
@@ -212,10 +235,11 @@ class _FireMapPoliceState extends State<FireMapPolice> {
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; ++i) {
           if (docs.documents[i].documentID != uid) {
-            if(docs.documents[i].data["occupation"]=="Police"){
-            debugPrint("id$i   ${docs.documents[i].documentID}!=$uid");
-            initMarker(docs.documents[i].data, docs.documents[i].documentID);
-          }}
+            if (docs.documents[i].data["occupation"] == "Police") {
+              debugPrint("id$i   ${docs.documents[i].documentID}!=$uid");
+              initMarker(docs.documents[i].data, docs.documents[i].documentID);
+            }
+          }
         }
       }
     });
@@ -227,20 +251,107 @@ class _FireMapPoliceState extends State<FireMapPolice> {
 
   List<Marker> allMarkers = [];
 
+  void toggleZoneView() {
+    setState(() {
+      displayZone = !displayZone;
+      _child = mapWidget();
+    });
+  }
+
+  Future<void> loadZones() async {
+    rotationController.forward(from: 0.0);
+    await renderZone.renderZonesV2();
+  }
+
+  Widget zoneToggleButton() {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return Positioned(
+      top: 0.08 * height,
+      left: 0.82 * width,
+      height: 0.060 * height,
+      width: 0.17 * width,
+      child: RaisedButton(
+        elevation: 100,
+        shape: new CircleBorder(
+            // borderRadius: new BorderRadius.circular(30.0),
+            ),
+        onPressed: toggleZoneView,
+        child: Center(
+          child: Text(
+            !displayZone ? 'Display\n zones' : ' Hide\nzones',
+            style: TextStyle(fontSize: 10),
+          ),
+        ),
+        textColor: Colors.white,
+        color: displayZone ? Colors.deepOrange[900] : Colors.green[900],
+      ),
+    );
+  }
+
+  Widget refreshButton() {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return Positioned(
+      top: 0.16 * height,
+      left: 0.82 * width,
+      height: 0.060 * height,
+      width: 0.17 * width,
+      child: RotationTransition(
+        turns: Tween(begin: 0.0, end: 2.0).animate(rotationController),
+        child: RaisedButton(
+          elevation: 100,
+          shape: new CircleBorder(),
+          onPressed: () async {
+            await loadZones();
+            setState(() {
+              _child = mapWidget();
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 30),
+            child: Padding(
+              padding: EdgeInsets.only(right: 30),
+              child: Icon(Icons.autorenew, size: 40),
+            ),
+          ),
+          textColor: Colors.white,
+          color: Colors.blue,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     UserDetails u = Provider.of<UserDetails>(context, listen: false);
     uid = u.uid;
-    return Scaffold(body: _child);
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          _child != null
+              ? _child
+              : Center(
+                  child: SpinKitSquareCircle(
+                color: Colors.grey,
+                   size: 50.0,
+            ),
+                ),
+          zoneToggleButton(),
+          refreshButton()
+        ],
+      ),
+    );
   }
 
   Widget mapWidget() {
+    print(renderZone.polygonsDB);
     return GoogleMap(
       mapType: MapType.normal,
       //markers: Set<Marker>.of(markers.values),
       markers: Set<Marker>.of(allMarkers),
       initialCameraPosition:
-          CameraPosition(target: LatLng(12.9932732, 77.593868), zoom: 17.0),
+          CameraPosition(target: LatLng(13.018302, 77.508173), zoom: 18.0),
       myLocationButtonEnabled: false,
       myLocationEnabled: true,
       mapToolbarEnabled: true,
@@ -249,6 +360,9 @@ class _FireMapPoliceState extends State<FireMapPolice> {
         mapController = controller;
         mapController.setMapStyle(_mapStyleNight);
       },
+      polygons: renderZone.polygonsDB.isNotEmpty
+          ? displayZone ? Set.from(renderZone.polygonsDB) : null
+          : null,
     );
   }
 

@@ -42,6 +42,20 @@ public class MainActivity extends FlutterActivity {
     // }
 
     @Override
+    protected void onDestroy() {
+        // added due to JNDI error in flutter 
+        try{    
+        if (getFlutterEngine() != null)
+        if (getFlutterEngine().getPlatformViewsController() != null)
+            getFlutterEngine().getPlatformViewsController().onFlutterViewDestroyed() ;
+        }
+        catch(Error e){
+            System.out.println(e);
+        }
+            super.onDestroy();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

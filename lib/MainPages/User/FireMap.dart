@@ -1,11 +1,16 @@
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneRender.dart';
+import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Completer<GoogleMapController> _controller = Completer();
 
@@ -34,31 +39,50 @@ Future<void> moveCamera() async {
 }
 
 class FireMap extends StatefulWidget {
+  ZoneRender renderZone;
+  FireMap(this.renderZone);
+
+  static Widget create(BuildContext context) {
+    return Provider<ZoneRender>(
+      create: (context) => ZoneRender(context),
+      child: Consumer<ZoneRender>(
+          builder: (context, renderZone, _) => FireMap(renderZone)),
+    );
+  }
+
   @override
   _FireMapState createState() => _FireMapState();
 }
 
-class _FireMapState extends State<FireMap> {
+class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
+  ZoneRender get renderZone => widget.renderZone;
   GoogleMapController mapController;
+  bool displayZone = false;
+  AnimationController rotationController;
   // Position position;
   Widget _child;
   BitmapDescriptor myIcon;
-
+  Set<Polygon> test = Set<Polygon>();
   @override
   void initState() {
-    rootBundle.loadString('assets/MapStyles/nightMap.json').then((json) {
+    rootBundle.loadString('assets/MapStyles/nightMapLandmarks.json').then((json) {
       _mapStyleNight = json;
     }).then((value) {
-        moveCamera();
-    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(64,64)),'assets/images/policestation.png')
-    .then((onValue){
-      myIcon=onValue;
-    });
+      moveCamera();
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(64, 64)),
+              'assets/images/policestation.png')
+          .then((onValue) {
+        myIcon = onValue;
+      });
       moveCamera();
 
       getCurrentLocation();
     });
     super.initState();
+    rotationController = AnimationController(
+        duration: const Duration(milliseconds: 1500),
+        vsync: this,
+        upperBound: 22 * 6 / 7);
   }
 
   void getCurrentLocation() async {
@@ -143,7 +167,15 @@ class _FireMapState extends State<FireMap> {
     });
   }
 
+  void trial(ZoneRender renderZone) {}
+
   Widget mapWidget() {
+    //Set<Polygon> test = Set<Polygon>();
+    //ZoneRender renderZone = Provider.of<ZoneRender>(context, listen: false);
+    /*   renderZone.polygonsDB.forEach((element) {
+      test.add(element);
+    }); */
+    print(widget.renderZone.polygonsDB);
     return GoogleMap(
       mapType: MapType.normal,
       markers: Set<Marker>.of(markers.values),
@@ -154,9 +186,11 @@ class _FireMapState extends State<FireMap> {
       indoorViewEnabled: false,
       // liteModeEnabled: true,
       trafficEnabled: false,
-
+      polygons: widget.renderZone.polygonsDB.isNotEmpty
+          ? displayZone ? Set.from(widget.renderZone.polygonsDB) : null
+          : null,
       initialCameraPosition:
-          CameraPosition(target: LatLng(12.9538477, 77.3507442), zoom: 15.0),
+          CameraPosition(target: LatLng(13.018302, 77.508173), zoom: 18.0),
       onMapCreated: (GoogleMapController controller) {
         _controller.complete(controller);
 
@@ -167,7 +201,7 @@ class _FireMapState extends State<FireMap> {
   }
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
- 
+
   void initMarker(request, requestId, name) {
     var markerIdVal = requestId;
     final MarkerId markerId = MarkerId(markerIdVal);
@@ -177,7 +211,6 @@ class _FireMapState extends State<FireMap> {
         infoWindow: InfoWindow(
             title: "$name, ${request.subLocality}",
             snippet: "(${request.position})"),
-            
         draggable: false,
         icon: myIcon);
 
@@ -207,7 +240,96 @@ class _FireMapState extends State<FireMap> {
   // }
 
   @override
+  void dispose() {
+    rotationController.dispose();
+    super.dispose();
+  }
+
+  void toggleZoneView() {
+    setState(() {
+      displayZone = !displayZone;
+      _child = mapWidget();
+    });
+  }
+
+  Future<void> loadZones() async {
+    rotationController.forward(from: 0.0);
+    await renderZone.renderZonesV2();
+  }
+
+  Widget zoneToggleButton() {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return Positioned(
+      top: 0.08 * height,
+      left: 0.82 * width,
+      height: 0.060 * height,
+      width: 0.17 * width,
+      child: RaisedButton(
+        elevation: 100,
+        shape: new CircleBorder(
+            // borderRadius: new BorderRadius.circular(30.0),
+            ),
+        onPressed: toggleZoneView,
+        child: Center(
+          child: Text(
+            !displayZone ? 'Display\n Zones' : '  Hide\nZones',
+            style: TextStyle(fontSize: 10),
+          ),
+        ),
+        textColor: Colors.white,
+        color: displayZone ? Colors.deepOrange[900] : Colors.green[900],
+      ),
+    );
+  }
+
+  Widget refreshButton() {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    return Positioned(
+      top: 0.16 * height,
+      left: 0.82 * width,
+      height: 0.060 * height,
+      width: 0.17 * width,
+      child: RotationTransition(
+        turns: Tween(begin: 0.0, end: 2.0).animate(rotationController),
+        child: RaisedButton(
+          elevation: 100,
+          shape: new CircleBorder(),
+          onPressed: () async {
+            await loadZones();
+            setState(() {
+              _child = mapWidget();
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.only(right: 30),
+            child: Padding(
+              padding: EdgeInsets.only(right: 30),
+              child: Icon(Icons.autorenew, size: 40),
+            ),
+          ),
+          textColor: Colors.white,
+          color: Colors.blue,
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _child != null ? _child : mapWidget());
+    return Scaffold(
+        body: Stack(children: <Widget>[
+      _child != null
+          ? _child
+          : Center(
+              child: SpinKitSquareCircle(
+                color: Colors.grey,
+                   size: 50.0,
+            ),
+            ),
+      zoneToggleButton(),
+      refreshButton()
+    ]));
   }
 }

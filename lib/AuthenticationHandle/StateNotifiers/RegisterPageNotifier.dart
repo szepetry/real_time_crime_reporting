@@ -21,7 +21,7 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
   bool validPhone = true;
   bool validLoginPassword = true;
   bool loginMode = false;
-  
+  bool canSubmit = true;
   set setLoginMode(bool value) {
     this.loginMode = value;
     notifyListeners();
@@ -32,10 +32,8 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
     notifyListeners();
   }
 
-  get getValidPhone => validPhone;
+  bool get getValidPhone => validPhone;
 
-
-  
   bool get checkRepass => validRePassword;
   bool get checkValidPassword => validPassword;
   bool get checkValidAadhar => validAadhar;
@@ -56,23 +54,29 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
       aadharDB == aadhar ? validAadhar = true : validAadhar = false;
     } else
       validAadhar = true;
+    canSubmit = validAadhar;
     notifyListeners();
   }
 
   Future<void> validatePassword() async {
     if (passwordLengthValid) {
       enteredPassword = passwordController.text;
-      loginMode==false
-      ?handleRegistrationPasswordVerification()
-      :handleLoginPasswordVerification();
+      loginMode == false
+          ? handleRegistrationPasswordVerification()
+          : handleLoginPasswordVerification();
       print(passwordDB);
     } else
       validPassword = true;
+    canSubmit = validPassword;
     notifyListeners();
   }
 
-  void handleRegistrationPasswordVerification() =>passwordDB == enteredPassword ? validPassword = false : validPassword = true;
-  void handleLoginPasswordVerification() => passwordDB == enteredPassword ? validPassword = true : validPassword = false;
+  void handleRegistrationPasswordVerification() => passwordDB == enteredPassword
+      ? validPassword = false
+      : validPassword = true;
+  void handleLoginPasswordVerification() => passwordDB == enteredPassword
+      ? validPassword = true
+      : validPassword = false;
 
   void validateRePassword() {
     rePassword = rePasswordController.text;
@@ -82,34 +86,38 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
           : validRePassword = false;
     } else
       validRePassword = true;
+    canSubmit = validRePassword;
     notifyListeners();
   }
 
-  bool checkIfFieldsEmptyRegister() => aadharLengthValid && phoneLengthValid && passwordLengthValid && rePasswordLengthValid;
+  bool checkIfFieldsEmptyRegister() =>
+      aadharLengthValid &&
+      phoneLengthValid &&
+      passwordLengthValid &&
+      rePasswordLengthValid;
 
-  bool canSubmit() {
-    if(loginMode==false){
-      if(checkIfFieldsEmptyRegister()){
-    bool canSubmit = validAadhar && validPassword && validRePassword && phoneLengthValid;
-    return canSubmit;
-    }
-    else
-    return false;
-    }
-    else {
-    if(phoneLengthValid && passwordLengthValid){
-      bool canSubmit = validPassword && validPhone;
-    return canSubmit;
-    }
-    else
-    return false;
-    }
+  bool canSubmitForm() {
+    return true;
+    /*  if (loginMode == false) {
+      if (checkIfFieldsEmptyRegister()) {
+        bool canSubmit =
+            validAadhar && validPassword && validRePassword && phoneLengthValid;
+        return canSubmit;
+      } else
+        return false;
+    } else {
+      if (phoneLengthValid && passwordLengthValid) {
+        bool canSubmit = validPassword && validPhone;
+        return canSubmit;
+      } else
+        return false;
+    } */
   }
 
   void processRegistration(BuildContext context, Authenticate auth) async {
     isError == false
-        ? authenticateUser(auth,context)
-        : auth.displayDialog('Authentication failed','Network Error');
+        ? authenticateUser(auth, context)
+        : auth.displayDialog('Authentication failed', 'Network Error');
     isError = false;
   }
 
@@ -120,14 +128,14 @@ class RegisterPageNotifier extends FirestoreService with ChangeNotifier {
     rePasswordController.clear();
   }
 
-  Future<void> authenticateUser(Authenticate auth,BuildContext context) async {
-    canSubmit() == true
-        ? await auth.verifyPhone('+91' + phoneNo,context)
-        : auth.displayDialog('Enter Valid Credentials','Authentication Error');
+  Future<void> authenticateUser(Authenticate auth, BuildContext context) async {
+    canSubmitForm() == true
+        ? await auth.verifyPhone('+91' + phoneNo, context)
+        : auth.displayDialog('Enter Valid Credentials', 'Authentication Error');
   }
 
-  void newUserUpdate(String uid) =>
-      updateNewUser(UserData(nameDB,aadharNo, phoneNo, getOccupation, password), uid);
+  void newUserUpdate(String uid) => updateNewUser(
+      UserData(nameDB, aadharNo, phoneNo, getOccupation, password), uid);
 
   Future<void> crossCheckLoginData(
       String key, String enteredString, bool isLogin) async {
@@ -152,16 +160,23 @@ class UserData {
   String _password;
   String _occupation;
   GeoPoint _point;
-  UserData(this._name,this._aadhar, this._phoneNo, this._occupation, this._password);
+  bool _entered = false;
+  UserData(this._name, this._aadhar, this._phoneNo, this._occupation,
+      this._password);
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> userData = {
-      'name':_name,
+      'name': _name,
       'aadhar': _aadhar,
       'phoneNo': _phoneNo,
       'password': _password,
       'occupation': _occupation,
-      'location':_point
+      'location': _point,
+      'token': "",
+      "zoneId": "",
+      "zoneColor": "",
+      "zoneNotification": "",
+      "entered": _entered
     };
     return userData;
   }

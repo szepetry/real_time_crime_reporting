@@ -3,7 +3,6 @@ import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/RegisterPag
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/SubmitButtons/FormSubmitButton.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
-
 class LoginPage extends StatelessWidget with ChangeNotifier {
   final RegisterPageNotifier registerHandle;
   final Authenticate auth;
@@ -43,18 +42,16 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Text('Login',
-              style: TextStyle(
+             Padding(
+               padding: const EdgeInsets.all(25.0),
+               child: Text('Login',
+                style: TextStyle(
                   color:Colors.white,
-                  fontSize: 30,
-                  
-                ),
-              ),
-            ),
+                  fontSize:30,
+                ),),
+             ),
             Card(
-              color: Color(cardColor),
+                 color: Color(cardColor),
               child: Column(
                 //crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
@@ -65,7 +62,7 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
                   buildPasswordField(),
                   SizedBox(height: 8.0),
                   buildSubmitButton(),
-                  SizedBox(height: 8.0),
+                  SizedBox(height: 16.0),
                 ],
               ),
             ),
@@ -79,21 +76,23 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
     return StreamBuilder<bool>(
         stream: auth.isLoadingStream,
         builder: (context, snapshot) {
-          return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: FormSubmitButton(
-              text: 'Login',
-              onPressed: snapshot.data != true
-                  ? () {
-                      auth.isLoadingController.add(true);
-                      auth.isNewUser = false;
-                      registerHandle.processRegistration(context, auth);
-                    }
-                  : null,
-            ),
+          return FormSubmitButton(
+            text: 'Login',
+            onPressed: snapshot.data != true
+                ? registerHandle.canSubmit
+                    ? () {
+                        auth.isLoadingController.add(true);
+                        auth.isNewUser = false;
+                        registerHandle.processRegistration(context, auth);
+                      }
+                    : null
+                : null,
           );
         });
   }
+
+  bool get validateFields =>
+      !registerHandle.getValidPhone || !registerHandle.validLoginPassword;
 
   Widget buildPhoneField() {
     return TextField(
@@ -113,11 +112,10 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
 
   Widget buildPasswordField() {
     return TextField(
-      
       controller: _getPasswordController,
       decoration: InputDecoration(
-        labelStyle: kTextStyleforLabelText,
           enabled: true, //!_submitted?false:true,
+          labelStyle: kTextStyleforLabelText,
           labelText: ' Enter Password',
           errorText: registerHandle.validLoginPassword == false
               ? 'Enter valid password'
@@ -127,5 +125,4 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
           'password', registerHandle.password, true),
     );
   }
-
 }
