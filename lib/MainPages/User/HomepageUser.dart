@@ -48,12 +48,12 @@ class _HomepageUserState extends State<HomepageUser> {
       print("$data");
     });
     //To start the service whenever Homepage opens
-    startServiceInPlatform();
+    // startServiceInPlatform();
     final QuickActions quickActions = QuickActions();
     quickActions.initialize((String shortcutType) {
       setState(() {
         if (shortcutType == 'inst1') {
-          LocationReport(uid).saveReport(context);
+          LocationReport(uid).saveReportWithCamera(context);
           NotificationManager notificationManager = NotificationManager();
           notificationManager.showNotification(
               sentence: 'Instant reporter service',
