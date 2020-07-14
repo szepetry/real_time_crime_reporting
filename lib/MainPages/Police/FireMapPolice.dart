@@ -58,11 +58,13 @@ class _FireMapPoliceState extends State<FireMapPolice>
   String uid;
   GoogleMapController mapController;
   Widget _child;
-  StreamSubscription _streamSubscription;
-  Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
+  StreamSubscription _streamSubscription; //n
+  Stream _stream =
+      Firestore.instance.collection("registeredUsers").snapshots(); //n
   double lat, lng;
   BitmapDescriptor myIcon;
   bool displayZone = false;
+  BitmapDescriptor myIcon1;
   int temp;
   AnimationController rotationController;
 
@@ -74,12 +76,16 @@ class _FireMapPoliceState extends State<FireMapPolice>
       UserDetails u = Provider.of<UserDetails>(context, listen: false);
       uid = u.uid;
       moveCamera();
-      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(128, 128)),
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(64, 64)),
               'assets/images/police.png')
           .then((onValue) {
         myIcon = onValue;
       });
-
+      BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(64, 64)),
+              'assets/images/report.png')
+          .then((onValue) {
+        myIcon1 = onValue;
+      });
       getCurrentLocation(); //current location of the police official
       _streamSubscription = _stream.listen((event) {
         debugPrint("$event happened?");
@@ -89,20 +95,22 @@ class _FireMapPoliceState extends State<FireMapPolice>
         for (int i = 0; i < data.documents.length; i++) {
           temp = i;
           if (data.documents[i].documentID != uid) {
-            // debugPrint(
-            //     "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
-            // debugPrint("${data.documents[i].data['name']}");
-            allMarkers.add(new Marker(
-                markerId: MarkerId('${i.toString()}'),
-                position: new LatLng(
-                    data.documents[i].data['location'].latitude,
-                    data.documents[i].data['location'].longitude),
-                infoWindow: InfoWindow(
-                    title: data.documents[i].data['name'],
-                    snippet:
-                        "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}"),
-                icon: myIcon,
-                consumeTapEvents: false));
+            if (data.documents[i].data['occupation'] == "Police") {
+              // debugPrint(
+              //     "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
+              // debugPrint("${data.documents[i].data['name']}");
+              allMarkers.add(new Marker(
+                  markerId: MarkerId('${i.toString()}'),
+                  position: new LatLng(
+                      data.documents[i].data['location'].latitude,
+                      data.documents[i].data['location'].longitude),
+                  infoWindow: InfoWindow(
+                      title: data.documents[i].data['name'],
+                      snippet:
+                          "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}"),
+                  icon: myIcon,
+                  consumeTapEvents: false));
+            }
           }
         }
         setState(() {
@@ -135,8 +143,7 @@ class _FireMapPoliceState extends State<FireMapPolice>
                     title: value['name'].toString(),
                     snippet:
                         "${infoObject['infoObject'][0]['location'].toString()}"),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueMagenta),
+                icon: myIcon1,
                 consumeTapEvents: false));
             temp++;
             setState(() {
@@ -174,8 +181,7 @@ class _FireMapPoliceState extends State<FireMapPolice>
                     title: data.snapshot.value['name'].toString(),
                     snippet:
                         "${infoObject['infoObject'][0]['location'].toString()}"),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueMagenta),
+                icon: myIcon1,
                 consumeTapEvents: false));
             temp++;
             setState(() {
@@ -228,8 +234,10 @@ class _FireMapPoliceState extends State<FireMapPolice>
       if (docs.documents.isNotEmpty) {
         for (int i = 0; i < docs.documents.length; ++i) {
           if (docs.documents[i].documentID != uid) {
-            debugPrint("id$i   ${docs.documents[i].documentID}!=$uid");
-            initMarker(docs.documents[i].data, docs.documents[i].documentID);
+            if (docs.documents[i].data["occupation"] == "Police") {
+              debugPrint("id$i   ${docs.documents[i].documentID}!=$uid");
+              initMarker(docs.documents[i].data, docs.documents[i].documentID);
+            }
           }
         }
       }

@@ -10,6 +10,7 @@ import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'NearbyPolice.dart';
 
 bool result = false;
 
@@ -27,6 +28,7 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
   String id, uid;
   String _name;
   String _phoneNo;
+  String firstLocation;
   // _ReportFormPoliceState(this.id);
 
   @override
@@ -34,6 +36,7 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
     id = widget.id;
     uid = widget.uid;
     getUserDetails();
+
     super.initState();
   }
 
@@ -44,6 +47,12 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
         _name = value.data['name'];
         _phoneNo = value.data['phoneNo'];
       });
+    }).then((value) async{
+      if(id != null){
+        await _databaseReference.child("$id/infoObject").once().then((snapshot) {
+          firstLocation = snapshot.value[0]['location'];
+        }).then((value) => debugPrint("$firstLocation"));
+      }
     });
   }
 
@@ -160,6 +169,19 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                 left: MediaQuery.of(context).size.width - 100,
                 child: RawMaterialButton(
                   onPressed: () async{
+                     showDialog(
+                        context: context,
+                        builder: (context) => Center(
+                          child: Stack(
+                            children: <Widget>[
+                           NearbyPolice (
+                             userLocation: firstLocation,
+                             uid: uid
+                           ),
+                            ],
+                          ),
+                        ),
+                      );
                     await _databaseReference.child(id).update({
                       "handled": "pending"
                     }).then((value) {

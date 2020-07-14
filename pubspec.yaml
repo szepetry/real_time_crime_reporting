@@ -66,6 +66,8 @@ dependencies:
   android_alarm_manager: ^0.4.5+11
   # video player library
   video_player: ^0.10.11+2
+  #for multiple sms
+  flutter_sms: ^2.0.0+2
 
 
 
@@ -87,6 +89,8 @@ flutter:
   assets:
      - assets/images/
      - assets/images/police.png
+     - assets/images/report.png
+     - assets/images/policestation.png
      - assets/MapStyles/nightMap.json
   # To add assets to your application, add an assets section, like this:
   # assets:
