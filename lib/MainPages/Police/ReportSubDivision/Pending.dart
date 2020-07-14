@@ -19,7 +19,7 @@ class _PendingState extends State<Pending> {
       child: Column(
         children: <Widget>[
           Text(
-            "Actions required",
+            "Pending",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,

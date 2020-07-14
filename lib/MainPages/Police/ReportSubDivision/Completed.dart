@@ -19,7 +19,7 @@ class _CompletedState extends State<Completed> {
       child: Column(
         children: <Widget>[
           Text(
-            "Actions required",
+            "Completed",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
