@@ -116,7 +116,7 @@ class Authenticate with ChangeNotifier {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         SpinKitSquareCircle(
-                color: Colors.grey,
+                color: Colors.black,
                    size: 50.0,
             ),
         SizedBox(height: 5.0),

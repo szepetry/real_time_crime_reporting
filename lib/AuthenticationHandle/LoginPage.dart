@@ -96,8 +96,12 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
 
   Widget buildPhoneField() {
     return TextField(
+      style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getPhoneNoController,
       decoration: InputDecoration(
+     hintStyle:kTextStyleforLabelText ,
         labelStyle: kTextStyleforLabelText,
           enabled: true, //!_submitted?false:true,
           labelText: '  Enter 10 digit phone number',
@@ -112,10 +116,16 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
 
   Widget buildPasswordField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getPasswordController,
       decoration: InputDecoration(
+        
+         hintStyle:kTextStyleforLabelText ,
           enabled: true, //!_submitted?false:true,
           labelStyle: kTextStyleforLabelText,
+         
           labelText: ' Enter Password',
           errorText: registerHandle.validLoginPassword == false
               ? 'Enter valid password'
