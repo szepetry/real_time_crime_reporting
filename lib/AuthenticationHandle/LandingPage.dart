@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:instant_reporter/AuthenticationHandle/RedirectPage.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/Authenticate.dart';
 import 'package:instant_reporter/AuthenticationHandle/LoginPage.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/FirestoreService.dart';
@@ -32,25 +33,22 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<FirebaseUser>(
       stream: Authenticate.currentAuthState,
       builder: (context, authSnapshot) {
-     
-    // authSnapshot.data.delete();
-       print('Auth state rebuild..auth value:' + authSnapshot.data.toString());
+        // authSnapshot.data.delete();
+        print('Auth state rebuild..auth value:' + authSnapshot.data.toString());
         if (authSnapshot.data == null) {
           if (registerHandle.loginMode == true)
             return LoginPage(registerHandle, auth);
           else
             return RegisterPage(registerHandle, auth);
-        } else if(authSnapshot.data!=null) {
+        } else if (authSnapshot.data != null) {
           auth.isLoadingController.add(false);
           return handleNavigation(authSnapshot);
-        }
-        else
+        } else
           return Center(child: CircularProgressIndicator());
       },
     );
@@ -64,26 +62,25 @@ class LandingPage extends StatelessWidget {
           .newUserUpdate(uid); //await fn so cant put outside if-else statement
     auth.isNewUser = false;
     registerHandle.clearControllers();
-    return userTypeStream(uid);
+    return userTypeStream(uid, authSnapshot.data);
   }
 
-  StreamBuilder<DocumentSnapshot> userTypeStream(String uid) {
+  StreamBuilder<DocumentSnapshot> userTypeStream(
+      String uid, FirebaseUser user) {
     return StreamBuilder<DocumentSnapshot>(
       stream: FirestoreService.registeredUserStream(uid),
       builder: (context, firestoreSnapshot) {
         print('Auth state rebuild..auth value:' +
             firestoreSnapshot.data.toString());
         if (firestoreSnapshot.hasData) {
-          if (firestoreSnapshot.data['occupation'] != 'Police')
+          if (firestoreSnapshot.data.data == null)
+            return RedirectPage(user);
+          else if (firestoreSnapshot.data['occupation'] != 'Police')
             return Provider<UserDetails>(
-              create: (context) => UserDetails(uid),
-              child: HomepageUser()
-              );
-          else
+                create: (context) => UserDetails(uid), child: HomepageUser());
+          else if (firestoreSnapshot.data['occupation'] == 'Police')
             return Provider<UserDetails>(
-              create: (context) => UserDetails(uid),
-              child: HomepagePolice()
-              );
+                create: (context) => UserDetails(uid), child: HomepagePolice());
         }
         return Center(child: CircularProgressIndicator());
       },
@@ -91,8 +88,10 @@ class LandingPage extends StatelessWidget {
   }
 }
 
-class UserDetails{
+class UserDetails {
   String uid;
+  bool isMale = true;
+  bool subscribedZoneNotifications = false;
   UserDetails(this.uid);
-  String get getUid =>this.uid;
+  String get getUid => this.uid;
 }

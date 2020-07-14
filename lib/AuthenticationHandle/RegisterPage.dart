@@ -21,7 +21,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // backgroundColor: Colors.black,
+      // backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Register'),
@@ -31,12 +31,11 @@ class RegisterPage extends StatelessWidget {
         padding: const EdgeInsets.only(
             top: 16.0, bottom: 260.0, left: 16.0, right: 16.0),
         child: Card(
-        //  color: Color(cardColor),
+          //  color: Color(cardColor),
           child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
-                  
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: _buildChildren(context),
@@ -46,7 +45,6 @@ class RegisterPage extends StatelessWidget {
       ),
     );
   }
-
 
   List<Widget> _buildChildren(BuildContext context) {
     return [
@@ -65,85 +63,88 @@ class RegisterPage extends StatelessWidget {
     ];
   }
 
-Widget buildAadharField(){
-return TextField(
-        controller: _getAadharController,
-        decoration: InputDecoration(
-            labelText: 'Enter 12 digit aadhar number',
-            hintText: 'XXXXXXXXXXXX',
-         //  labelStyle: kTextStyleforLabelText,
-            errorText:
-                registerHandle.checkValidAadhar ? null : 'Enter Valid Aadhar',
-            enabled: true), //_submitted ? true : false),
-        maxLength: 12,
-        onChanged: (value) => registerHandle.validateAadhar(),
-      );
-}
-Widget buildPhoneField(){
-return TextField(
-        controller: _getPhoneNoController,
-        decoration: InputDecoration(
-            labelText: 'Enter 10 digit Phone Number',
-            hintText: '+91 ',
-            errorText: null,
-            enabled: true), //_submitted ? true : false),
-        obscureText: false,
-        maxLength: 10,
-      );
-}
-Widget buildPasswordField(){
-return TextField(
-        controller: _getPasswordController,
-        decoration: InputDecoration(
-            labelText: 'Enter Password',
-            errorText:
-                registerHandle.checkValidPassword ? null : 'Password Taken',
-            enabled: true, //_submitted ? true : false,
-            hintText: 'Minimum 5 characters'),
-        obscureText: true,
-        onChanged: (value) => registerHandle.validatePassword(),
-      );
-}
-Widget buildRePasswordField(){
-return TextField(
-        controller: _getRePasswordController,
-        decoration: InputDecoration(
-            labelText: 'Re-Enter Password',
-            errorText: registerHandle.checkRepass ? null : 'Password Mismatch',
-            enabled: true, //_submitted ? true : false,
-            hintText: 'Minimum 5 characters'),
-        obscureText: true,
-        onChanged: (value) => registerHandle.validateRePassword(),
-      );
-}
-  
-StreamBuilder<bool> buildSubmitButton(){
-  return StreamBuilder<bool>(
+  Widget buildAadharField() {
+    return TextField(
+      controller: _getAadharController,
+      decoration: InputDecoration(
+          labelText: 'Enter 12 digit aadhar number',
+          hintText: 'XXXXXXXXXXXX',
+          //  labelStyle: kTextStyleforLabelText,
+          errorText:
+              registerHandle.checkValidAadhar ? null : 'Enter Valid Aadhar',
+          enabled: true), //_submitted ? true : false),
+      maxLength: 12,
+      onChanged: (value) => registerHandle.validateAadhar(),
+    );
+  }
+
+  Widget buildPhoneField() {
+    return TextField(
+      controller: _getPhoneNoController,
+      decoration: InputDecoration(
+          labelText: 'Enter 10 digit Phone Number',
+          hintText: '+91 ',
+          errorText: null,
+          enabled: true), //_submitted ? true : false),
+      obscureText: false,
+      maxLength: 10,
+    );
+  }
+
+  Widget buildPasswordField() {
+    return TextField(
+      controller: _getPasswordController,
+      decoration: InputDecoration(
+          labelText: 'Enter Password',
+          errorText:
+              registerHandle.checkValidPassword ? null : 'Password Taken',
+          enabled: true, //_submitted ? true : false,
+          hintText: 'Minimum 5 characters'),
+      obscureText: true,
+      onChanged: (value) => registerHandle.validatePassword(),
+    );
+  }
+
+  Widget buildRePasswordField() {
+    return TextField(
+      controller: _getRePasswordController,
+      decoration: InputDecoration(
+          labelText: 'Re-Enter Password',
+          errorText: registerHandle.checkRepass ? null : 'Password Mismatch',
+          enabled: true, //_submitted ? true : false,
+          hintText: 'Minimum 5 characters'),
+      obscureText: true,
+      onChanged: (value) => registerHandle.validateRePassword(),
+    );
+  }
+
+  StreamBuilder<bool> buildSubmitButton() {
+    return StreamBuilder<bool>(
         stream: auth.isLoadingStream,
         builder: (context, snapshot) {
           return FormSubmitButton(
             text: 'Register',
-            onPressed:  snapshot.data!=true
-                ? () {
-                    auth.isLoadingController.add(true);
-                    auth.isNewUser=true;
-                    registerHandle.processRegistration(context, auth);
-                  }
+            onPressed: snapshot.data != true
+                ? registerHandle.canSubmit
+                    ? () {
+                        auth.isLoadingController.add(true);
+                        auth.isNewUser = true;
+                        registerHandle.processRegistration(context, auth);
+                      }
+                    : null
                 : null,
           );
-        }
-      );
-}
+        });
+  }
 
-Widget buildLoginPage(){
-  return FlatButton(
-        child: Text('Have an account? Log In'),
-        onPressed: () {
-          _getPasswordController.clear();
-          _getPhoneNoController.clear();
-          registerHandle.setLoginMode=true;
-        },
-      );
-}
-
+  Widget buildLoginPage() {
+    return FlatButton(
+      child: Text('Have an account? Log In'),
+      onPressed: () {
+        _getPasswordController.clear();
+        _getPhoneNoController.clear();
+        registerHandle.setLoginMode = true;
+      },
+    );
+  }
 }

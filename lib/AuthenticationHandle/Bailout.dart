@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/Authenticate.dart';
 
-
-enum bailOutOptions {closeApp,signOut,deleteAccount}
+enum bailOutOptions { closeApp, signOut, deleteAccount }
 bailOutOptions bailOutState;
+
 class Bailout {
- 
-Future<void> confirmBailOutRequest(BuildContext context, String message) {
+  /* 
+  String logOutMsg = 'Are you sure you want to Log Out?';
+  String closeApp = 'Close the app?';
+  String deleteAccount = 'Are you sure you want to delete your account'; */
+
+  Future<void> confirmBailOutRequest(BuildContext context, String message) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -33,7 +37,7 @@ Future<void> confirmBailOutRequest(BuildContext context, String message) {
         });
   }
 
-   void ascertainAction(context){
+  void ascertainAction(context) {
     switch (bailOutState) {
       case bailOutOptions.signOut:
         _signOut();
@@ -43,13 +47,13 @@ Future<void> confirmBailOutRequest(BuildContext context, String message) {
         break;
       case bailOutOptions.deleteAccount:
         _deleteAccount();
-      break;
+        break;
       default:
     }
   }
 
   void _deleteAccount() => Authenticate.deleteAccount();
-  
+
   Future<void> _signOut() async => Authenticate.signOut();
 
   Future<void> _closeAndSignOut(BuildContext context) async {
@@ -57,22 +61,25 @@ Future<void> confirmBailOutRequest(BuildContext context, String message) {
     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
   }
 
-   Widget ascertainText(String message) {
+  Widget ascertainText(String message) {
     switch (message) {
-      case 'Are you sure you want to Log Out?':{
-        bailOutState=bailOutOptions.signOut;
-        return null;
-      }
+      case 'Are you sure you want to Log Out?':
+        {
+          bailOutState = bailOutOptions.signOut;
+          return null;
+        }
         break;
-      case 'Close the app?':{
-        bailOutState=bailOutOptions.closeApp;
-        return Text('You will be Logged out as well');
-      }
+      case 'Close the app?':
+        {
+          bailOutState = bailOutOptions.closeApp;
+          return Text('You will be Logged out as well');
+        }
         break;
-      case 'Are you sure you want to delete your account':{
-        bailOutState=bailOutOptions.deleteAccount;
-        return Text('Your account will be permanently deleted');
-      }
+      case 'Are you sure you want to delete your account':
+        {
+          bailOutState = bailOutOptions.deleteAccount;
+          return Text('Your account will be permanently deleted');
+        }
         break;
       default:
         return null;

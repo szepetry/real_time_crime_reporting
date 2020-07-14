@@ -1,6 +1,11 @@
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:instant_reporter/Forms/ReportForm.dart';
+import 'package:instant_reporter/MainPages/Drawers.dart';
+import 'package:instant_reporter/ZoneHandle/ZoneNotificationManager.dart';
+import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
 import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +35,6 @@ class _HomepageUserState extends State<HomepageUser> {
   // String id;
   //_HomepageUserState(this.id);
   String uid;
-
   String shortcut = "no action set";
   @override
   void initState() {
@@ -49,16 +53,14 @@ class _HomepageUserState extends State<HomepageUser> {
     quickActions.initialize((String shortcutType) {
       setState(() {
         if (shortcutType == 'inst1') {
-          
-            LocationReport(uid).saveReport(context);
-            NotificationManager notificationManager = NotificationManager();
-            notificationManager.showNotification(
-                sentence: 'Instant reporter service',
-                heading: 'Your report has been generated.',
-                priority: priority,
-                importance: importance);
-            panelController.open();
-          
+          LocationReport(uid).saveReport(context);
+          NotificationManager notificationManager = NotificationManager();
+          notificationManager.showNotification(
+              sentence: 'Instant reporter service',
+              heading: 'Your report has been generated.',
+              priority: priority,
+              importance: importance);
+          panelController.open();
         }
       });
     });
@@ -69,17 +71,22 @@ class _HomepageUserState extends State<HomepageUser> {
     ]);
 
     super.initState();
+    //getSharedPrefs();
   }
+
+  /* Future<void> getSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  } */
 
   @override
   Widget build(BuildContext context) {
     UserDetails u = Provider.of<UserDetails>(context, listen: false);
-    //inherited widget using provider to access uid to all child widgets
     uid = u.uid;
 
     return Scaffold(
       floatingActionButton: FloatingActionButtonWidget(uid),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      endDrawer: Drawers(false, u),
       body: SlidingUpPanel(
           color: Color(backgroundColor),
           maxHeight: 600,
@@ -130,7 +137,6 @@ class FloatingActionButtonWidget extends StatelessWidget {
         if (firstClick == false) {
           firstClick = true;
           LocationReport(id).saveReport(context);
-
           NotificationManager notificationManager = NotificationManager();
           notificationManager.showNotification(
               sentence: 'Instant reporter service',

@@ -15,10 +15,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(fontFamily: "Josefin_Sans", primarySwatch: Colors.amber),
       home: SafeArea(
         child: Scaffold(
-          
           resizeToAvoidBottomInset: false,
-          body: 
-        LandingPage.create(context),
+          body: LandingPage.create(context),
           backgroundColor: Colors.grey[200],
         ),
       ),

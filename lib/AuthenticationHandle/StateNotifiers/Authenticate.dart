@@ -70,30 +70,25 @@ class Authenticate with ChangeNotifier {
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          return StreamBuilder<bool>(
-              stream: isLoadingStream,
-              builder: (context, snapshot) {
-                if (snapshot.data == false) {
-                  popLoadingScreen();
-                }
-                return new AlertDialog(
-                  title: Text('Enter OTP'),
-                  content: TextField(
-                    onChanged: (value) {
-                      this.smsCode = value;
-                    },
-                  ),
-                  contentPadding: EdgeInsets.all(10.0),
-                  actions: <Widget>[
-                    new FlatButton(
-                      child: Text('Done'),
-                      onPressed: () async {
-                        await signInWithOTP(smsCode, verificationId);
-                      },
-                    )
-                  ],
-                );
-              });
+          return new AlertDialog(
+            title: Text('Enter OTP'),
+            content: TextField(
+              onChanged: (value) {
+                this.smsCode = value;
+              },
+            ),
+            contentPadding: EdgeInsets.all(10.0),
+            actions: <Widget>[
+              new FlatButton(
+                child: Text('Done'),
+                onPressed: () {
+                  signInWithOTP(smsCode, verificationId);
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+          ;
         });
   }
 
@@ -165,7 +160,7 @@ class Authenticate with ChangeNotifier {
       await displayDialog('An error has occurred', 'Auth Failed');
     });
     _otpsent = false;
-   
+
     // closeLoadingStream();
   }
 }

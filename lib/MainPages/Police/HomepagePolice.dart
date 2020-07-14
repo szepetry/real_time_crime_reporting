@@ -1,5 +1,10 @@
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
+import 'package:instant_reporter/MainPages/Drawers.dart';
+import 'package:instant_reporter/ZoneHandle/ZoneNotificationManager.dart';
+import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
 import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -37,7 +42,6 @@ class HomepagePolice extends StatefulWidget {
 class _HomepagePoliceState extends State<HomepagePolice> {
   String uid;
   String temp;
-
   @override
   void initState() {
     // uid = widget.uid;
@@ -66,8 +70,12 @@ class _HomepagePoliceState extends State<HomepagePolice> {
     // });
 
     super.initState();
+    //  getSharedPrefs();
   }
 
+  /* Future<void> getSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  } */
   // @override
   // void dispose() {
   //   subscription.cancel();
@@ -90,6 +98,7 @@ class _HomepagePoliceState extends State<HomepagePolice> {
     //inherited widget using provider to access uid to all child widgets
     uid = u.uid;
     return Scaffold(
+      endDrawer: Drawers(true, u),
       // floatingActionButton: FloatingActionButtonWidget(uid),
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: SlidingUpPanel(
@@ -102,7 +111,7 @@ class _HomepagePoliceState extends State<HomepagePolice> {
             topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
         //TODO: Make panel
         panel: BottomPanelViewPolice(),
-        body: MainBodyStackPolice(),
+        body: MainBodyStackPolice(uid),
         controller: panelController,
 
         collapsed: Container(
@@ -126,7 +135,9 @@ class _HomepagePoliceState extends State<HomepagePolice> {
                 "Reports",
                 style: TextStyle(fontSize: 40, color: Colors.white),
               )),
-              SizedBox(width: MediaQuery.of(context).size.width*0.46,),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.46,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
@@ -138,7 +149,10 @@ class _HomepagePoliceState extends State<HomepagePolice> {
                   Container(
                       child: Text(
                     "level",
-                    style: TextStyle(fontSize: 20, color: Colors.red,),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.red,
+                    ),
                   )),
                 ],
               ),
