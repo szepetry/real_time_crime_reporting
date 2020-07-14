@@ -13,6 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import '../common_widgets/video_player_widget.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
 
@@ -271,7 +272,10 @@ class _AddReportFormState extends State<AddReportForm> {
                       ? Text(
                           "Current location: ${_currentPosition.latitude}, ${_currentPosition.longitude}",
                           style: TextStyle(color: Colors.green))
-                      : CircularProgressIndicator(),
+                      : SpinKitSquareCircle(
+                color: Colors.grey,
+                   size: 50.0,
+            ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
                     color: Color(cardColor),

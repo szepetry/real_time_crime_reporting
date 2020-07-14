@@ -21,27 +21,42 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // backgroundColor: Colors.black,
+     backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('Register'),
-        elevation: 2.0,
-      ),
+      // appBar: AppBar(
+      //   title: Text('Register'),
+      //   backgroundColor: Color(colourHeading),
+      //   elevation: 2.0,
+      // ),
       body: Padding(
         padding: const EdgeInsets.only(
-            top: 16.0, bottom: 260.0, left: 16.0, right: 16.0),
-        child: Card(
-        //  color: Color(cardColor),
-          child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: _buildChildren(context),
-                ),
-              )),
+            top: 20.0, bottom: 250.0, left: 16.0, right: 16.0),
+            
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text('Register',
+              style: TextStyle(
+                color:Colors.white,
+                fontSize: 30,
+                
+              ),),
+            ),
+            Card(
+            color: Color(cardColor),
+              child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: _buildChildren(context),
+                    ),
+                  )),
+            ),
+          ],
         ),
       ),
     );
@@ -71,7 +86,7 @@ return TextField(
         decoration: InputDecoration(
             labelText: 'Enter 12 digit aadhar number',
             hintText: 'XXXXXXXXXXXX',
-         //  labelStyle: kTextStyleforLabelText,
+           labelStyle: kTextStyleforLabelText,
             errorText:
                 registerHandle.checkValidAadhar ? null : 'Enter Valid Aadhar',
             enabled: true), //_submitted ? true : false),
@@ -86,6 +101,7 @@ return TextField(
             labelText: 'Enter 10 digit Phone Number',
             hintText: '+91 ',
             errorText: null,
+              labelStyle: kTextStyleforLabelText,
             enabled: true), //_submitted ? true : false),
         obscureText: false,
         maxLength: 10,
@@ -96,11 +112,13 @@ return TextField(
         controller: _getPasswordController,
         decoration: InputDecoration(
             labelText: 'Enter Password',
+              labelStyle: kTextStyleforLabelText,
             errorText:
                 registerHandle.checkValidPassword ? null : 'Password Taken',
             enabled: true, //_submitted ? true : false,
             hintText: 'Minimum 5 characters'),
         obscureText: true,
+        
         onChanged: (value) => registerHandle.validatePassword(),
       );
 }
@@ -108,11 +126,13 @@ Widget buildRePasswordField(){
 return TextField(
         controller: _getRePasswordController,
         decoration: InputDecoration(
+            labelStyle: kTextStyleforLabelText,
             labelText: 'Re-Enter Password',
             errorText: registerHandle.checkRepass ? null : 'Password Mismatch',
             enabled: true, //_submitted ? true : false,
             hintText: 'Minimum 5 characters'),
         obscureText: true,
+        
         onChanged: (value) => registerHandle.validateRePassword(),
       );
 }
@@ -122,6 +142,7 @@ StreamBuilder<bool> buildSubmitButton(){
         stream: auth.isLoadingStream,
         builder: (context, snapshot) {
           return FormSubmitButton(
+            
             text: 'Register',
             onPressed:  snapshot.data!=true
                 ? () {
@@ -137,7 +158,10 @@ StreamBuilder<bool> buildSubmitButton(){
 
 Widget buildLoginPage(){
   return FlatButton(
-        child: Text('Have an account? Log In'),
+        child: Text('Have an account? Log In',
+        style: kTextStyleforLabelText,
+         
+        ),
         onPressed: () {
           _getPasswordController.clear();
           _getPhoneNoController.clear();

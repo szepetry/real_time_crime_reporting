@@ -2,7 +2,7 @@ import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/Authenticat
 import 'package:instant_reporter/AuthenticationHandle/StateNotifiers/RegisterPageNotifier.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/SubmitButtons/FormSubmitButton.dart';
-
+import 'package:instant_reporter/common_widgets/constants.dart';
 
 class LoginPage extends StatelessWidget with ChangeNotifier {
   final RegisterPageNotifier registerHandle;
@@ -24,12 +24,13 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
         return Future.value(false);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Login',
-            textAlign: TextAlign.center,
-          ),
-        ),
+        backgroundColor: Colors.black,
+        // appBar: AppBar(
+        //   title: Text(
+        //     'Login',
+        //     textAlign: TextAlign.center,
+        //   ),
+        // ),
         body: buildChildren(),
       ),
     );
@@ -40,20 +41,35 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
       margin: EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Card(
-          child: Column(
-            //crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(height: 8.0),
-              buildPhoneField(),
-              SizedBox(height: 8.0),
-              buildPasswordField(),
-              SizedBox(height: 8.0),
-              buildSubmitButton(),
-              SizedBox(height: 16.0),
-            ],
-          ),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Text('Login',
+              style: TextStyle(
+                  color:Colors.white,
+                  fontSize: 30,
+                  
+                ),
+              ),
+            ),
+            Card(
+              color: Color(cardColor),
+              child: Column(
+                //crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(height: 8.0),
+                  buildPhoneField(),
+                  SizedBox(height: 8.0),
+                  buildPasswordField(),
+                  SizedBox(height: 8.0),
+                  buildSubmitButton(),
+                  SizedBox(height: 8.0),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -63,15 +79,18 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
     return StreamBuilder<bool>(
         stream: auth.isLoadingStream,
         builder: (context, snapshot) {
-          return FormSubmitButton(
-            text: 'Login',
-            onPressed: snapshot.data != true
-                ? () {
-                    auth.isLoadingController.add(true);
-                    auth.isNewUser = false;
-                    registerHandle.processRegistration(context, auth);
-                  }
-                : null,
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: FormSubmitButton(
+              text: 'Login',
+              onPressed: snapshot.data != true
+                  ? () {
+                      auth.isLoadingController.add(true);
+                      auth.isNewUser = false;
+                      registerHandle.processRegistration(context, auth);
+                    }
+                  : null,
+            ),
           );
         });
   }
@@ -80,6 +99,7 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
     return TextField(
       controller: _getPhoneNoController,
       decoration: InputDecoration(
+        labelStyle: kTextStyleforLabelText,
           enabled: true, //!_submitted?false:true,
           labelText: '  Enter 10 digit phone number',
           hintText: '  +91 ',
@@ -93,8 +113,10 @@ class LoginPage extends StatelessWidget with ChangeNotifier {
 
   Widget buildPasswordField() {
     return TextField(
+      
       controller: _getPasswordController,
       decoration: InputDecoration(
+        labelStyle: kTextStyleforLabelText,
           enabled: true, //!_submitted?false:true,
           labelText: ' Enter Password',
           errorText: registerHandle.validLoginPassword == false
