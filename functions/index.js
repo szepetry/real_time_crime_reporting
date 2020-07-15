@@ -66,6 +66,11 @@ exports.zoneNotification = functions.firestore
 .document('registeredUsers/{uid}')
 .onUpdate((change, context) => {
     const newZoneUpdate = change.after.data();
+    /*const oldZoneUpdate = change.before.data();
+     const newZoneColor=newZoneUpdate.zoneColor;
+    const oldZoneColor = oldZoneUpdate.zoneColor;
+    const newMsg = newZoneUpdate.zoneNotification;
+    const oldMsg = oldZoneUpdate.zoneNotification; */
     const token = change.after.data().token;
     if(newZoneUpdate.entered===true){
         var title = `You are currently in ${useAn(newZoneUpdate.zoneColor)} ${newZoneUpdate.zoneColor} zone`;

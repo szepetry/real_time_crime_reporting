@@ -11,7 +11,6 @@ import "dart:async";
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:firebase_database/firebase_database.dart';
 
-
 Completer<GoogleMapController> _controller = Completer();
 String _mapStyleNight;
 DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
@@ -40,7 +39,6 @@ Future<void> moveCamera() async {
 class FireMapPolice extends StatefulWidget {
   final ZoneRender renderZone;
   FireMapPolice(this.renderZone); //use this uid here
-
   static Widget create(BuildContext context) {
     return Provider<ZoneRender>(
       create: (context) => ZoneRender(context),
@@ -282,7 +280,7 @@ class _FireMapPoliceState extends State<FireMapPolice>
         child: Center(
           child: Text(
             !displayZone ? 'Display\n zones' : ' Hide\nzones',
-            style: TextStyle(fontSize: 10),
+            style: TextStyle(fontSize: 0.011856 * height),
           ),
         ),
         textColor: Colors.white,
@@ -313,8 +311,8 @@ class _FireMapPoliceState extends State<FireMapPolice>
           child: Padding(
             padding: EdgeInsets.only(right: width * 0.02),
             child: Padding(
-              padding: EdgeInsets.only(right: 30),
-              child: Icon(Icons.autorenew, size: 40),
+              padding: EdgeInsets.only(right: 0.035587 * height),
+              child: Icon(Icons.autorenew, size: 0.04744 * height),
             ),
           ),
           textColor: Colors.white,
