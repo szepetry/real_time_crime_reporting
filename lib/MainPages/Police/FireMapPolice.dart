@@ -70,7 +70,9 @@ class _FireMapPoliceState extends State<FireMapPolice>
 
   @override
   void initState() {
-    rootBundle.loadString('assets/MapStyles/nightMapLandmarks.json').then((json) {
+    rootBundle
+        .loadString('assets/MapStyles/nightMapLandmarks.json')
+        .then((json) {
       _mapStyleNight = json;
     }).then((value) {
       UserDetails u = Provider.of<UserDetails>(context, listen: false);
@@ -308,7 +310,7 @@ class _FireMapPoliceState extends State<FireMapPolice>
             });
           },
           child: Padding(
-            padding: EdgeInsets.only(right: 30),
+            padding: EdgeInsets.only(right: width * 0.02),
             child: Padding(
               padding: EdgeInsets.only(right: 30),
               child: Icon(Icons.autorenew, size: 40),

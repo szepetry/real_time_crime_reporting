@@ -72,7 +72,8 @@ exports.zoneNotification = functions.firestore
         var body = newZoneUpdate.zoneNotification
         sendNotification(title,body,token);
     }
-});//eM57mt7xkLc:APA91bHgrS_Cipdsvry0VRRx5vY-pcFzXSMoYcNaKagbj_BwvNZrWGSKKNdHrkv_ELoDJbKO1cPkOlRZyKbDA62UN5azovL1GNVOABYYVjPMWUdyndAM8zx9Iz4nib6LydGX1EzVu0iz
+});
+//eM57mt7xkLc:APA91bHgrS_Cipdsvry0VRRx5vY-pcFzXSMoYcNaKagbj_BwvNZrWGSKKNdHrkv_ELoDJbKO1cPkOlRZyKbDA62UN5azovL1GNVOABYYVjPMWUdyndAM8zx9Iz4nib6LydGX1EzVu0iz
 
 function sendToAll(title,body){
     admin.firestore().collection('tokens').doc('devtoken').get().then(snapshot =>{
