@@ -177,7 +177,13 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                       builder: (context) => Center(
                         child: Stack(
                           children: <Widget>[
-                            NearbyPolice(userLocation: firstLocation, uid: uid),
+                            _name != null
+                                ? NearbyPolice(
+                                    userLocation: firstLocation,
+                                    uid: uid,
+                                    namOfTheReporter: _name,
+                                  )
+                                : CircularProgressIndicator(),
                           ],
                         ),
                       ),
