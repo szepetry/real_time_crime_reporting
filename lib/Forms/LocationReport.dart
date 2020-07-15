@@ -260,66 +260,8 @@ class LocationReport {
               .set(_multiInfoObject.toJson());
           print("The object sent: $infoObjs");
       });
-      // if (loadStat == false) {
-      //   print("1st load count: $count");
-
-      //   await _databaseReference.child("$id").once().then((value) async {
-      //     count = value.value['count'];
-      //     infoObjs.addAll(value.value['infoObject']);
-      //     debugPrint("COunt value $count");
-      //   }).then((value) {
-      //     infoObjs.add(infoObject.toJson());
-      //   }).then((value) async {
-      //     _multiInfoObject = MultiInfoObject(infoObjs, count);
-      //     await _databaseReference
-      //         .child("$id")
-      //         .set(_multiInfoObject.toJson());
-      //     print("The object sent: $infoObjs");
-      //   });
-
-      //   setState(() {
-      //     loadStat = true;
-      //   });
-      // } else {
-      //   infoObjs.add(infoObject.toJson());
-      //   _multiInfoObject = MultiInfoObject(infoObjs, count);
-      //   await _databaseReference.child("$id").set(_multiInfoObject.toJson());
-      //   print("The object sent: $infoObjs");
-      // }
-
     } catch (e) {
       print("Caught exceptions: $e");
     }
   }
 }
-
-/*
-        await _databaseReference.child("$id").once().then((value) async {
-          if (value.value == null) {
-            _multiReportObject = MultiReportObject(multiObjs, 1);
-            await _databaseReference
-                .child("$id")
-                .set(_multiReportObject.toJson());
-            print("The object sent: $multiObjs");
-          } else {
-            count2 = value.value['count'];
-            multiObjs.addAll(value.value['multiObject']);
-          }
-        }).then((value) async {
-          multiObjs.add(_multiInfoObject.toJson());
-          if (count2 != null || count2 != 0) {
-            _multiReportObject = MultiReportObject(multiObjs, count2);
-            await _databaseReference
-                .child("$id")
-                .set(_multiReportObject.toJson());
-            print("The object sent: $multiObjs");
-          } else {
-            _multiReportObject = MultiReportObject(multiObjs, 0);
-            await _databaseReference
-                .child("$id")
-                .set(_multiReportObject.toJson());
-            print("The object sent: $multiObjs");
-          }
-        });
-
- */

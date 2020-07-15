@@ -7,10 +7,7 @@ class InfoObject {
   String _urlAttachmentVideo;
   String _location;
   String _description;
-  String _dateTime;
-
-  // DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch)
-  
+  String _dateTime;  
 
   InfoObject(
       this._description,
@@ -35,16 +32,6 @@ class InfoObject {
     this._dateTime = snapshot.value['timeStamp'];
   }
 
-  List<Map<String, dynamic>> toJsonList() {
-    return [{
-        "urlAttachmentPhoto": _urlAttachmentPhoto,
-        "urlAttachmentVideo": _urlAttachmentVideo,
-        "description": _description,
-        "location": _location,
-        "timeStamp": _dateTime
-      },];
-  }
-
   Map<String, dynamic> toJson() {
     return {
       "urlAttachmentPhoto": _urlAttachmentPhoto,
@@ -53,12 +40,6 @@ class InfoObject {
       "location": _location,
       "timeStamp": _dateTime
     };
-  }
-
-  List<dynamic> addToList(Map<String, dynamic> mapObj) {
-    List<dynamic> newList = List<dynamic>();
-    newList.add(mapObj);
-    return newList;
   }
 
   //Getters
