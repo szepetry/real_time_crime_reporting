@@ -7,8 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 
 class NearbyPolice extends StatefulWidget {
-  final String userLocation, uid;
-  NearbyPolice({@required this.userLocation, this.uid});
+  final String userLocation, uid,namOfTheReporter;
+  NearbyPolice({@required this.userLocation, this.uid,this.namOfTheReporter});
   @override
   _NearbyPoliceState createState() =>
       _NearbyPoliceState(userLocation: userLocation);
@@ -26,15 +26,18 @@ class _NearbyPoliceState extends State<NearbyPolice> {
 
   final String userLocation;
   String uid;
+  String nameee;
+  String namOfTheReporter;
   var dist;
-  _NearbyPoliceState({this.userLocation});
+  _NearbyPoliceState({this.userLocation,this.namOfTheReporter});
   StreamSubscription _streamSubscription; //n
   Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
   List<int> selectedBox = List();
 
   @override
   void initState() {
-    print(userLocation);
+    print(widget.userLocation);
+  nameee=widget.namOfTheReporter;
     _streamSubscription = _stream.listen((event) {
       debugPrint("$event happened?");
     });
@@ -73,6 +76,7 @@ class _NearbyPoliceState extends State<NearbyPolice> {
 
       print(sortedMap);
     });
+    
     super.initState();
   }
 //function to send multiple sms
@@ -193,7 +197,7 @@ print(_result);
                                       
                                     }
                                   }
-                                  String message ='You Have Been Assigned A Case.';
+                                  String message ='You Have Been Assigned $nameee\'s Case.';
                                   _sendSMS(message, phoneNumbers);
                                   print(phoneNumbers);
                                   print(checkedListFinal);
