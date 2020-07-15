@@ -47,9 +47,12 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
         _name = value.data['name'];
         _phoneNo = value.data['phoneNo'];
       });
-    }).then((value) async{
-      if(id != null){
-        await _databaseReference.child("$id/infoObject").once().then((snapshot) {
+    }).then((value) async {
+      if (id != null) {
+        await _databaseReference
+            .child("$id/infoObject")
+            .once()
+            .then((snapshot) {
           firstLocation = snapshot.value[0]['location'];
         }).then((value) => debugPrint("$firstLocation"));
       }
@@ -168,26 +171,28 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                 bottom: 20,
                 left: MediaQuery.of(context).size.width - 100,
                 child: RawMaterialButton(
-                  onPressed: () async{
-                     showDialog(
-                        context: context,
-                        builder: (context) => Center(
-                          child: Stack(
-                            children: <Widget>[
-                           NearbyPolice (
-                             userLocation: firstLocation,
-                             uid: uid
-                           ),
-                            ],
-                          ),
+                  onPressed: () async {
+                    showDialog(
+                      context: context,
+                      builder: (context) => Center(
+                        child: Stack(
+                          children: <Widget>[
+                            _name != null
+                                ? NearbyPolice(
+                                    userLocation: firstLocation,
+                                    uid: uid,
+                                    namOfTheReporter: _name,
+                                  )
+                                : CircularProgressIndicator(),
+                          ],
                         ),
-                      );
-                    await _databaseReference.child(id).update({
-                      "handled": "pending"
-                    }).then((value) {
+                      ),
+                    );
+                    await _databaseReference
+                        .child(id)
+                        .update({"handled": "pending"}).then((value) {
                       debugPrint("Updated handled reference!");
                     });
-                    
                   },
                   child: Icon(
                     Icons.check,
@@ -218,13 +223,15 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
         ]),
         GestureDetector(
           onTap: () {
-           String coordinate = snapshot.value["location"];
-              List<String> coordinateList = coordinate.split(", ");
-            debugPrint("The location: ${double.parse(coordinateList[0].split(": ")[1])},${ double.parse(coordinateList[1].split(": ")[1])}");
-       
+            String coordinate = snapshot.value["location"];
+            List<String> coordinateList = coordinate.split(", ");
+            debugPrint(
+                "The location: ${double.parse(coordinateList[0].split(": ")[1])},${double.parse(coordinateList[1].split(": ")[1])}");
+
             print('hello');
-     MapsLauncher.launchCoordinates(
-                    double.parse(coordinateList[0].split(": ")[1]), double.parse(coordinateList[1].split(": ")[1]));
+            MapsLauncher.launchCoordinates(
+                double.parse(coordinateList[0].split(": ")[1]),
+                double.parse(coordinateList[1].split(": ")[1]));
           },
           child: Row(
             children: <Widget>[

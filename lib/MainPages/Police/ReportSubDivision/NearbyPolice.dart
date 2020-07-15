@@ -7,8 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 
 class NearbyPolice extends StatefulWidget {
-  final String userLocation, uid;
-  NearbyPolice({@required this.userLocation, this.uid});
+  final String userLocation, uid,namOfTheReporter;
+  NearbyPolice({@required this.userLocation, this.uid,this.namOfTheReporter});
   @override
   _NearbyPoliceState createState() =>
       _NearbyPoliceState(userLocation: userLocation);
@@ -26,15 +26,18 @@ class _NearbyPoliceState extends State<NearbyPolice> {
 
   final String userLocation;
   String uid;
+  String nameee;
+  String namOfTheReporter;
   var dist;
-  _NearbyPoliceState({this.userLocation});
+  _NearbyPoliceState({this.userLocation,this.namOfTheReporter});
   StreamSubscription _streamSubscription; //n
   Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
   List<int> selectedBox = List();
 
   @override
   void initState() {
-    print(userLocation);
+    print(widget.userLocation);
+  nameee=widget.namOfTheReporter;
     _streamSubscription = _stream.listen((event) {
       debugPrint("$event happened?");
     });
@@ -55,7 +58,8 @@ class _NearbyPoliceState extends State<NearbyPolice> {
                     data.documents[i].data['location'].latitude,
                     data.documents[i].data['location'].longitude)
                 .then((dist) {
-              nameAndDistance[data.documents[i].data['name']] = (dist/1000).toStringAsFixed(3);
+              nameAndDistance[data.documents[i].data['name']] =
+                  (dist / 1000).toStringAsFixed(3);
               namesAndPhoneNumber[data.documents[i].data['name']] =
                   data.documents[i].data['phoneNo'];
             });
@@ -73,17 +77,18 @@ class _NearbyPoliceState extends State<NearbyPolice> {
 
       print(sortedMap);
     });
+    
     super.initState();
   }
 //function to send multiple sms
 
-void _sendSMS(String message, List<String> recipents) async {
- String _result = await sendSMS(message: message, recipients: recipents)
+  void _sendSMS(String message, List<String> recipents) async {
+    String _result = await sendSMS(message: message, recipients: recipents)
         .catchError((onError) {
       print(onError);
     });
-print(_result);
-}
+    print(_result);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +136,7 @@ print(_result);
                                       ),
                                     ),
                                     subtitle: Text(
-                                      'Distance: ${sortedMap.values.toList()[index].toString()} km',       
+                                      'Distance: ${sortedMap.values.toList()[index].toString()} km',
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -154,7 +159,6 @@ print(_result);
                                         }
                                         print(index);
                                       });
-                                      
                                     },
                                     // selected:selectedBox.contains(index),
                                     controlAffinity:
@@ -190,10 +194,9 @@ print(_result);
                                         true) {
                                       phoneNumbers.add(namesAndPhoneNumber[
                                           checkedListFinal.keys.toList()[i]]);
-                                      
                                     }
                                   }
-                                  String message ='You Have Been Assigned A Case.';
+                                  String message ='You Have Been Assigned $nameee\'s Case.';
                                   _sendSMS(message, phoneNumbers);
                                   print(phoneNumbers);
                                   print(checkedListFinal);

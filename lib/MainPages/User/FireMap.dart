@@ -100,10 +100,6 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
           .then((response) async {
         for (int i = 0; i < response.results.length; i++) {
           debugPrint("Name $i: " + response.results[i].name);
-          // await takeAddress(
-          //     response.results[i].name,
-          //     i,
-          //     response.results[i].name);
           await takeAddress(
               response.results[i].name +
                   ", " +
@@ -133,35 +129,6 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
 
     initMarker(placemark[0], j.toString(), name);
 
-    // await Firestore.instance
-    //     .collection('registeredHospitals')
-    //     .getDocuments()
-    //     .then((doc) {
-    //   if (doc.documents.isNotEmpty) {
-    //     for (int i = 0; i < doc.documents.length; ++i) {
-    //       if (doc.documents[i].data['name'].toString() == name) {
-    //         if (doc.documents[i].data['beds'] == '0') {
-    //           initFireMarker(
-    //               placemark[0],
-    //               j.toString(),
-    //               name,
-    //               BitmapDescriptor.defaultMarkerWithHue(
-    //                   BitmapDescriptor.hueYellow),
-    //               "Beds available: ${doc.documents[i].data['beds']} ;  Facilities: ${doc.documents[i].data['facilities'].toString()}");
-    //         } else if (doc.documents[i].data['beds'] != '0') {
-    //           initFireMarker(
-    //               placemark[0],
-    //               j.toString(),
-    //               name,
-    //               BitmapDescriptor.defaultMarkerWithHue(
-    //                   BitmapDescriptor.hueGreen),
-    //               "Beds available: ${doc.documents[i].data['beds']} ;  Facilities: ${doc.documents[i].data['facilities'].toString()}");
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
-
     setState(() {
       _child = mapWidget();
     });
@@ -184,7 +151,6 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
       buildingsEnabled: false,
       compassEnabled: true,
       indoorViewEnabled: false,
-      // liteModeEnabled: true,
       trafficEnabled: false,
       polygons: widget.renderZone.polygonsDB.isNotEmpty
           ? displayZone ? Set.from(widget.renderZone.polygonsDB) : null
@@ -219,25 +185,6 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
       print(markerId);
     });
   }
-
-  // void initFireMarker(
-  //     request, requestId, name, BitmapDescriptor icon, String aval) {
-  //   var markerIdVal = requestId;
-  //   final MarkerId markerId = MarkerId(markerIdVal);
-  //   final Marker marker = Marker(
-  //       markerId: markerId,
-  //       position: LatLng(request.position.latitude, request.position.longitude),
-  //       infoWindow: InfoWindow(
-  //           title: "$name, ${request.subLocality}, ${request.locality}",
-  //           snippet: aval),
-  //       draggable: false,
-  //       icon: icon);
-
-  //   setState(() {
-  //     markers[markerId] = marker;
-  //     print(markerId);
-  //   });
-  // }
 
   @override
   void dispose() {
