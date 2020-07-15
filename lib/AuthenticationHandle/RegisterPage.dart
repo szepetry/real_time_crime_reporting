@@ -21,26 +21,38 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.black,
+       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('Register'),
-        elevation: 2.0,
-      ),
+      // appBar: AppBar(
+      //   title: Text('Register'),
+      //   elevation: 2.0,
+      // ),
       body: Padding(
         padding: const EdgeInsets.only(
-            top: 16.0, bottom: 260.0, left: 16.0, right: 16.0),
-        child: Card(
-          //  color: Color(cardColor),
-          child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: _buildChildren(context),
-                ),
-              )),
+            top: 16.0, bottom: 200.0, left: 16.0, right: 16.0),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Text('Register',
+              style: TextStyle(
+                color:Colors.white,
+                fontSize:30,
+              ),),
+            ),
+            Card(
+               color: Color(cardColor),
+              child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: _buildChildren(context),
+                    ),
+                  )),
+            ),
+          ],
         ),
       ),
     );
@@ -65,11 +77,15 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildAadharField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getAadharController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
           labelText: 'Enter 12 digit aadhar number',
           hintText: 'XXXXXXXXXXXX',
-          //  labelStyle: kTextStyleforLabelText,
+          labelStyle: kTextStyleforLabelText,
           errorText:
               registerHandle.checkValidAadhar ? null : 'Enter Valid Aadhar',
           enabled: true), //_submitted ? true : false),
@@ -80,8 +96,13 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildPhoneField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getPhoneNoController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
+         labelStyle: kTextStyleforLabelText,
           labelText: 'Enter 10 digit Phone Number',
           hintText: '+91 ',
           errorText: null,
@@ -93,8 +114,13 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildPasswordField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getPasswordController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
+        labelStyle: kTextStyleforLabelText,
           labelText: 'Enter Password',
           errorText:
               registerHandle.checkValidPassword ? null : 'Password Taken',
@@ -107,8 +133,13 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildRePasswordField() {
     return TextField(
+       style: TextStyle(
+        color: Colors.white,
+      ),
       controller: _getRePasswordController,
       decoration: InputDecoration(
+         hintStyle:kTextStyleforLabelText ,
+        labelStyle: kTextStyleforLabelText,
           labelText: 'Re-Enter Password',
           errorText: registerHandle.checkRepass ? null : 'Password Mismatch',
           enabled: true, //_submitted ? true : false,
@@ -139,7 +170,8 @@ class RegisterPage extends StatelessWidget {
 
   Widget buildLoginPage() {
     return FlatButton(
-      child: Text('Have an account? Log In'),
+      child: Text('Have an account? Log In',
+      style:kTextStyleforLabelText),
       onPressed: () {
         _getPasswordController.clear();
         _getPhoneNoController.clear();

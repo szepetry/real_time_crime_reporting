@@ -127,7 +127,7 @@ class _ZoneMapState extends State<ZoneMap> {
                       addZone.renderZone(point);
                     })
                 : Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator()
                   )),
         //  refreshButton(),
         zoneToggleButton(),
@@ -231,7 +231,7 @@ class _ZoneMapState extends State<ZoneMap> {
                     disabledColor: Colors.grey[400],
                     disabledTextColor: Colors.white,
                   )
-                : CircularProgressIndicator(),
+                :CircularProgressIndicator(),
             SizedBox(height: 8.0),
             FlatButton(
               shape: new RoundedRectangleBorder(

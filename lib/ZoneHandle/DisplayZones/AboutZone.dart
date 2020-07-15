@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instant_reporter/ZoneHandle/ZoneInfo.dart';
 import 'package:flutter/material.dart';
 
+
 class AboutZone extends StatelessWidget {
   final String polygonId;
   final CollectionReference zones;
@@ -20,7 +21,7 @@ class AboutZone extends StatelessWidget {
           return buildDetails(context, info);
         } else
           return Center(
-            child: CircularProgressIndicator(),
+            child:CircularProgressIndicator(),
           );
       },
     );

@@ -9,7 +9,6 @@ import 'package:instant_reporter/ZoneHandle/DisplayZones/Zone.dart';
 import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneTapOptions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -83,7 +82,7 @@ class ZoneRender {
                 else
                   return ZoneTapOptions(zones, polygonId);
               } else
-                return Center(child: CircularProgressIndicator());
+                return Center(child:CircularProgressIndicator());
             },
           ) // ZoneTapOptions(zones, polygonId),
           ),

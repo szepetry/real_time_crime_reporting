@@ -14,6 +14,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import '../common_widgets/video_player_widget.dart';
 
+
 List<dynamic> infoObjs = List<dynamic>();
 
 Position _currentPosition;

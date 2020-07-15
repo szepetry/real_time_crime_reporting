@@ -255,7 +255,7 @@ class ZoneTapOptions extends StatelessWidget {
           return buildDetails(context, info);
         } else
           return Center(
-            child: CircularProgressIndicator(),
+            child:CircularProgressIndicator()
           );
       },
     );

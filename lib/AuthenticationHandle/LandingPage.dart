@@ -11,6 +11,7 @@ import 'package:instant_reporter/MainPages/Police/HomepagePolice.dart';
 import 'package:instant_reporter/MainPages/User/HomepageUser.dart';
 import 'package:provider/provider.dart';
 
+
 class LandingPage extends StatelessWidget {
   final RegisterPageNotifier registerHandle;
   final Authenticate auth;
@@ -48,7 +49,7 @@ class LandingPage extends StatelessWidget {
           auth.isLoadingController.add(false);
           return handleNavigation(authSnapshot);
         } else
-          return Center(child: CircularProgressIndicator());
+          return Center(child:CircularProgressIndicator());
       },
     );
   }

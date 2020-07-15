@@ -115,7 +115,7 @@ class Authenticate with ChangeNotifier {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        CircularProgressIndicator(),
+       CircularProgressIndicator(),
         SizedBox(height: 5.0),
         Text('Authenticating',
             style: TextStyle(color: Colors.black, fontSize: 20)),

@@ -11,6 +11,7 @@ import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:provider/provider.dart';
 
+
 Completer<GoogleMapController> _controller = Completer();
 
 Marker marker;

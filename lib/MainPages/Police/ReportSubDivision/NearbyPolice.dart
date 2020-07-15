@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -56,7 +55,7 @@ class _NearbyPoliceState extends State<NearbyPolice> {
                     data.documents[i].data['location'].latitude,
                     data.documents[i].data['location'].longitude)
                 .then((dist) {
-              nameAndDistance[data.documents[i].data['name']] = dist;
+              nameAndDistance[data.documents[i].data['name']] = (dist/1000).toStringAsFixed(3);
               namesAndPhoneNumber[data.documents[i].data['name']] =
                   data.documents[i].data['phoneNo'];
             });
@@ -105,7 +104,7 @@ print(_result);
                     Text(
                       "Police Nearby",
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.green,
                           fontSize: 30,
                           fontWeight: FontWeight.bold),
                     ),
@@ -115,28 +114,24 @@ print(_result);
                           ListView.builder(
                             itemCount: sortedMap.length,
                             itemBuilder: (context, index) {
-                              //  checkedListFinal[sortedMap.keys.toList()[index]]=false;
-                              // checkedListFinal.values.toList()[index]=false;
                               return Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
-                                  // color: Color(backgroundColor),
-
                                   decoration:
                                       BoxDecoration(color: Color(cardColor)),
                                   child: CheckboxListTile(
+                                    activeColor: Colors.green,
                                     //  secondary: Icon(Icons.sms,color: Colors.white,),
                                     // contentPadding: EdgeInsets.all(8.0),
                                     title: Text(
-                                      sortedMap.keys.toList()[index],
+                                      'Name: ${sortedMap.keys.toList()[index]}',
                                       style: TextStyle(
                                         color: Colors.white,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     subtitle: Text(
-                                      sortedMap.values
-                                          .toList()[index]
-                                          .toString(),
+                                      'Distance: ${sortedMap.values.toList()[index].toString()} km',       
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -159,7 +154,9 @@ print(_result);
                                         }
                                         print(index);
                                       });
+                                      
                                     },
+                                    // selected:selectedBox.contains(index),
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                   ),

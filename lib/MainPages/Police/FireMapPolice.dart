@@ -11,6 +11,7 @@ import "dart:async";
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:firebase_database/firebase_database.dart';
 
+
 Completer<GoogleMapController> _controller = Completer();
 String _mapStyleNight;
 DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
