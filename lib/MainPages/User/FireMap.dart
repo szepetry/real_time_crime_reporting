@@ -221,7 +221,7 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
         child: Center(
           child: Text(
             !displayZone ? 'Display\n Zones' : '  Hide\nZones',
-            style: TextStyle(fontSize: 10),
+            style: TextStyle(fontSize:  0.011856 * height),
           ),
         ),
         textColor: Colors.white,
@@ -250,10 +250,10 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
             });
           },
           child: Padding(
-            padding: EdgeInsets.only(right: 30),
+            padding: EdgeInsets.only(right: width * 0.02),
             child: Padding(
-              padding: EdgeInsets.only(right: 30),
-              child: Icon(Icons.autorenew, size: 40),
+              padding: EdgeInsets.only(right: 0.035587 * height),
+              child: Icon(Icons.autorenew, size: 0.04744 * height),
             ),
           ),
           textColor: Colors.white,
