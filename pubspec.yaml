@@ -32,10 +32,7 @@ dependencies:
   # For google places API
   google_maps_webservice: ^0.0.17
 
-  location: ^2.3.5
   # Connecting flutter maps with firebase
-  # geoflutterfire: ^2.0.3+8
-  
   #transparent image import
   transparent_image: ^1.0.0
   # datebase
@@ -68,7 +65,7 @@ dependencies:
   video_player: ^0.10.11+2
   #for multiple sms
   flutter_sms: ^2.0.0+2
-  auto_size_text: ^2.1.0
+  #for formatting date and time
   intl: ^0.16.1
 
 
