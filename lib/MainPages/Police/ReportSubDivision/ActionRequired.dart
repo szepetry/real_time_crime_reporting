@@ -3,6 +3,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../../../common_widgets/constants.dart';
 import 'ReportFormPolice.dart';
+import '../../../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
@@ -37,7 +39,7 @@ class _ActionRequiredState extends State<ActionRequired> {
                 if (inc != 0) {
                   return GestureDetector(
                     onTap: () {
-                      //copy the showdialogue 
+                      //copy the showdialogue
                       showDialog(
                         context: context,
                         builder: (context) => Center(
@@ -97,6 +99,24 @@ class UserReports extends StatefulWidget {
 }
 
 class _UserReportsState extends State<UserReports> {
+  String _name;
+
+  void getUserDetails() async {
+    await FirestoreService.registeredUserDocument(widget.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        _name = value.data['name'];
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    getUserDetails();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -111,12 +131,31 @@ class _UserReportsState extends State<UserReports> {
           child: Column(
             children: <Widget>[
               Padding(padding: EdgeInsets.all(20.0)),
-              Text(
-                "Reports made",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold),
+              Padding(
+                padding: const EdgeInsets.only(left: 18.0),
+                child: Flexible(
+                  fit: FlexFit.loose,
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "Reports from ",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      _name == null
+                          ? CircularProgressIndicator()
+                          : Text(
+                              _name,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                    ],
+                  ),
+                ),
               ),
               Expanded(
                   child: FirebaseAnimatedList(
@@ -130,7 +169,7 @@ class _UserReportsState extends State<UserReports> {
                             MaterialPageRoute(
                                 builder: (context) => ReportFormPolice(
                                     widget.uid + "/multiObject/$index",
-                                    widget.uid)));
+                                    widget.uid,false)));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -170,7 +209,12 @@ class _UserReportsState extends State<UserReports> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                            "Report made on: ${snapshot.value['infoObject'][0]["timeStamp"]}"),
+                                          "Report made on: ${snapshot.value['infoObject'][0]["timeStamp"]}",
+                                          maxLines: 2,
+                                          softWrap: false,
+                                          overflow: TextOverflow.visible,
+                                          style: TextStyle(fontSize: 13),
+                                        ),
                                       ],
                                     ),
                                   )

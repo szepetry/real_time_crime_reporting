@@ -101,6 +101,30 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
             padding: EdgeInsets.all(15.0),
           ),
         ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                    child: Text(
+                  "Police",
+                  style: TextStyle(fontSize: 20, color: Colors.red),
+                )),
+                Container(
+                    child: Text(
+                  "level",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.red,
+                  ),
+                )),
+              ],
+            ),
+          ),
+        )
 
         // Align(
         //   alignment: Alignment.topLeft,

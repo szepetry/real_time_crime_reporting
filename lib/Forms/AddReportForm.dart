@@ -13,7 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import '../common_widgets/video_player_widget.dart';
-
+import 'package:intl/intl.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
 
@@ -51,6 +51,8 @@ class _AddReportFormState extends State<AddReportForm> {
   String _urlAttachmentVideo = '';
   LatLng _location;
   String _description = '';
+  DateTime now = DateTime.now();
+
 
   @override
   void initState() {
@@ -84,9 +86,7 @@ class _AddReportFormState extends State<AddReportForm> {
             _currentPosition.toString(),
             this._urlAttachmentPhoto,
             this._urlAttachmentVideo,
-            DateTime.fromMillisecondsSinceEpoch(
-                    DateTime.now().millisecondsSinceEpoch)
-                .toString());
+            DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
         setState(() {
           NotificationManager notificationManager = NotificationManager();
           notificationManager.showNotification(

@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
 List<dynamic> multiObjs = List<dynamic>();
@@ -37,6 +38,7 @@ class LocationReport {
   String aadhar;
   String name;
   String phone;
+  DateTime now = DateTime.now();
 
   LocationReport(this.id);
 
@@ -54,9 +56,7 @@ class LocationReport {
               value.toString(),
               this._urlAttachmentPhoto,
               this._urlAttachmentVideo,
-              DateTime.fromMillisecondsSinceEpoch(
-                      DateTime.now().millisecondsSinceEpoch)
-                  .toString());
+              DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
           infoObjs.clear();
           infoObjs.add(infoObject.toJson());
           _multiInfoObject = MultiInfoObject(infoObjs, count1);
@@ -136,9 +136,7 @@ class LocationReport {
               value.toString(),
               this._urlAttachmentPhoto,
               this._urlAttachmentVideo,
-              DateTime.fromMillisecondsSinceEpoch(
-                      DateTime.now().millisecondsSinceEpoch)
-                  .toString());
+              DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
           infoObjs.clear();
           infoObjs.add(infoObject.toJson());
           _multiInfoObject = MultiInfoObject(infoObjs, count1);
@@ -240,9 +238,7 @@ class LocationReport {
           value.toString(),
           "",
           url,
-          DateTime.fromMillisecondsSinceEpoch(
-                  DateTime.now().millisecondsSinceEpoch)
-              .toString());
+          DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
       // Navigator.pop(context);
       infoObjs.clear();
       debugPrint("Print of count2: $count2, ID: $id");

@@ -133,29 +133,8 @@ class _HomepagePoliceState extends State<HomepagePolice> {
               Container(
                   child: Text(
                 "Reports",
-                style: TextStyle(fontSize: 40, color: Colors.white),
-              )),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.46,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                      child: Text(
-                    "Police",
-                    style: TextStyle(fontSize: 20, color: Colors.red),
-                  )),
-                  Container(
-                      child: Text(
-                    "level",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.red,
-                    ),
-                  )),
-                ],
-              ),
+                style: TextStyle(fontSize: 30, color: Colors.white),
+              ))
             ],
           ),
         ),

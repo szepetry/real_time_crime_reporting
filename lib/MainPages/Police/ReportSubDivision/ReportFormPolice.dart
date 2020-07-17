@@ -16,7 +16,8 @@ bool result = false;
 
 class ReportFormPolice extends StatefulWidget {
   final String id, uid;
-  ReportFormPolice(this.id, this.uid);
+  final bool isCompleted;
+  ReportFormPolice(this.id, this.uid, this.isCompleted);
 
   @override
   _ReportFormPoliceState createState() => _ReportFormPoliceState();
@@ -170,7 +171,8 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
               Positioned(
                 bottom: 20,
                 left: MediaQuery.of(context).size.width - 100,
-                child: RawMaterialButton(
+                child: widget.isCompleted != true?
+                RawMaterialButton(
                   onPressed: () async {
                     showDialog(
                       context: context,
@@ -201,7 +203,8 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                   elevation: 4.0,
                   fillColor: Colors.red,
                   padding: EdgeInsets.all(15.0),
-                ),
+                ):
+                Container()
               ),
             ],
           ),

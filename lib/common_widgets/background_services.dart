@@ -10,6 +10,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flutter/material.dart';
 import '../model/multiReportObject.dart';
 import '../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
+import 'package:intl/intl.dart';
 
 // const simpleTaskKey = 'simpleTask';
 // const simpleDelayedTask = 'simpleDelayedTask';
@@ -42,6 +43,7 @@ void instantReportExecuter() {
     String aadhar;
     String name;
     String phone;
+    DateTime now = DateTime.now();
 
     try {
       await geolocator
@@ -56,9 +58,7 @@ void instantReportExecuter() {
               value.toString(),
               _urlAttachmentPhoto,
               _urlAttachmentVideo,
-              DateTime.fromMillisecondsSinceEpoch(
-                      DateTime.now().millisecondsSinceEpoch)
-                  .toString());
+              DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
           infoObjs.clear();
           infoObjs.add(infoObject.toJson());
           _multiInfoObject = MultiInfoObject(infoObjs, count1);

@@ -68,7 +68,8 @@ dependencies:
   video_player: ^0.10.11+2
   #for multiple sms
   flutter_sms: ^2.0.0+2
-
+  auto_size_text: ^2.1.0
+  intl: ^0.16.1
 
 
 dev_dependencies:
