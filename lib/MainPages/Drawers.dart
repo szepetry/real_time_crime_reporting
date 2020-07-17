@@ -149,7 +149,7 @@ class _DrawersState extends State<Drawers> {
           switch (widget.u.isMale) {
             case true:
               {
-                return 'assets/images/police.png';
+                return 'assets/images/police_large_new.png';
               }
               break;
             case false:
