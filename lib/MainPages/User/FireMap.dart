@@ -1,13 +1,9 @@
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneRender.dart';
-import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
-import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +11,6 @@ import 'package:provider/provider.dart';
 Completer<GoogleMapController> _controller = Completer();
 
 Marker marker;
-
-// Position _currentPosition;
 
 String _mapStyleNight;
 
@@ -59,7 +53,6 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
   GoogleMapController mapController;
   bool displayZone = false;
   AnimationController rotationController;
-  // Position position;
   Widget _child;
   BitmapDescriptor myIcon;
   Set<Polygon> test = Set<Polygon>();
@@ -215,7 +208,6 @@ class _FireMapState extends State<FireMap> with SingleTickerProviderStateMixin {
       child: RaisedButton(
         elevation: 100,
         shape: new CircleBorder(
-            // borderRadius: new BorderRadius.circular(30.0),
             ),
         onPressed: toggleZoneView,
         child: Center(

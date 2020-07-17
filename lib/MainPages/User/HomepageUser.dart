@@ -1,11 +1,6 @@
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
-import 'package:instant_reporter/Forms/ReportForm.dart';
 import 'package:instant_reporter/MainPages/Drawers.dart';
-import 'package:instant_reporter/ZoneHandle/ZoneNotificationManager.dart';
-import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
 import 'package:instant_reporter/common_widgets/background_services.dart';
 import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:provider/provider.dart';
@@ -32,8 +27,6 @@ Stream _stream = platform.receiveBroadcastStream();
 StreamSubscription subscription;
 
 class _HomepageUserState extends State<HomepageUser> {
-  // String id;
-  //_HomepageUserState(this.id);
   String uid;
   String shortcut = "no action set";
   @override

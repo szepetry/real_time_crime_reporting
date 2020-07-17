@@ -1,8 +1,6 @@
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
 import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneRender.dart';
-import 'package:instant_reporter/ZoneHandle/ZoneNotify.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -38,7 +36,7 @@ Future<void> moveCamera() async {
 
 class FireMapPolice extends StatefulWidget {
   final ZoneRender renderZone;
-  FireMapPolice(this.renderZone); //use this uid here
+  FireMapPolice(this.renderZone);
   static Widget create(BuildContext context) {
     return Provider<ZoneRender>(
       create: (context) => ZoneRender(context),
@@ -57,9 +55,9 @@ class _FireMapPoliceState extends State<FireMapPolice>
   String uid;
   GoogleMapController mapController;
   Widget _child;
-  StreamSubscription _streamSubscription; //n
+  StreamSubscription _streamSubscription;
   Stream _stream =
-      Firestore.instance.collection("registeredUsers").snapshots(); //n
+      Firestore.instance.collection("registeredUsers").snapshots();
   double lat, lng;
   BitmapDescriptor myIcon;
   bool displayZone = false;
@@ -97,9 +95,6 @@ class _FireMapPoliceState extends State<FireMapPolice>
           temp = i;
           if (data.documents[i].documentID != uid) {
             if (data.documents[i].data['occupation'] == "Police") {
-              // debugPrint(
-              //     "${data.documents[i].data['location'].latitude}, ${data.documents[i].data['location'].longitude}");
-              // debugPrint("${data.documents[i].data['name']}");
               allMarkers.add(new Marker(
                   markerId: MarkerId('${i.toString()}'),
                   position: new LatLng(
@@ -120,22 +115,12 @@ class _FireMapPoliceState extends State<FireMapPolice>
       });
     }).then((value) async {
       await _databaseReference.child("").once().then((snapshot) {
-        // debugPrint("Hello "+value.value);
-
-        // if (value.value != null)
         Map<dynamic, dynamic> reportObjects = snapshot.value;
-        // print(values.toString());
         reportObjects.forEach((key, value) {
           List<dynamic> multiObjects = value["multiObject"];
-          // debugPrint(key.toString());
-          // debugPrint(value["name"].toString());
           multiObjects.forEach((infoObject) {
-            // debugPrint(value['infoObject'][0]['location'].toString());
             String coordinate = infoObject['infoObject'][0]['location'];
             List<String> coordinateList = coordinate.split(", ");
-            // Position position = Position(latitude: ,longitude:);
-            debugPrint(
-                "The location: ${double.parse(coordinateList[0].split(": ")[1])},${double.parse(coordinateList[1].split(": ")[1])}");
             allMarkers.add(new Marker(
                 markerId: MarkerId('${temp.toString()}'),
                 position: LatLng(double.parse(coordinateList[0].split(": ")[1]),
@@ -168,12 +153,8 @@ class _FireMapPoliceState extends State<FireMapPolice>
           debugPrint("Police maps: Report modified: " +
               data.snapshot.value['multiObject'].toString());
           multiObjects.forEach((infoObject) {
-            // debugPrint(value['infoObject'][0]['location'].toString());
             String coordinate = infoObject['infoObject'][0]['location'];
             List<String> coordinateList = coordinate.split(", ");
-            // Position position = Position(latitude: ,longitude:);
-            debugPrint(
-                "The location: ${double.parse(coordinateList[0].split(": ")[1])},${double.parse(coordinateList[1].split(": ")[1])}");
             allMarkers.add(new Marker(
                 markerId: MarkerId('${temp.toString()}'),
                 position: LatLng(double.parse(coordinateList[0].split(": ")[1]),
@@ -274,7 +255,6 @@ class _FireMapPoliceState extends State<FireMapPolice>
       child: RaisedButton(
         elevation: 100,
         shape: new CircleBorder(
-            // borderRadius: new BorderRadius.circular(30.0),
             ),
         onPressed: toggleZoneView,
         child: Center(
@@ -345,7 +325,6 @@ class _FireMapPoliceState extends State<FireMapPolice>
     print(renderZone.polygonsDB);
     return GoogleMap(
       mapType: MapType.normal,
-      //markers: Set<Marker>.of(markers.values),
       markers: Set<Marker>.of(allMarkers),
       initialCameraPosition:
           CameraPosition(target: LatLng(13.018302, 77.508173), zoom: 18.0),

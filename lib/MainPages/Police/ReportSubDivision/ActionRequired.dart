@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../common_widgets/constants.dart';
 import 'ReportFormPolice.dart';
 import '../../../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
 
@@ -39,7 +38,6 @@ class _ActionRequiredState extends State<ActionRequired> {
                 if (inc != 0) {
                   return GestureDetector(
                     onTap: () {
-                      //copy the showdialogue
                       showDialog(
                         context: context,
                         builder: (context) => Center(

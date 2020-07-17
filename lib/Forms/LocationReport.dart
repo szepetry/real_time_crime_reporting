@@ -19,15 +19,6 @@ Geolocator geolocator = Geolocator();
 MultiInfoObject _multiInfoObject;
 MultiReportObject _multiReportObject;
 
-// void getUserDetails() async {
-//   await FirestoreService.registeredUserDocument(id).get().then((value) {
-//     setState(() {
-//       _name = value.data['name'];
-//       _phoneNo = value.data['phoneNo'];
-//     });
-//   });
-// }
-
 class LocationReport {
   String id;
   DatabaseReference _databaseReference = FirebaseDatabase.instance.reference();
@@ -239,10 +230,9 @@ class LocationReport {
           "",
           url,
           DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
-      // Navigator.pop(context);
       infoObjs.clear();
       debugPrint("Print of count2: $count2, ID: $id");
-      await _databaseReference.child("$id/multiObject/${count2}").once().then((value) {
+      await _databaseReference.child("$id/multiObject/$count2").once().then((value) {
         count3 = value.value['count'];
         infoObjs.addAll(value.value['infoObject']);
       debugPrint("Print of count3: $count3");

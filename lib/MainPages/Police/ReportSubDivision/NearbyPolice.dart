@@ -30,7 +30,7 @@ class _NearbyPoliceState extends State<NearbyPolice> {
   String namOfTheReporter;
   var dist;
   _NearbyPoliceState({this.userLocation,this.namOfTheReporter});
-  StreamSubscription _streamSubscription; //n
+  StreamSubscription _streamSubscription;
   Stream _stream = Firestore.instance.collection("registeredUsers").snapshots();
   List<int> selectedBox = List();
 
@@ -126,8 +126,6 @@ class _NearbyPoliceState extends State<NearbyPolice> {
                                       BoxDecoration(color: Color(cardColor)),
                                   child: CheckboxListTile(
                                     activeColor: Colors.green,
-                                    //  secondary: Icon(Icons.sms,color: Colors.white,),
-                                    // contentPadding: EdgeInsets.all(8.0),
                                     title: Text(
                                       'Name: ${sortedMap.keys.toList()[index]}',
                                       style: TextStyle(
@@ -150,17 +148,14 @@ class _NearbyPoliceState extends State<NearbyPolice> {
                                           selectedBox.remove(index);
                                           checkedListFinal[sortedMap.keys
                                               .toList()[index]] = false;
-                                          //  print(checkedListFinal);
                                         } else {
                                           selectedBox.add(index);
                                           checkedListFinal[sortedMap.keys
                                               .toList()[index]] = true;
-                                          //   print(checkedListFinal);
                                         }
                                         print(index);
                                       });
                                     },
-                                    // selected:selectedBox.contains(index),
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                   ),

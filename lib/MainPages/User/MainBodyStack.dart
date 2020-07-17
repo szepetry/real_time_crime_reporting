@@ -1,23 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:sliding_up_panel/sliding_up_panel.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
-import 'package:geolocator/geolocator.dart';
-import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneRender.dart';
 import 'package:instant_reporter/ZoneHandle/ZoneNotificationManager.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-// import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/MainPages/User/FireMap.dart';
 import '../Buttons/ProfileMenu.dart';
-import 'package:provider/provider.dart';
-import 'package:instant_reporter/MainPages/Drawers.dart';
-import '../../Forms/LocationReport.dart';
 
 Marker marker;
 
-// Position _currentPosition;
 
 class MainBodyStack extends StatefulWidget {
   final String uid;
@@ -35,17 +23,6 @@ class _MainBodyStackState extends State<MainBodyStack> {
     ZoneNotificationsManager.init(widget.uid);
     ZoneNotificationsManager.invokeZoneListener(context);
   }
-
-  // Future<void> _getCurrentLocation() async {
-  //   // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
-
-  //   Position position = await Geolocator()
-  //       .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-  //   setState(() {
-  //     _currentPosition = position;
-  //   });
-  // }
 
   void choiceAction(String choice) {
     if (choice == ProfileMenu.signout) {

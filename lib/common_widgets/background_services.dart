@@ -12,11 +12,6 @@ import '../model/multiReportObject.dart';
 import '../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
 import 'package:intl/intl.dart';
 
-// const simpleTaskKey = 'simpleTask';
-// const simpleDelayedTask = 'simpleDelayedTask';
-// const simplePeriodicTask = 'simplePeriodicTask';
-// const simplePeriodic1HourTask = 'simplePeriodic1HourTask';
-
 const platform = const EventChannel("com.renegades.miniproject/voldown");
 
 PanelController panelController = PanelController();

@@ -1,25 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:sliding_up_panel/sliding_up_panel.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
-import 'package:geolocator/geolocator.dart';
-import 'package:instant_reporter/ZoneHandle/DisplayZones/ZoneRender.dart';
 import 'package:instant_reporter/ZoneHandle/ZoneNotificationManager.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-// import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/MainPages/Police/FireMapPolice.dart';
 import '../Buttons/ProfileMenu.dart';
-import 'package:provider/provider.dart';
-import 'package:instant_reporter/MainPages/Drawers.dart';
-import '../../Forms/LocationReport.dart';
 
 Marker marker;
 
-// Position _currentPosition;
-
-//TODO:Main body of the application
 class MainBodyStackPolice extends StatefulWidget {
   final String uid;
   MainBodyStackPolice(this.uid);
@@ -29,24 +15,6 @@ class MainBodyStackPolice extends StatefulWidget {
 }
 
 class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
-  /* void initState() {
-    super.initState();
-    // _getCurrentLocation();
-
- 
-  } */
-
-  // Future<void> _getCurrentLocation() async {
-  //   // final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
-
-  //   Position position = await Geolocator()
-  //       .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-  //   setState(() {
-  //     _currentPosition = position;
-  //   });
-  // }
-
   bool displayZone = false;
 
   @override
@@ -89,7 +57,6 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
           left: MediaQuery.of(context).size.width - 80,
           child: RawMaterialButton(
             onPressed: () {
-              // _getCurrentLocation();
               moveCamera();
             },
             child: Icon(
@@ -106,7 +73,7 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
                     child: Text(
@@ -125,17 +92,6 @@ class _MainBodyStackPoliceState extends State<MainBodyStackPolice> {
             ),
           ),
         )
-
-        // Align(
-        //   alignment: Alignment.topLeft,
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(8.0),
-        //     child: Text(
-        //       "Police",
-        //       style: TextStyle(color: Colors.white,fontSize: 40),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }
