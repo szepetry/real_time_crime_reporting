@@ -13,13 +13,26 @@ class MyApp extends StatelessWidget {
       color: Color(cardColor),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: "Josefin_Sans", primarySwatch: Colors.amber),
-      home: SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: LandingPage.create(context),
-          backgroundColor: Colors.grey[200],
+      builder: (context, child) {
+        return MediaQuery(data: MediaQuery.of(context).copyWith(textScaleFactor: 0.95), child: child);
+      },
+      routes: <String, WidgetBuilder>{
+        '/home': (context) => SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: LandingPage.create(context),
+            backgroundColor: Colors.grey[200],
+          ),
         ),
-      ),
+      },
+      initialRoute: '/home',
+      // home: SafeArea(
+      //     child: Scaffold(
+      //       resizeToAvoidBottomInset: false,
+      //       body: LandingPage.create(context),
+      //       backgroundColor: Colors.grey[200],
+      //     ),
+      //   ),
     );
   }
 }
