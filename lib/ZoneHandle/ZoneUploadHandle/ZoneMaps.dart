@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:instant_reporter/ZoneHandle/ZoneDetailsInputHandle/ZoneDetails.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 enum state { getDetails, other }
 state currentState;
+String _mapStyleNight;
 
 class ZoneMap extends StatefulWidget {
   ZoneMap(this.addZone, this.renderZone);
@@ -57,7 +59,11 @@ class _ZoneMapState extends State<ZoneMap> {
   @override
   void initState() {
     super.initState();
-    getLocation();
+    rootBundle
+        .loadString('assets/MapStyles/nightMapLandmarks.json')
+        .then((json) {
+      _mapStyleNight = json;
+    }).then((value) => getLocation());
   }
 
   Future<void> getLocation() async {
@@ -120,15 +126,18 @@ class _ZoneMapState extends State<ZoneMap> {
                     initialCameraPosition: CameraPosition(
                         target: LatLng(pos.latitude, pos.longitude),
                         zoom: 19.0),
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: false,
                     markers: Set.from(addZone.allMarkers),
+                    onMapCreated: (controller) {
+                      controller.setMapStyle(_mapStyleNight);
+                    },
                     polygons:
                         !displayZone ? addZone.polygons : renderZone.polygonsDB,
                     onTap: (point) {
                       addZone.renderZone(point);
                     })
-                : Center(
-                    child: CircularProgressIndicator()
-                  )),
+                : Center(child: CircularProgressIndicator())),
         //  refreshButton(),
         zoneToggleButton(),
         listOfButtons(),
@@ -231,7 +240,7 @@ class _ZoneMapState extends State<ZoneMap> {
                     disabledColor: Colors.grey[400],
                     disabledTextColor: Colors.white,
                   )
-                :CircularProgressIndicator(),
+                : CircularProgressIndicator(),
             SizedBox(height: 8.0),
             FlatButton(
               shape: new RoundedRectangleBorder(
