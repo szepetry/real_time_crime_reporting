@@ -10,7 +10,7 @@ const kTextStyleOfHeadings = TextStyle(
 
 const kTextStyleForData = TextStyle(
 //color: Colors.white,
-  fontSize: 13.0,
+  fontSize: 14.0,
   height: 2,
   fontWeight: FontWeight.w300,
 );
