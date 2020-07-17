@@ -43,8 +43,27 @@ exports.deleteZone = functions.firestore
     .onDelete((snap, context) => {
       const deletedZone = snap.data();
       var zoneColor = deletedZone.zoneColor;
+      var zoneNotification = deletedZone.zoneNotification;
       var title = `${useAn(zoneColor)} ${zoneColor} zone has just been deleted`;
       var body = "Stay informed at all times";
+      admin.firestore().collection('Zones').get().then(
+          snapshot =>{
+              snapshot.docs.forEach(
+                  user =>{
+                      const u = user.data();
+                      if(u.zoneNotification===zoneNotification && u.zoneColor===zoneColor){
+                        u.entered=false;
+                        u.zoneNotification="";
+                        u.zoneColor="";
+                      } 
+                  }
+              )
+          }
+      )
+      admin.firestore().collection('Zones').get().then(snapshot =>{
+        sendNotification(title,body,snapshot.data().tokenList);
+        return null;
+    }).catch(e=>console.log(e));
       sendToAll(title,body);
 });
 
