@@ -82,6 +82,8 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 40.0, color: Colors.white),
                         ),
+                        _name != null?
+                        Column(children: <Widget>[
                         CommonInfo(
                           heading: ' Name: ',
                           data: _name != null ? _name : "Loading name.",
@@ -89,9 +91,7 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                         Row(children: <Widget>[
                           CommonInfo(
                             heading: ' Phone Number: ',
-                            data: _phoneNo != null
-                                ? _phoneNo
-                                : "Loading phone number.",
+                            data: _phoneNo 
                           ),
                           SizedBox(
                             width: 70,
@@ -123,7 +123,12 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                               color: Colors.white,
                             ),
                           ),
-                        ]),
+                        ])
+                        ],):Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        )
+
                       ],
                     ),
                   )),

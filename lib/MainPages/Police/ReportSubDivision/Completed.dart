@@ -131,28 +131,25 @@ class _UserReportsState extends State<UserReports> {
               Padding(padding: EdgeInsets.all(20.0)),
               Padding(
                 padding: const EdgeInsets.only(left: 18.0),
-                child: Flexible(
-                  fit: FlexFit.loose,
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        "Reports from ",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      _name == null
-                          ? CircularProgressIndicator()
-                          : Text(
-                              _name,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                    ],
-                  ),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "Reports from ",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    _name == null
+                        ? CircularProgressIndicator()
+                        : Text(
+                            _name,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                  ],
                 ),
               ),
               Expanded(
@@ -211,7 +208,7 @@ class _UserReportsState extends State<UserReports> {
                                           maxLines: 2,
                                           softWrap: false,
                                           overflow: TextOverflow.visible,
-                                          style: TextStyle(fontSize: 13),
+                                          style: TextStyle(fontSize: 12),
                                         ),
                                       ],
                                     ),

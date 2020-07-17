@@ -66,16 +66,24 @@ class _ReportFormState extends State<ReportForm> {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 40.0, color: Colors.white),
                         ),
-                        CommonInfo(
-                          heading: ' Name: ',
-                          data: _name != null ? _name : "Loading name.",
-                        ),
-                        CommonInfo(
-                          heading: ' Phone Number: ',
-                          data: _phoneNo != null
-                              ? _phoneNo
-                              : "Loading phone number.",
-                        ),
+                        _name!=null?
+                        Column(
+                          children: <Widget>[
+                            CommonInfo(
+                              heading: ' Name: ',
+                              data: _name != null ? _name : "Loading name.",
+                            ),
+                            CommonInfo(
+                              heading: ' Phone Number: ',
+                              data: _phoneNo != null
+                                  ? _phoneNo
+                                  : "Loading phone number.",
+                            ),
+                          ],
+                        ):Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        )
                       ],
                     ),
                   )),
@@ -206,7 +214,6 @@ class _ReportFormState extends State<ReportForm> {
             textString: snapshot.value['timeStamp'].toString(),
           ),
         ]),
-        
         Row(
           children: <Widget>[
             Expanded(
