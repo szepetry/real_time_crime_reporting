@@ -13,7 +13,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:instant_reporter/common_widgets/notifications.dart';
 import '../common_widgets/video_player_widget.dart';
-
+import 'package:intl/intl.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
 
@@ -51,6 +51,8 @@ class _AddReportFormState extends State<AddReportForm> {
   String _urlAttachmentVideo = '';
   LatLng _location;
   String _description = '';
+  DateTime now = DateTime.now();
+
 
   @override
   void initState() {
@@ -84,9 +86,7 @@ class _AddReportFormState extends State<AddReportForm> {
             _currentPosition.toString(),
             this._urlAttachmentPhoto,
             this._urlAttachmentVideo,
-            DateTime.fromMillisecondsSinceEpoch(
-                    DateTime.now().millisecondsSinceEpoch)
-                .toString());
+            DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
         setState(() {
           NotificationManager notificationManager = NotificationManager();
           notificationManager.showNotification(
@@ -183,7 +183,6 @@ class _AddReportFormState extends State<AddReportForm> {
                   maxLines: 10,
                   decoration: InputDecoration(
                       labelText: "Description",
-                      // fillColor: Colors.white,
                       enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide(color: Colors.white10)),
@@ -280,20 +279,16 @@ class _AddReportFormState extends State<AddReportForm> {
                 ),
               ),
               Container(
-                // margin: EdgeInsets.all(20.0),
                 padding: EdgeInsets.fromLTRB(100, 20, 100, 20),
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
                 child: RawMaterialButton(
-                  // elevation: 2.0,
-                  // constraints: BoxConstraints(minHeight: 100,minWidth: 10),
                   fillColor: Colors.red,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   onPressed: () {
                     saveReport(context);
-                    // print('clicked!');
                   },
                   child: Text(
                     "Submit",
@@ -350,7 +345,6 @@ class _AddReportFormState extends State<AddReportForm> {
               ),
               actions: <Widget>[
                 FlatButton(
-                    // color: Colors.red,
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

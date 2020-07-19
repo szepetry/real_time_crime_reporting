@@ -6,8 +6,6 @@ import 'package:instant_reporter/common_widgets/constants.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../../../common_widgets/video_player_widget.dart';
 import '../../../AuthenticationHandle/StateNotifiers/FirestoreService.dart';
-import 'package:instant_reporter/AuthenticationHandle/LandingPage.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'NearbyPolice.dart';
@@ -16,7 +14,8 @@ bool result = false;
 
 class ReportFormPolice extends StatefulWidget {
   final String id, uid;
-  ReportFormPolice(this.id, this.uid);
+  final bool isCompleted;
+  ReportFormPolice(this.id, this.uid, this.isCompleted);
 
   @override
   _ReportFormPoliceState createState() => _ReportFormPoliceState();
@@ -29,7 +28,6 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
   String _name;
   String _phoneNo;
   String firstLocation;
-  // _ReportFormPoliceState(this.id);
 
   @override
   void initState() {
@@ -41,7 +39,6 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
   }
 
   void getUserDetails() async {
-    // UserDetails u =Provider.of<UserDetails>(context, listen: false);
     await FirestoreService.registeredUserDocument(uid).get().then((value) {
       setState(() {
         _name = value.data['name'];
@@ -65,7 +62,6 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
       child: Material(
         type: MaterialType.transparency,
         child: Container(
-          //Change the form color here.
           color: Color(backgroundColor),
           child: Stack(
             children: <Widget>[
@@ -81,6 +77,8 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 40.0, color: Colors.white),
                         ),
+                        _name != null?
+                        Column(children: <Widget>[
                         CommonInfo(
                           heading: ' Name: ',
                           data: _name != null ? _name : "Loading name.",
@@ -88,16 +86,13 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                         Row(children: <Widget>[
                           CommonInfo(
                             heading: ' Phone Number: ',
-                            data: _phoneNo != null
-                                ? _phoneNo
-                                : "Loading phone number.",
+                            data: _phoneNo 
                           ),
                           SizedBox(
                             width: 70,
                           ),
                           GestureDetector(
                               onTap: () {
-                                //  print('hello');
                                 if (_phoneNo != null) {
                                   String phno = "tel:" + _phoneNo;
                                   launch(phno);
@@ -122,7 +117,12 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                               color: Colors.white,
                             ),
                           ),
-                        ]),
+                        ])
+                        ],):Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        )
+
                       ],
                     ),
                   )),
@@ -135,7 +135,6 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                               DataSnapshot snapshot,
                               Animation<double> animation,
                               int index1) {
-                            // Map<dynamic,dynamic> tempMap = snapshot.value['infoObject'];
                             return Column(
                               children: <Widget>[
                                 Padding(
@@ -148,11 +147,9 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                                       elevation: 2.0,
                                       child: Container(
                                         padding: EdgeInsets.all(15),
-                                        // margin: EdgeInsets.all(10.0),
                                         child: Column(
                                           children: <Widget>[
                                             eachObject(snapshot),
-                                            // Text("${snapshot.value['timeStamp']}")
                                           ],
                                         ),
                                       ),
@@ -166,11 +163,11 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                   ),
                 ],
               ),
-              //TODO: Add action taken button here
               Positioned(
                 bottom: 20,
                 left: MediaQuery.of(context).size.width - 100,
-                child: RawMaterialButton(
+                child: widget.isCompleted != true?
+                RawMaterialButton(
                   onPressed: () async {
                     showDialog(
                       context: context,
@@ -195,13 +192,14 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                     });
                   },
                   child: Icon(
-                    Icons.check,
+                    Icons.send,
                   ),
                   shape: CircleBorder(),
                   elevation: 4.0,
                   fillColor: Colors.red,
                   padding: EdgeInsets.all(15.0),
-                ),
+                ):
+                Container()
               ),
             ],
           ),
@@ -301,8 +299,6 @@ class _ReportFormPoliceState extends State<ReportFormPolice> {
                     ? FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
                         image: snapshot.value['urlAttachmentPhoto'],
-                        // width: MediaQuery.of(context).size.width*0.5,
-                        // height: MediaQuery.of(context).size.height*0.5,
                       )
                     : SizedBox(
                         height: 170,

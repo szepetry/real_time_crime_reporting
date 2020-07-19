@@ -25,7 +25,6 @@ class _ReportFormState extends State<ReportForm> {
   String id, id2;
   String _name;
   String _phoneNo;
-  // _ReportFormState(this.id);
 
   @override
   void initState() {
@@ -66,16 +65,24 @@ class _ReportFormState extends State<ReportForm> {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 40.0, color: Colors.white),
                         ),
-                        CommonInfo(
-                          heading: ' Name: ',
-                          data: _name != null ? _name : "Loading name.",
-                        ),
-                        CommonInfo(
-                          heading: ' Phone Number: ',
-                          data: _phoneNo != null
-                              ? _phoneNo
-                              : "Loading phone number.",
-                        ),
+                        _name!=null?
+                        Column(
+                          children: <Widget>[
+                            CommonInfo(
+                              heading: ' Name: ',
+                              data: _name != null ? _name : "Loading name.",
+                            ),
+                            CommonInfo(
+                              heading: ' Phone Number: ',
+                              data: _phoneNo != null
+                                  ? _phoneNo
+                                  : "Loading phone number.",
+                            ),
+                          ],
+                        ):Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        )
                       ],
                     ),
                   )),
@@ -88,7 +95,6 @@ class _ReportFormState extends State<ReportForm> {
                               DataSnapshot snapshot,
                               Animation<double> animation,
                               int index1) {
-                            // Map<dynamic,dynamic> tempMap = snapshot.value['infoObject'];
                             return Column(
                               children: <Widget>[
                                 Padding(
@@ -101,11 +107,9 @@ class _ReportFormState extends State<ReportForm> {
                                       elevation: 2.0,
                                       child: Container(
                                         padding: EdgeInsets.all(15),
-                                        // margin: EdgeInsets.all(10.0),
                                         child: Column(
                                           children: <Widget>[
                                             eachObject(snapshot),
-                                            // Text("${snapshot.value['timeStamp']}")
                                           ],
                                         ),
                                       ),
@@ -206,7 +210,6 @@ class _ReportFormState extends State<ReportForm> {
             textString: snapshot.value['timeStamp'].toString(),
           ),
         ]),
-        
         Row(
           children: <Widget>[
             Expanded(
@@ -237,8 +240,6 @@ class _ReportFormState extends State<ReportForm> {
                     ? FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
                         image: snapshot.value['urlAttachmentPhoto'],
-                        // width: MediaQuery.of(context).size.width*0.5,
-                        // height: MediaQuery.of(context).size.height*0.5,
                       )
                     : SizedBox(
                         height: 170,

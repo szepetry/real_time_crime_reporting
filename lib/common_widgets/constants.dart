@@ -10,7 +10,7 @@ const kTextStyleOfHeadings = TextStyle(
 
 const kTextStyleForData = TextStyle(
 //color: Colors.white,
-  fontSize: 15.0,
+  fontSize: 14.0,
   height: 2,
   fontWeight: FontWeight.w300,
 );
@@ -140,9 +140,12 @@ class MaterialButtonWidget extends StatelessWidget {
           child: MaterialButton(
             height: 50,
         onPressed: onPressed,
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.black),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(color: Colors.black),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
     );

@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 List<dynamic> infoObjs = List<dynamic>();
 List<dynamic> multiObjs = List<dynamic>();
@@ -17,15 +18,6 @@ int count1 = 0, count2 = 0, count3 = 0;
 Geolocator geolocator = Geolocator();
 MultiInfoObject _multiInfoObject;
 MultiReportObject _multiReportObject;
-
-// void getUserDetails() async {
-//   await FirestoreService.registeredUserDocument(id).get().then((value) {
-//     setState(() {
-//       _name = value.data['name'];
-//       _phoneNo = value.data['phoneNo'];
-//     });
-//   });
-// }
 
 class LocationReport {
   String id;
@@ -37,6 +29,7 @@ class LocationReport {
   String aadhar;
   String name;
   String phone;
+  DateTime now = DateTime.now();
 
   LocationReport(this.id);
 
@@ -54,9 +47,7 @@ class LocationReport {
               value.toString(),
               this._urlAttachmentPhoto,
               this._urlAttachmentVideo,
-              DateTime.fromMillisecondsSinceEpoch(
-                      DateTime.now().millisecondsSinceEpoch)
-                  .toString());
+              DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
           infoObjs.clear();
           infoObjs.add(infoObject.toJson());
           _multiInfoObject = MultiInfoObject(infoObjs, count1);
@@ -136,9 +127,7 @@ class LocationReport {
               value.toString(),
               this._urlAttachmentPhoto,
               this._urlAttachmentVideo,
-              DateTime.fromMillisecondsSinceEpoch(
-                      DateTime.now().millisecondsSinceEpoch)
-                  .toString());
+              DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
           infoObjs.clear();
           infoObjs.add(infoObject.toJson());
           _multiInfoObject = MultiInfoObject(infoObjs, count1);
@@ -240,13 +229,10 @@ class LocationReport {
           value.toString(),
           "",
           url,
-          DateTime.fromMillisecondsSinceEpoch(
-                  DateTime.now().millisecondsSinceEpoch)
-              .toString());
-      // Navigator.pop(context);
+          DateFormat('yyyy-MM-dd kk:mm:ss').format(now).toString());
       infoObjs.clear();
       debugPrint("Print of count2: $count2, ID: $id");
-      await _databaseReference.child("$id/multiObject/${count2}").once().then((value) {
+      await _databaseReference.child("$id/multiObject/$count2").once().then((value) {
         count3 = value.value['count'];
         infoObjs.addAll(value.value['infoObject']);
       debugPrint("Print of count3: $count3");
