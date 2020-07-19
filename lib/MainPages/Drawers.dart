@@ -116,20 +116,22 @@ class _DrawersState extends State<Drawers> {
       child: Column(
         children: <Widget>[
           //Icon(Icons.person, size: height * 0.12),
-          Material(
-              borderRadius: BorderRadius.all(Radius.circular(70)),
-              child: GestureDetector(
-                onDoubleTap: () {
-                  setState(() {
-                    widget.u.isMale = !widget.u.isMale;
-                  });
-                },
-                child: Image.asset(
-                  ascertainImage(),
-                  width: height * 0.114,
-                  height: height * 0.114,
-                ),
-              )),
+          Expanded(
+            child: Material(
+                borderRadius: BorderRadius.all(Radius.circular(70)),
+                child: GestureDetector(
+                  onDoubleTap: () {
+                    setState(() {
+                      widget.u.isMale = !widget.u.isMale;
+                    });
+                  },
+                  child: Image.asset(
+                    ascertainImage(),
+                    width: height * 0.114,
+                    height: height * 0.114,
+                  ),
+                )),
+          ),
           SizedBox(
             height: height * 0.01,
           ),
