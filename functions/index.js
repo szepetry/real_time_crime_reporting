@@ -46,26 +46,29 @@ exports.deleteZone = functions.firestore
       var zoneNotification = deletedZone.zoneNotification;
       var title = `${useAn(zoneColor)} ${zoneColor} zone has just been deleted`;
       var body = "Stay informed at all times";
-      admin.firestore().collection('Zones').get().then(
-          snapshot =>{
-              snapshot.docs.forEach(
-                  user =>{
-                      const u = user.data();
-                      if(u.zoneNotification===zoneNotification && u.zoneColor===zoneColor){
-                        u.entered=false;
-                        u.zoneNotification="";
-                        u.zoneColor="";
-                      } 
-                  }
-              )
-          }
-      )
-      admin.firestore().collection('Zones').get().then(snapshot =>{
-        sendNotification(title,body,snapshot.data().tokenList);
-        return null;
-    }).catch(e=>console.log(e));
       sendToAll(title,body);
+      deleteNotificationInfo(zoneColor,zoneNotification);
 });
+
+function deleteNotificationInfo(zoneColor,zoneNotification){
+    admin.firestore().collection('registeredUsers').get().then(
+        snapshot =>
+            snapshot.docs.forEach(
+                user =>{
+                    if(user.zoneNotification===zoneNotification && user.zoneColor===zoneColor){
+                      admin.firestore().collection('registeredUsers').doc(user.id).update(
+                          {
+                              entered:false,
+                              zoneNotification:"",
+                              zoneColor:""
+                          }
+                      ).then(a=>console.log(a)).catch(e=>console.log(e));
+                    } 
+                }
+            )
+        
+    ).catch(e=>console.log(e));
+}
 
 
 function useAn(color){
@@ -101,6 +104,7 @@ exports.zoneNotification = functions.firestore
 
 function sendToAll(title,body){
     admin.firestore().collection('tokens').doc('devtoken').get().then(snapshot =>{
+        console.log(snapshot.data().tokenList);
         sendNotification(title,body,snapshot.data().tokenList);
         return null;
     }).catch(e=>console.log(e));
