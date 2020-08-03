@@ -7,5 +7,3 @@ Team members:
   - Aryan Jalali
   - Arjun Manoj Kumar P.
   - Amulya .N
-
-
