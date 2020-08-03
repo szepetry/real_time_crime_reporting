@@ -1,4 +1,4 @@
-name: sih_app
+name: instant_reporter
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.5.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -24,17 +24,49 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   # For the bottom slider
-  sliding_up_panel: ^1.0.0
+  sliding_up_panel: ^1.0.2
   # For google maps integration
-  google_maps_flutter: ^0.5.21+17  
+  google_maps_flutter: ^0.5.28+1
   # Geolocation
-  geolocator: ^5.2.0
+  geolocator: ^5.3.1
+  # For google places API
+  google_maps_webservice: ^0.0.17
 
-  location: ^2.3.5
   # Connecting flutter maps with firebase
-  # geoflutterfire: ^2.0.3+8
   #transparent image import
   transparent_image: ^1.0.0
+  # datebase
+  firebase_database: ^3.1.5
+  #firebase core
+  firebase_core: ^0.4.4+3
+  #firebase cloud
+  firebase_storage: ^3.1.1
+  #image/video picker
+  image_picker: ^0.6.3+3
+  # for phone calls and sms intent
+  url_launcher: ^5.4.11
+  # for loading images in circles
+  cached_network_image: ^2.0.0
+  firebase_auth: ^0.16.1
+  #for the notifications
+  flutter_local_notifications: ^1.4.4+1
+  #for quick actions
+  quick_actions: ^0.4.0+6
+  #for map intent
+  maps_launcher: ^1.2.0
+  poly: ^1.0.7+2
+  cloud_firestore: ^0.13.5
+  provider: ^4.1.1
+  move_to_background: ^1.0.1
+  firebase_messaging: ^6.0.15
+  workmanager: ^0.2.2
+  android_alarm_manager: ^0.4.5+11
+  # video player library
+  video_player: ^0.10.11+2
+  #for multiple sms
+  flutter_sms: ^2.0.0+2
+  #for formatting date and time
+  intl: ^0.16.1
 
 
 dev_dependencies:
@@ -52,7 +84,13 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets:
+     - assets/images/
+     - assets/images/police.png
+     - assets/images/report.png
+     - assets/images/policestation.png
+     - assets/MapStyles/nightMapLandmarks.json
+     - assets/MapStyles/nightMapMinimal.json
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
@@ -69,12 +107,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: Josefin_Sans
+      fonts:
+        - asset: fonts/JosefinSans-Regular.ttf
+        - asset: fonts/JosefinSans-Italic.ttf
+          style: italic
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
